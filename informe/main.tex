@@ -1,0 +1,1280 @@
+\documentclass[a4paper,11pt]{amsart}
+
+% =========================================================================
+%  Informe de laboratorio — Práctica 3: Péndulos acoplados
+%  Estilo: el del informe de Steiner (artículo científico minimalista,
+%  versalitas, enunciados numerados por sección, cajas de referencia y de
+%  método), con dos variaciones: tipografía Libertinus, más propia de los
+%  artículos científicos, y una paleta de azul marino, azul petróleo,
+%  turquesa y celeste.
+%
+%  Partes pendientes (marcadas en gris con \pend y \pendiente):
+%  incertidumbres, ajustes lineales de la cuestión 2, comparación de la
+%  cuestión 3 y conclusiones.
+% =========================================================================
+
+% --- IDIOMA Y CODIFICACIÓN ------------------------------------------------
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish,es-tabla,es-nodecimaldot]{babel}
+
+% --- TIPOGRAFÍA (Libertinus: texto y matemáticas) ---------------------------
+\usepackage{libertinus}
+\linespread{1.06}
+\usepackage[final]{microtype}
+
+% --- MATEMÁTICAS Y UNIDADES ------------------------------------------------
+\usepackage{amsmath, amssymb, mathtools}
+\usepackage{bm}
+\usepackage{siunitx}
+\sisetup{
+  output-decimal-marker = {,},
+  group-minimum-digits  = 4,
+  group-digits          = integer,
+  group-separator       = {\,},
+  per-mode              = symbol,
+  separate-uncertainty  = true,
+  range-phrase          = {\text{ a }},
+  detect-all            = false
+}
+
+% --- PÁGINA, COLORES Y GRÁFICOS --------------------------------------------
+\usepackage[a4paper,margin=2.6cm,footskip=1.45cm]{geometry}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\definecolor{azulprof}{HTML}{0B2545}    % azul marino
+\definecolor{azulacero}{HTML}{1D5C7A}   % azul petróleo
+\definecolor{turquesa}{HTML}{1E9E9B}    % turquesa
+\definecolor{azulclaro}{HTML}{A8D5E2}   % celeste
+\definecolor{grispizarra}{HTML}{4B5B6B} % gris pizarra azulado
+\definecolor{grisclaro}{HTML}{E2EAEF}   % gris perla
+\definecolor{azulfondo}{HTML}{F1F8FA}   % fondo tenue de referencias y resultados
+\colorlet{acento}{turquesa!85!azulprof} % curvas teóricas y comparaciones
+\usepackage{tikz}
+\usetikzlibrary{babel, arrows.meta, calc, positioning, decorations.pathmorphing,
+                decorations.pathreplacing, decorations.markings, patterns, shadings}
+\usepackage{pgfplots}
+\usepackage{pgfplotstable}
+\usepgfplotslibrary{groupplots, fillbetween}
+\pgfplotsset{compat=1.17}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage[most]{tcolorbox}
+\usepackage{array}
+\usepackage{enumitem}
+\setlist[itemize]{leftmargin=1.6em, itemsep=2pt, topsep=4pt}
+\setlist[enumerate]{leftmargin=1.8em, itemsep=2pt, topsep=4pt}
+
+% --- ENLACES Y REFERENCIAS CRUZADAS ----------------------------------------
+\usepackage[colorlinks=true, linkcolor=azulacero, citecolor=azulacero,
+            urlcolor=azulacero, plainpages=false, pdfusetitle=false,
+            pdftitle={Práctica 3: Péndulos acoplados},
+            pdfauthor={David Gómez García; Daniel Martín Guerrero}]{hyperref}
+\usepackage[spanish,nameinlink]{cleveref}
+
+% --- BIBLIOGRAFÍA -----------------------------------------------------------
+\usepackage{csquotes}
+\usepackage[backend=biber, style=numeric, sorting=none, giveninits=true,
+            maxbibnames=6, minbibnames=3, doi=true, url=true,
+            isbn=false]{biblatex}
+\addbibresource{referencias.bib}
+\DeclareFieldFormat[article,techreport,unpublished,misc]{title}{#1\isdot}
+\DeclareFieldFormat{url}{\url{#1}}
+\renewcommand*{\bibfont}{\small}
+\setlength{\bibitemsep}{3pt}
+
+% --- PIEZAS DE DIBUJO DE LOS PÉNDULOS ----------------------------------------
+\input{figuras/pendulos}
+
+% =========================================================================
+%        CABECERAS, PIE DE PÁGINA, SECCIONES E ÍNDICE
+% =========================================================================
+% Ornamento entre secciones: una pequeña pulsación entre dos filetes
+\newcommand{\ornamento}{%
+  \par\vspace{10pt}{\centering
+  \tikz{\draw[azulclaro, line width=0.4pt] (-1.6,0) -- (-0.4,0);
+        \draw[azulclaro, line width=0.4pt] (0.4,0) -- (1.6,0);
+        \node at (0,0) {\ondita[1.25]};}\par}\vspace{6pt}}
+
+\makeatletter
+\def\ps@headings{%
+  \let\@mkboth\markboth
+  \def\@evenhead{\normalfont\footnotesize\color{grispizarra}\scshape
+    \textls[60]{Laboratorio de Mecánica y Ondas}\hfil
+    \textls[60]{Péndulos acoplados\,\textperiodcentered\,Modos normales}}%
+  \let\@oddhead\@evenhead
+  \def\@evenfoot{\hfil\normalfont\small\color{azulacero}%
+    \ondita\enspace\thepage\enspace\ondita\hfil}%
+  \let\@oddfoot\@evenfoot}
+\def\ps@firstpage{\ps@plain\def\@oddhead{}\let\@evenhead\@oddhead
+  \def\@oddfoot{\hfil\normalfont\small\color{azulacero}%
+    \ondita\enspace\thepage\enspace\ondita\hfil}%
+  \let\@evenfoot\@oddfoot}
+\pagestyle{headings}
+
+% Secciones: número en azul petróleo, título en versalitas espaciadas; debajo,
+% un subtítulo en cursiva y un filete rematado en un pequeño círculo turquesa.
+\def\section{\@startsection{section}{1}%
+  \z@{1.3\linespacing\@plus.8\linespacing}{.25\linespacing}%
+  {\normalfont\Large\color{azulprof}\scshape\lsstyle\raggedright}}
+\let\@seccntformatorig\@seccntformat
+\def\@seccntformat#1{%
+  \ifnum\pdfstrcmp{#1}{section}=\z@
+    {\color{azulacero}\upshape\csname the#1\endcsname}\hspace{0.55em}%
+  \else\@seccntformatorig{#1}\fi}
+\newcommand{\filete}{%
+  \tikz[baseline]{\draw[azulclaro, line width=0.45pt] (0,0) -- (\linewidth-5pt,0);
+    \draw[turquesa, line width=0.55pt, fill=white] (\linewidth-2.6pt,0) circle (2.3pt);}}
+\DeclareRobustCommand{\tocsub}[1]{%
+  \ \textperiodcentered\ {\itshape\color{grispizarra}#1}}
+\newcommand{\subtitulo}[1]{%
+  \par\nopagebreak\vspace{-2pt}%
+  \noindent{\itshape\color{grispizarra}#1}\par\nopagebreak\vspace{1pt}%
+  \noindent\filete\par\nopagebreak\vspace{0.55\baselineskip}}
+% \seccion{Título}{Subtítulo}: sección numerada con subtítulo (índice incluido).
+\let\@tocextra\@empty
+\def\@tocwriteb#1#2#3{%
+  \begingroup
+    \def\@tocline##1##2##3##4##5##6{%
+      \ifnum##1>\c@tocdepth
+      \else \sbox\z@{##5\let\indentlabel\@tochangmeasure##6}\fi}%
+    \csname l@#2\endcsname{#1{\csname#2name\endcsname}{\@secnumber}{}}%
+  \endgroup
+  \addcontentsline{toc}{#2}%
+    {\protect#1{\csname#2name\endcsname}{\@secnumber}{#3\@tocextra}}%
+  \global\let\@tocextra\@empty}
+\newcommand{\seccion}[2]{%
+  \gdef\@tocextra{\tocsub{#2}}%
+  \section{#1}\subtitulo{#2}}
+
+% Índice: número en azul petróleo, título en azul marino y subtítulo en cursiva
+\def\l@section{\@tocline{1}{7pt}{0pt}{}{}}
+\renewcommand{\tocsection}[3]{%
+  \indentlabel{\@ifnotempty{#2}{{\color{azulacero}#2}\quad}}{\color{azulprof}#3}}
+\def\l@subsection{\@tocline{2}{1pt}{1.55pc}{2.4pc}{\small}}
+\renewcommand{\contentsnamefont}{\scshape\color{azulprof}\lsstyle}
+\makeatother
+\numberwithin{equation}{section}
+\setcounter{tocdepth}{2}
+\makeatletter
+\def\@@and{y}
+\renewcommand{\abstractname}{\color{azulacero}\lsstyle Resumen}
+\makeatother
+
+% =========================================================================
+%               NOTACIÓN Y MACROS DE USO FRECUENTE
+% =========================================================================
+\newcommand{\dif}{\mathrm{d}}
+\newcommand{\Tb}{T_{\mathrm{b}}}              % periodo de pulsación (envolvente)
+\newcommand{\Tp}{T_{+}}                       % periodo de la portadora
+\newcommand{\wz}{\omega_0}                    % frecuencia del modo en fase
+\newcommand{\wu}{\omega_1}                    % frecuencia del modo en contrafase
+\newcommand{\wm}{\omega_{-}}                  % frecuencia de modulación
+\newcommand{\wpl}{\omega_{+}}                 % frecuencia de la portadora
+\newcommand{\Tcoef}{t_{95,\nu}}               % factor de cobertura al 95 %
+\newcommand{\ext}[1]{U(#1)}                   % incertidumbre ampliada
+\newcommand{\mean}[1]{\overline{#1}}
+% Dato pendiente de incorporar (se resalta con discreción)
+\newcommand{\pend}[1]{\textcolor{grispizarra}{\colorbox{grisclaro}{\strut\,#1\,}}}
+\newcommand{\pendiente}[1]{\textcolor{grispizarra}{\textit{[#1]}}}
+% Hueco reservado para una gráfica o figura que aún no existe
+\newcommand{\huecofigura}[2][5.2cm]{%
+  \tikz{\draw[grispizarra!45, dashed, line width=0.5pt, rounded corners=2pt, fill=azulfondo]
+          (0,0) rectangle (0.92\linewidth,#1);
+        \node[text=grispizarra, font=\small\itshape, align=center, text width=0.8\linewidth]
+          at (0.46\linewidth,#1/2) {#2};}}
+
+% =========================================================================
+%        ENTORNOS FORMALES (enunciados numerados, estilo artículo)
+% =========================================================================
+\usepackage{amsthm}
+
+\newtheoremstyle{cienplano}{10pt}{10pt}{\itshape}{}%
+  {\bfseries\color{azulprof}}{.}{0.6em}%
+  {\thmname{#1}\thmnumber{ #2}\thmnote{\normalfont\upshape\ (#3)}}
+\newtheoremstyle{ciendef}{10pt}{10pt}{\normalfont}{}%
+  {\bfseries\color{azulprof}}{.}{0.6em}%
+  {\thmname{#1}\thmnumber{ #2}\thmnote{\normalfont\upshape\ (#3)}}
+\newtheoremstyle{cienobs}{8pt}{8pt}{\normalfont}{}%
+  {\itshape\color{azulprof}}{.}{0.6em}%
+  {\thmname{#1}\thmnumber{ #2}\thmnote{\normalfont\upshape\ (#3)}}
+
+\theoremstyle{cienplano}
+\newtheorem{proposicion}{Proposición}[section]
+\newtheorem{teorema}[proposicion]{Teorema}
+\newtheorem{resultado}[proposicion]{Resultado}
+\newtheorem{conclusion}[proposicion]{Conclusión}
+\theoremstyle{ciendef}
+\newtheorem{definicion}[proposicion]{Definición}
+\newtheorem{hipotesis}[proposicion]{Hipótesis}
+\newtheorem{calculo}[proposicion]{Cálculo}
+\newtheorem{estimacion}[proposicion]{Estimación lineal}
+\theoremstyle{cienobs}
+\newtheorem{observacion}[proposicion]{Observación}
+\newtheorem*{demostracion}{Demostración}
+
+% --- Referencia formalizada --------------------------------------------------
+% Caja fina con fondo tenue y título sobre el borde. Cuerpo en cursiva y, al
+% pie, la fuente completa con autor, título y número de cita.
+% Uso: \begin{referencia}[título]{clave-bib} ... \end{referencia}
+\newcounter{referencia}
+\renewcommand{\thereferencia}{\theproposicion}
+\newtcolorbox{referenciabox}[2]{%
+  enhanced, sharp corners,
+  colback=azulfondo, colframe=azulclaro, boxrule=0.4pt,
+  left=10pt, right=10pt, top=7pt, bottom=6pt,
+  before skip=14pt, after skip=12pt,
+  attach boxed title to top left={yshift*=-\tcboxedtitleheight/2, xshift=8pt},
+  boxed title style={colback=white, colframe=white, sharp corners, boxrule=0pt,
+                     left=3pt, right=3pt, top=1pt, bottom=1pt},
+  fonttitle=\bfseries\color{azulprof}, coltitle=azulprof,
+  fontupper=\itshape,
+  title={Referencia~\thereferencia\ifx\relax#1\relax\else\ \normalfont(#1)\fi},
+  after upper={\par\vspace{5pt}{\color{azulclaro}\hrule height 0.4pt}\vspace{4pt}%
+    {\upshape\footnotesize\color{grispizarra}\raggedleft
+     \citeauthor{#2}, \citetitle{#2}~\cite{#2}.\par}}}
+\newenvironment{referencia}[2][]
+  {\par\stepcounter{proposicion}\refstepcounter{referencia}\begin{referenciabox}{#1}{#2}}
+  {\end{referenciabox}}
+\crefname{referencia}{referencia}{referencias}
+\Crefname{referencia}{Referencia}{Referencias}
+
+% --- Método (caja azulada para los fundamentos del tratamiento de datos) -----
+\newcounter{metodo}
+\renewcommand{\themetodo}{\theproposicion}
+\newtcolorbox{metodobox}[1]{%
+  enhanced, breakable, sharp corners,
+  colback=azulfondo, colframe=azulclaro, boxrule=0.4pt,
+  left=10pt, right=10pt, top=7pt, bottom=5pt,
+  before skip=14pt, after skip=12pt,
+  attach boxed title to top left={yshift*=-\tcboxedtitleheight/2, xshift=8pt},
+  boxed title style={colback=white, colframe=white, sharp corners, boxrule=0pt,
+                     left=3pt, right=3pt, top=1pt, bottom=1pt},
+  fonttitle=\bfseries\color{azulprof}, coltitle=azulprof,
+  title={Método~\themetodo\ifx\relax#1\relax\else\ \normalfont(#1)\fi}}
+\newenvironment{metodo}[1][]
+  {\par\stepcounter{proposicion}\refstepcounter{metodo}\begin{metodobox}{#1}}
+  {\end{metodobox}}
+\crefname{metodo}{método}{métodos}
+\Crefname{metodo}{Método}{Métodos}
+
+% --- Resultado destacado ----------------------------------------------------
+\newtcolorbox{destacado}[1][]{%
+  enhanced, sharp corners, frame hidden, colback=azulfondo,
+  borderline west={1.6pt}{0pt}{turquesa},
+  left=10pt, right=8pt, top=2pt, bottom=4pt,
+  before skip=8pt, after skip=10pt,
+  before upper={\ifx\relax#1\relax\else{\scshape\small\color{azulacero}#1}\par\vspace{-4pt}\fi}}
+
+% --- Tarea pendiente para el compañero ---------------------------------------
+% Caja discontinua para las partes que aún hay que redactar o calcular.
+\newtcolorbox{pendientebox}[1][]{%
+  enhanced, breakable, sharp corners, colback=white, colframe=grispizarra!50,
+  boxrule=0.5pt, borderline={0.5pt}{0pt}{grispizarra!50, dashed}, frame hidden,
+  left=10pt, right=10pt, top=6pt, bottom=6pt, before skip=10pt, after skip=10pt,
+  fontupper=\small\color{grispizarra},
+  before upper={{\scshape\color{azulacero}Pendiente\ifx\relax#1\relax\else\ \textperiodcentered\ #1\fi}\par\vspace{2pt}}}
+
+\crefname{proposicion}{proposición}{proposiciones}
+\Crefname{proposicion}{Proposición}{Proposiciones}
+\crefname{teorema}{teorema}{teoremas}
+\Crefname{teorema}{Teorema}{Teoremas}
+\crefname{definicion}{definición}{definiciones}
+\Crefname{definicion}{Definición}{Definiciones}
+\crefname{resultado}{resultado}{resultados}
+\Crefname{resultado}{Resultado}{Resultados}
+\crefname{conclusion}{conclusión}{conclusiones}
+\crefname{hipotesis}{hipótesis}{hipótesis}
+\crefname{calculo}{cálculo}{cálculos}
+\crefname{estimacion}{estimación}{estimaciones}
+\crefname{observacion}{observación}{observaciones}
+\Crefname{observacion}{Observación}{Observaciones}
+\crefname{section}{sección}{secciones}
+\Crefname{section}{Sección}{Secciones}
+\crefname{subsection}{sección}{secciones}
+\Crefname{subsection}{Sección}{Secciones}
+\crefname{subsubsection}{sección}{secciones}
+\crefname{table}{tabla}{tablas}
+\Crefname{table}{Tabla}{Tablas}
+\crefname{figure}{figura}{figuras}
+\Crefname{figure}{Figura}{Figuras}
+\crefname{equation}{ecuación}{ecuaciones}
+\Crefname{equation}{Ecuación}{Ecuaciones}
+\crefformat{equation}{ecuación~(#2#1#3)}
+\Crefformat{equation}{Ecuación~(#2#1#3)}
+\crefrangeformat{equation}{ecuaciones~(#3#1#4)--(#5#2#6)}
+\crefmultiformat{equation}{ecuaciones~(#2#1#3)}{ y~(#2#1#3)}{, (#2#1#3)}{ y~(#2#1#3)}
+
+% --- Estilo de gráficas de datos ----------------------------------------------
+\pgfplotsset{
+  datos/.style={
+    tick label style={font=\scriptsize}, label style={font=\small},
+    axis lines=left, axis line style={grispizarra},
+    grid=major, grid style={grisclaro, line width=0.4pt},
+    every tick/.style={grispizarra},
+    legend style={font=\scriptsize, draw=none, fill=white, fill opacity=0.9,
+                  text opacity=1, cells={anchor=west}},
+    legend cell align=left,
+    /pgf/number format/use comma, /pgf/number format/1000 sep={\,},
+    scaled ticks=false,
+  },
+  senal/.style={azulprof, line width=0.55pt},
+  senalB/.style={turquesa!90!azulprof, line width=0.55pt},
+  envolvente/.style={azulacero!70, line width=0.6pt, densely dashed},
+  puntoA/.style={only marks, mark=*, mark size=2.1pt, azulprof,
+    mark options={fill=azulprof, draw=white, line width=0.3pt}},
+  puntoB/.style={only marks, mark=square*, mark size=1.9pt, azulacero,
+    mark options={fill=azulclaro, draw=azulacero, line width=0.5pt}},
+  leyenda arriba/.style={legend columns=-1,
+    legend style={at={(0.5,1.03)}, anchor=south,
+      /tikz/every even column/.append style={column sep=9pt}}},
+  teorica/.style={acento, line width=0.9pt, densely dashed},
+}
+
+% Referencia a un panel de figura: «figura 2\,(a)», enlazada en bloque
+\newcommand{\figpanel}[2]{\hyperref[#1]{figura~\ref*{#1}\,\textup{(#2)}}}
+
+% Pies de figura y tabla
+\usepackage[font=small, labelfont={sc,color=azulprof}, labelsep=period,
+            margin=0.6cm, justification=justified]{caption}
+\usepackage{subcaption}
+\captionsetup[sub]{font=small, labelfont={sc,color=azulprof}, labelformat=parens,
+                   margin=0pt, justification=centering}
+
+% Fotografías con un marco fino
+\newcommand{\foto}[2][\linewidth]{%
+  \tcbox[enhanced, sharp corners, colback=white, colframe=grisclaro, boxrule=0.5pt,
+         boxsep=0pt, left=0pt, right=0pt, top=0pt, bottom=0pt, nobeforeafter, valign=center]{%
+    \includegraphics[width=\dimexpr#1-1pt\relax]{#2}}}
+
+% =========================================================================
+%                     VARIABLES PARA LA PORTADA
+% =========================================================================
+\newcommand{\Universidad}{Universidad de Salamanca}
+\newcommand{\Facultad}{Facultad de Ciencias}
+\newcommand{\Titulacion}{Grado en Física}
+\newcommand{\Asignatura}{Laboratorio de Mecánica y Ondas}
+\newcommand{\NumPractica}{Práctica 3}
+\newcommand{\TituloPractica}{Péndulos acoplados}
+\newcommand{\SubtituloPractica}{Modos normales de oscilación y pulsaciones}
+\newcommand{\tipotrabajo}{Informe de laboratorio}
+\newcommand{\miNombre}{David Gómez García \\ Daniel Martín Guerrero}
+\newcommand{\miTutor}{Mario Amado \\ Ivan de Martino \\ Manuel Pino}
+\newcommand{\miUbicacion}{Salamanca}
+
+% =========================================================================
+%                     DATOS DEL ARTÍCULO (cabecera)
+% =========================================================================
+\title{Péndulos acoplados}
+\author{David Gómez García}
+\author{Daniel Martín Guerrero}
+\address{Grado en Física, Facultad de Ciencias, Universidad de Salamanca,
+         Salamanca, España}
+\date{}
+
+% Valores calculados a partir de la hoja de cálculo (scripts/tablas.py)
+\input{tablas/valores}
+
+% =========================================================================
+%                                DOCUMENTO
+% =========================================================================
+\begin{document}
+% --- PORTADA ----------------------------------------------------------------
+\pagenumbering{alph}
+\input{portada}
+\clearpage
+\pagenumbering{arabic}
+\setcounter{page}{1}
+
+\begin{abstract}
+Estudiamos dos péndulos físicos iguales unidos por un muelle sujeto a una
+distancia $\ell$ de sus ejes de giro. En el régimen de pequeñas oscilaciones
+el sistema tiene dos modos normales: uno en fase, de frecuencia $\wz$, en el
+que el muelle no llega a deformarse, y otro en contrafase, de frecuencia
+$\wu$, que crece con $\ell$. Su superposición da lugar al modo pulsante, en
+el que la energía pasa de un péndulo al otro de forma periódica. Registramos
+los tres modos para cinco longitudes de acoplamiento, entre
+\SIlist{25;65}{\centi\meter}, con sensores de ángulo, la unidad Cobra-3 y el
+programa PHYWE Measure, cuyas herramientas de suavizado y de análisis de
+picos nos dan los instantes de los máximos y, de ellos, los periodos. Del
+modo en fase obtenemos $\wz=\valWcero\ \si{\radian\per\second}$ y, con él,
+el momento de inercia de cada péndulo, $I=\valI\ \si{\kilogram\meter\squared}$.
+Después ajustamos linealmente $\wu^{2}$, $\wm$ y $\wpl$ frente a $\ell^{2}$ y,
+de cada pendiente, deducimos la constante elástica del muelle,
+$k=$\,\pend{$k_{1}$}, \pend{$k_{2}$} y \pend{$k_{3}$}, cuyos valores
+comparamos para discutir qué método es más preciso. Los resultados se
+expresan con su incertidumbre típica y ampliada al \SI{95}{\percent},
+siguiendo \emph{Notes on Uncertainty in Measurements}.
+\end{abstract}
+
+\maketitle
+\tableofcontents
+
+% =========================================================================
+\newpage
+\seccion{Introducción}{Dos osciladores que se comunican}\label{sec:introduccion}
+% =========================================================================
+Un péndulo aislado es probablemente el oscilador más familiar: apartado un
+poco de la vertical, vuelve a ella y la rebasa una y otra vez con un periodo
+fijo. Basta unir dos péndulos con un muelle para que la historia cambie. El
+muelle transmite fuerza, y con ella energía, de uno a otro, y el movimiento
+de cada péndulo deja de ser una oscilación sencilla: crece, se apaga y vuelve
+a crecer mientras su compañero hace lo contrario.
+
+Ese movimiento, que a primera vista parece desordenado, tiene una estructura
+muy precisa. Existen unas configuraciones especiales, los \emph{modos
+normales}, en las que los dos péndulos oscilan con la misma frecuencia y una
+relación de fase fija, y cualquier otro movimiento es una superposición de
+ellos~\cite{FIV,FRENCH}. La idea va mucho más allá de dos péndulos: es la
+misma que describe las vibraciones de una molécula, las de una red cristalina
+o las de dos circuitos eléctricos acoplados, y es la puerta de entrada al
+estudio de las ondas~\cite{FIV,CRAWFORD}.
+
+En esta práctica la intensidad del acoplamiento se regula sin tocar los
+péndulos: basta desplazar el muelle a lo largo de las varillas. Así podemos
+separar lo que es propio de cada péndulo, su frecuencia natural $\wz$, de lo
+que introduce el muelle, su constante elástica $k$~\cite{GUION-P3}.
+
+\subsection{Objetivos}\label{sec:objetivos}
+\begin{itemize}
+  \item Generar y registrar los tres modos fundamentales de oscilación (en
+        fase, en contrafase y pulsante) para cinco longitudes de
+        acoplamiento $\ell$.
+  \item Determinar, a partir del modo en fase, la frecuencia natural $\wz$
+        de los péndulos y su momento de inercia $I$.
+  \item Representar $\wu^{2}$, $\wm$ y $\wpl$ frente a $\ell^{2}$, ajustar
+        rectas por mínimos cuadrados y deducir de cada pendiente la
+        constante $k$ del muelle.
+  \item Comparar los tres valores de $k$ y discutir qué método proporciona el
+        resultado más preciso y por qué.
+\end{itemize}
+Para ello nos apoyaremos en las \cref{eq:inercia,eq:lineales,eq:k} de la
+\cref{sec:fundamentos}.
+
+\subsection{Material empleado}\label{sec:material}
+Hemos utilizado el siguiente instrumental (\cref{fig:fotos-montaje}):
+\begin{itemize}
+  \item Dos péndulos de gravedad iguales, de masa $m=\SI{1}{\kilogram}$ y
+        longitud $L=\SI{1}{\meter}$~\cite{GUION-P3}, cuyos ejes de giro
+        llevan un sensor de ángulo.
+  \item Muelle helicoidal de acoplamiento, sujeto a cada varilla con una
+        pinza deslizante.
+  \item Fuente de alimentación y cables de conexión.
+  \item Unidad de medida Cobra-3 y ordenador con el programa PHYWE
+        Measure~\cite{PHYWE}.
+  \item Cinta métrica, para la longitud de acoplamiento.
+\end{itemize}
+
+\subsection{Montaje experimental}\label{sec:montaje}
+Cada péndulo cuelga de un cabezal triangular fijado al borde de la mesa con
+una mordaza (\cref{fig:fotos-montaje}). En el eje de giro, un sensor de
+ángulo convierte la desviación de la varilla en una tensión que la unidad
+Cobra-3 registra en dos canales analógicos, uno por péndulo, de modo que el
+programa dibuja en tiempo real dos curvas tensión--tiempo proporcionales a
+$\varphi_1(t)$ y $\varphi_2(t)$. El muelle une las dos varillas a la misma
+altura; la distancia $\ell$ entre los ejes de giro y los puntos de sujeción
+es la \emph{longitud de acoplamiento}, que medimos con la cinta métrica y
+que cambiamos deslizando a la vez las dos pinzas (\cref{fig:esquema}).
+
+\begin{figure}[ht]
+\centering
+\begin{minipage}[b]{0.355\textwidth}\centering
+  \foto{figuras/montaje-foto.jpg}\\[3pt]
+  {\small\scshape (a)\; montaje completo}
+\end{minipage}\hfill
+\begin{minipage}[b]{0.6\textwidth}\centering
+  \foto{figuras/montaje-muelle.jpg}\\[3pt]
+  {\small\scshape (b)\; muelle de acoplamiento}\\[10pt]
+  \begin{minipage}{\linewidth}\small
+  La unidad Cobra-3 (al fondo, a la izquierda) recoge la señal de los dos
+  sensores; la fuente de alimentación (a la derecha) los alimenta. Las
+  lentejas, de color naranja, cuelgan a $L\approx\SI{1}{\meter}$ de los
+  ejes, y el muelle puede situarse a cualquier altura de las varillas.
+  \end{minipage}
+\end{minipage}
+\caption{El montaje en el laboratorio. (a)~Los dos péndulos, con los
+cabezales triangulares que alojan los ejes de giro y los sensores. (b)~Detalle
+del muelle helicoidal, sujeto a cada varilla mediante una pinza a la
+distancia $\ell$ del eje.}
+\label{fig:fotos-montaje}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\begin{tikzpicture}[>=Stealth, x=0.78cm, y=0.78cm, font=\small]
+  \def\Lm{7.2}\def\lm{3.2}\def\dm{5.4}
+  \parpendulos{7}{-5}{\lm}{\Lm}{\dm}{1}
+  \angulo{P1}{7}{2.0}{$\varphi_1$}
+  \angulo{P2}{-5}{2.0}{$\varphi_2$}
+  % cotas
+  \draw[grispizarra, line width=0.45pt, |<->|]
+    ($(P2)+(0.95,0)$) -- ($(P2)+(0.95,-\lm)$)
+    node[midway, right=1pt, text=azulprof] {$\ell$};
+  \draw[grispizarra, line width=0.45pt, |<->|]
+    ($(P1)+(-1.0,0)$) -- ($(P1)+(-1.0,-\Lm)$)
+    node[pos=0.6, left=1pt, text=azulprof] {$L$};
+  \draw[grispizarra!50, densely dotted, line width=0.35pt] (S2) -- ($(P2)+(1.1,-\lm)$);
+  % rótulos
+  \node[text=azulprof, anchor=west] at ($(B2)+(0.55,0)$) {$m$};
+  \node[text=grispizarra, font=\itshape\footnotesize, anchor=south] at ($(S1)!0.5!(S2)+(0,0.22)$) {muelle, $k$};
+  \node[text=grispizarra, font=\itshape\footnotesize, anchor=south] at ($(P1)!0.5!(P2)+(0,0.25)$) {ejes de giro (sensores)};
+  % fuerzas del muelle (péndulos acercándose: el muelle está comprimido)
+  \draw[acento, line width=0.8pt, ->] (S1) -- ++(-0.95,0) node[above, font=\footnotesize] {$F$};
+  \draw[acento, line width=0.8pt, ->] (S2) -- ++(0.95,0) node[above, font=\footnotesize] {$F$};
+  % peso
+  \draw[azulacero, line width=0.8pt, ->] (B1) -- ++(0,-1.35) node[right, font=\footnotesize] {$m\vec{g}$};
+\end{tikzpicture}
+\caption{Esquema del montaje, de frente y sin escala. Cada péndulo, de masa
+$m$ y longitud $L$, gira alrededor de un eje horizontal; $\varphi_1$ y
+$\varphi_2$ son sus desviaciones respecto de la vertical (discontinua),
+positivas hacia la derecha. El muelle, de constante $k$, une las varillas a
+una distancia $\ell$ de los ejes. En el instante dibujado los péndulos se
+acercan, el muelle se comprime y empuja a cada uno hacia fuera con una fuerza
+$F=k\ell(\varphi_1-\varphi_2)$.}
+\label{fig:esquema}
+\end{figure}
+
+\ornamento
+
+% =========================================================================
+\newpage
+\seccion{Fundamentos teóricos}{De dos ecuaciones acopladas a dos osciladores independientes}\label{sec:fundamentos}
+% =========================================================================
+\subsection{Ecuaciones del movimiento}\label{sec:ecuaciones}
+Cada péndulo es un sólido rígido que gira alrededor de un eje horizontal fijo,
+con momento de inercia $I$ respecto a él. Sobre el péndulo $j$ actúan dos
+momentos. El primero es el del peso, aplicado a la distancia $L$ del eje,
+\begin{equation}\label{eq:peso}
+  \tau_{g}^{(j)}=-mgL\sin\varphi_j\simeq-mgL\,\varphi_j ,
+  \qquad j=1,2,
+\end{equation}
+donde la aproximación vale para ángulos pequeños, el régimen en el que
+trabajamos. El segundo es el del muelle. Si las varillas giran $\varphi_1$ y
+$\varphi_2$, los puntos de sujeción se desplazan horizontalmente
+$\ell\varphi_1$ y $\ell\varphi_2$, de modo que el muelle cambia su longitud en
+$\ell(\varphi_2-\varphi_1)$ y ejerce una fuerza $k\ell(\varphi_2-\varphi_1)$ con
+brazo $\ell$. Sus momentos sobre los dos péndulos son iguales y opuestos:
+\begin{equation}\label{eq:muelle}
+  \tau_{k}^{(1)}=k\ell^{2}(\varphi_2-\varphi_1),
+  \qquad
+  \tau_{k}^{(2)}=-k\ell^{2}(\varphi_2-\varphi_1).
+\end{equation}
+Llevando ambos a la ecuación fundamental de la dinámica de rotación,
+$\tau=I\ddot\varphi$~\cite{GUION-P3}, obtenemos
+\begin{equation}\label{eq:acopladas}
+\begin{aligned}
+  I\ddot\varphi_1&=-mgL\,\varphi_1+k\ell^{2}(\varphi_2-\varphi_1),\\
+  I\ddot\varphi_2&=-mgL\,\varphi_2-k\ell^{2}(\varphi_2-\varphi_1).
+\end{aligned}
+\end{equation}
+
+\begin{definicion}[Frecuencias características]\label{def:frecuencias}
+Llamamos \emph{frecuencia natural} del péndulo aislado y \emph{frecuencia de
+acoplamiento} a
+\begin{equation}\label{eq:defs}
+  \wz^{2}=\frac{mgL}{I},
+  \qquad
+  \Omega^{2}=\frac{k\ell^{2}}{I}.
+\end{equation}
+La primera solo depende del péndulo; la segunda, del muelle y de dónde lo
+sujetamos.
+\end{definicion}
+
+Con ellas, el sistema de la \cref{eq:acopladas} toma una forma más limpia, que conviene
+escribir también matricialmente, como en los apuntes de Física~IV~\cite{FIV}:
+\begin{equation}\label{eq:matricial}
+  \begin{pmatrix}\ddot\varphi_1\\ \ddot\varphi_2\end{pmatrix}
+  =-\begin{pmatrix}\wz^{2}+\Omega^{2} & -\Omega^{2}\\
+                   -\Omega^{2} & \wz^{2}+\Omega^{2}\end{pmatrix}
+   \begin{pmatrix}\varphi_1\\ \varphi_2\end{pmatrix}.
+\end{equation}
+Los términos fuera de la diagonal son el acoplamiento: la aceleración de cada
+péndulo depende también de la posición del otro.
+
+\subsection{Modos normales}\label{sec:modos}
+La matriz de la \cref{eq:matricial} es simétrica y sus dos elementos
+diagonales son iguales, así que el sistema se desacopla con solo sumar y
+restar las ecuaciones~\cite{FIV}. Definimos las \emph{coordenadas normales}
+\begin{equation}\label{eq:coordnormales}
+  q_0=\varphi_1+\varphi_2,
+  \qquad
+  q_1=\varphi_1-\varphi_2,
+\end{equation}
+que obedecen, cada una por su cuenta, la ecuación de un oscilador armónico:
+\begin{equation}\label{eq:desacopladas}
+  \ddot q_0+\wz^{2}\,q_0=0,
+  \qquad
+  \ddot q_1+\wu^{2}\,q_1=0 .
+\end{equation}
+
+\begin{resultado}[Frecuencias de los modos normales]\label{res:modos}
+Los dos péndulos acoplados tienen dos modos normales: uno simétrico, de
+frecuencia $\wz$, y otro antisimétrico, de frecuencia
+\begin{equation}\label{eq:modos}
+  \wu=\sqrt{\wz^{2}+2\Omega^{2}}
+     =\wz\sqrt{1+\frac{2k\ell^{2}}{mgL}}\;>\;\wz .
+\end{equation}
+\end{resultado}
+
+En el modo simétrico ($q_1=0$) los péndulos van a la par y el muelle nunca se
+deforma: por eso su frecuencia es la del péndulo aislado. En el antisimétrico
+($q_0=0$) el muelle trabaja con toda su fuerza y añade rigidez al sistema, lo
+que eleva la frecuencia tanto más cuanto más abajo lo sujetamos. Deshaciendo
+el cambio de la \cref{eq:coordnormales}, la solución general es
+\begin{equation}\label{eq:general}
+\begin{aligned}
+  \varphi_1(t)&=\tfrac12\bigl[A_0\cos(\wz t+\alpha_0)+A_1\cos(\wu t+\alpha_1)\bigr],\\
+  \varphi_2(t)&=\tfrac12\bigl[A_0\cos(\wz t+\alpha_0)-A_1\cos(\wu t+\alpha_1)\bigr],
+\end{aligned}
+\end{equation}
+con las amplitudes $A_0$, $A_1$ y las fases $\alpha_0$, $\alpha_1$ fijadas
+por las condiciones iniciales. Es exactamente lo que recogen los apuntes:
+
+\begin{referencia}[Superposición de modos normales]{FIV}\label{ref:superposicion}
+Cualquier oscilación arbitraria que se le imprima al sistema de osciladores
+acoplados puede describirse como una combinación lineal de los modos
+normales del sistema.
+\end{referencia}
+
+\subsection{Los tres modos fundamentales}\label{sec:tresmodos}
+Partiendo siempre del reposo ($\dot\varphi_1(0)=\dot\varphi_2(0)=0$, de modo
+que $\alpha_0=\alpha_1=0$), la \cref{eq:general} se particulariza en tres
+casos sencillos, que son los que generamos en el laboratorio.
+
+\subsubsection*{Oscilación en fase}
+Si soltamos los dos péndulos con la misma desviación, $\varphi_1(0)=\varphi_2(0)$,
+entonces $A_1=0$ y
+\begin{equation}\label{eq:fase}
+  \varphi_1(t)=\varphi_2(t)=\varphi_1(0)\cos(\wz t).
+\end{equation}
+Los péndulos se mueven como si el muelle no existiera, y su periodo
+$T_0=2\pi/\wz$ da acceso directo al momento de inercia:
+\begin{equation}\label{eq:inercia}
+  I=\frac{mgL}{\wz^{2}}=\frac{mgL\,T_0^{2}}{4\pi^{2}} .
+\end{equation}
+
+\subsubsection*{Oscilación en contrafase}
+Si los soltamos con desviaciones opuestas, $\varphi_1(0)=-\varphi_2(0)$,
+entonces $A_0=0$ y
+\begin{equation}\label{eq:contrafase}
+  \varphi_1(t)=-\varphi_2(t)=\varphi_1(0)\cos(\wu t):
+\end{equation}
+los péndulos se acercan y se alejan a la vez, con periodo $T_1=2\pi/\wu$, más
+corto cuanto mayor es $\ell$.
+
+\subsubsection*{Modo pulsante}
+Si uno de los péndulos parte del equilibrio y el otro desplazado,
+$\varphi_1(0)=0$ y $\varphi_2(0)=\varphi_0$, se excitan los dos modos con la
+misma amplitud ($A_0=\varphi_0$, $A_1=-\varphi_0$). Sumando los cosenos de la
+\cref{eq:general},
+\begin{equation}\label{eq:pulsante}
+  \varphi_1(t)=\varphi_0\,\sin(\wm t)\,\sin(\wpl t),
+  \qquad
+  \varphi_2(t)=\varphi_0\,\cos(\wm t)\,\cos(\wpl t),
+\end{equation}
+con
+\begin{equation}\label{eq:wpm}
+  \omega_{\pm}=\frac{\wu\pm\wz}{2}.
+\end{equation}
+Cada péndulo oscila rápidamente con la frecuencia \emph{portadora} $\wpl$,
+muy próxima a $\wz$ y $\wu$, dentro de una \emph{envolvente} lenta de
+frecuencia $\wm$. Las dos envolventes, $|\cos\wm t|$ y $|\sin\wm t|$, están
+desfasadas un cuarto de ciclo: cuando uno de los péndulos oscila con toda su
+amplitud, el otro está casi quieto, y la energía pasa de uno a otro una y
+otra vez (\cref{fig:pulsante-teo}). El rozamiento, que no hemos incluido,
+amortigua poco a poco todo el proceso. La forma de la señal es la de un
+batido, y los apuntes advierten de un detalle que importa para medir:
+
+\begin{referencia}[Frecuencia del batido]{FIV}\label{ref:batido}
+Como la estructura de máximos y mínimos se repite dos veces por cada ciclo
+de la frecuencia lenta, la frecuencia de batido es la diferencia entre las
+frecuencias de las ondas que lo forman.
+\end{referencia}
+
+\begin{observacion}[Qué periodo se mide en el modo pulsante]\label{obs:pulsacion}
+La amplitud de cada péndulo, $|\cos\wm t|$, vuelve a su máximo cada
+$\pi/\wm$, no cada $2\pi/\wm$. Por eso, si $\Tb$ es el tiempo entre dos
+máximos consecutivos de la envolvente (el \emph{periodo de pulsación}) y
+$\Tp$ el tiempo entre dos máximos consecutivos de la portadora,
+\begin{equation}\label{eq:periodospuls}
+  \wm=\frac{\pi}{\Tb},
+  \qquad
+  \wpl=\frac{2\pi}{\Tp},
+  \qquad
+  \omega_{\mathrm{b}}=2\wm=\wu-\wz .
+\end{equation}
+Usar $2\pi/\Tb$ daría un valor de $\wm$ el doble del correcto.
+\end{observacion}
+
+\begin{figure}[ht]
+\centering
+\begin{tikzpicture}
+  \pgfmathsetmacro{\wmT}{0.0872}\pgfmathsetmacro{\wpT}{3.2351}
+  \begin{groupplot}[group style={group size=1 by 2, vertical sep=6pt,
+                                  xlabels at=edge bottom, xticklabels at=edge bottom},
+                    datos, width=0.95\textwidth, height=3.6cm,
+                    xmin=0, xmax=48, ymin=-1.25, ymax=1.25,
+                    ytick={-1,0,1}, yticklabels={$-\varphi_0$,$0$,$\varphi_0$},
+                    xlabel={$t$ (\si{\second})}, grid=none, clip=false]
+  \nextgroupplot[ylabel={$\varphi_2$}]
+    \addplot[envolvente, domain=0:48, samples=150] {abs(cos(deg(\wmT*x)))};
+    \addplot[envolvente, domain=0:48, samples=150] {-abs(cos(deg(\wmT*x)))};
+    \addplot[senal, domain=0:48, samples=1400] {cos(deg(\wmT*x))*cos(deg(\wpT*x))};
+    % periodo de pulsación
+    \draw[grispizarra, line width=0.45pt, |<->|] (axis cs:0,1.15) -- (axis cs:{pi/\wmT},1.15)
+      node[midway, fill=white, inner sep=1.5pt, text=azulprof, font=\footnotesize]
+      {$\Tb=\pi/\wm$};
+  \nextgroupplot[ylabel={$\varphi_1$}]
+    % periodo de la portadora, entre dos máximos de phi_1 cerca del máximo de su envolvente
+    \draw[grispizarra, line width=0.45pt, |<->|]
+      (axis cs:{(pi/2+16*pi)/\wpT},1.13) -- (axis cs:{(pi/2+18*pi)/\wpT},1.13)
+      node[right=1pt, text=azulprof, font=\footnotesize, fill=white, inner sep=1pt] {$\Tp=2\pi/\wpl$};
+    \addplot[envolvente, domain=0:48, samples=150] {abs(sin(deg(\wmT*x)))};
+    \addplot[envolvente, domain=0:48, samples=150] {-abs(sin(deg(\wmT*x)))};
+    \addplot[senalB, domain=0:48, samples=1400] {sin(deg(\wmT*x))*sin(deg(\wpT*x))};
+  \end{groupplot}
+\end{tikzpicture}
+\caption{Modo pulsante según la \cref{eq:pulsante}, con las frecuencias
+medidas para $\ell_3=\SI{45}{\centi\meter}$ ($\wz=\SI{3,148}{\radian\per\second}$,
+$\wu=\SI{3,322}{\radian\per\second}$) y sin rozamiento. En discontinua, las
+envolventes $\pm|\cos\wm t|$ y $\pm|\sin\wm t|$: cuando un péndulo alcanza su
+máxima amplitud, el otro está en reposo. El periodo de pulsación $\Tb$ separa
+dos máximos consecutivos de la misma envolvente.}
+\label{fig:pulsante-teo}
+\end{figure}
+
+\subsection{Dependencia con la longitud de acoplamiento}\label{sec:lineales}
+La \cref{eq:modos} es \emph{exactamente} lineal en $\ell^{2}$ si la
+escribimos para el cuadrado de la frecuencia. Para $\wpl$ y $\wm$ hay que
+suponer además que el acoplamiento es débil, $\Omega\ll\wz$, y desarrollar
+la raíz a primer orden~\cite{GUION-P3}:
+$\wu\simeq\wz\bigl[1+k\ell^{2}/(mgL)\bigr]$. Llevándolo a la \cref{eq:wpm}
+quedan las tres relaciones que usaremos:
+\begin{equation}\label{eq:lineales}
+  \wu^{2}=\wz^{2}+\frac{2k}{I}\,\ell^{2},
+  \qquad
+  \wpl\simeq\wz+\frac{\wz k}{2mgL}\,\ell^{2},
+  \qquad
+  \wm\simeq\frac{\wz k}{2mgL}\,\ell^{2}.
+\end{equation}
+
+\begin{estimacion}[Tres caminos hacia $k$]\label{est:k}
+Las tres magnitudes son rectas $y=a\,\ell^{2}+b$. Conocidos $I$ y $\wz$ por el
+modo en fase, cada pendiente da la constante del muelle:
+\begin{equation}\label{eq:k}
+  k=\frac{I\,a_{1}}{2}\quad\text{(de $\wu^{2}$)},
+  \qquad
+  k=\frac{2mgL\,a_{\pm}}{\wz}\quad\text{(de $\wpl$ o de $\wm$)},
+\end{equation}
+y las ordenadas sirven de comprobación: deben valer $\wz^{2}$, $\wz$ y $0$,
+respectivamente.
+\end{estimacion}
+
+\begin{observacion}[Límites del modelo]\label{obs:limites}
+Todo lo anterior supone ángulos pequeños, un muelle ideal (lineal y sin
+masa), rozamiento despreciable y dos péndulos idénticos. Además, las
+relaciones para $\wpl$ y $\wm$ son aproximadas. Con nuestros datos,
+$2k\ell^{2}/(mgL)=\wu^{2}/\wz^{2}-1$ va de \num{0,035} para $\ell_1$ a
+\num{0,17} para $\ell_5$, y el término de segundo orden despreciado en $\wm$
+es del orden de una cuarta parte de esa cantidad: hasta un \SI{4}{\percent}
+para el acoplamiento más fuerte. La relación para $\wu^{2}$, en cambio, no
+requiere aproximación alguna.
+\end{observacion}
+
+% =========================================================================
+\seccion{Procedimiento experimental}{Cómo medimos}\label{sec:procedimiento}
+% =========================================================================
+Seguimos la metodología del guion~\cite{GUION-P3}, con las herramientas de
+análisis de PHYWE Measure~\cite{PHYWE} que describimos a continuación.
+
+\subsection{Registro de las oscilaciones}\label{sec:registro}
+Con la fuente, el ordenador y la unidad Cobra-3 encendidos, abrimos PHYWE
+Measure y elegimos el modo de medida \emph{Escritor universal}, que registra
+la tensión de los dos canales frente al tiempo, sin modificar las opciones de
+medida que trae configuradas. Para cada longitud de acoplamiento:
+\begin{enumerate}
+  \item Situamos las dos pinzas del muelle a la misma altura y medimos $\ell$
+        con la cinta métrica desde el eje de giro.
+  \item Generamos cada modo con sus condiciones iniciales: los dos péndulos
+        desplazados hacia el mismo lado y soltados a la vez (en fase); hacia
+        lados opuestos (contrafase); o uno sujeto en la vertical y el otro
+        desplazado, soltando ambos a la vez (pulsante). Siempre con
+        amplitudes pequeñas y sin dar impulso.
+  \item Registramos un número suficiente de oscilaciones: unos
+        \SIrange{15}{25}{\second} en los modos en fase y contrafase, y entre
+        uno y dos minutos en el pulsante, cuya envolvente es mucho más
+        lenta. Guardamos cada medida con un nombre que identifica modo y
+        longitud.
+\end{enumerate}
+Repetimos el procedimiento para $\ell=\SIlist{25;35;45;55;65}{\centi\meter}$.
+Como $\wz$ no depende de $\ell$, el modo en fase lo registramos solo para las
+dos primeras longitudes, que bastan para determinarlo.
+
+\subsection{Suavizado de la señal}\label{sec:suavizado}
+La señal de los sensores no llega limpia: el conversor de la unidad trabaja
+en escalones de tensión y hay ruido eléctrico, de modo que cerca de cada
+máximo la curva presenta pequeños dientes (\figpanel{fig:suavizado}{a}). Si
+buscáramos los máximos directamente, el programa confundiría esos dientes con
+picos. Por eso aplicamos antes \emph{Análisis\,$\to$\,Suavizar}
+(\figpanel{fig:suavizado}{b}), que sustituye cada punto por un promedio de
+sus vecinos: el ruido desaparece y la posición de los máximos, que es lo que
+nos interesa, apenas cambia (\figpanel{fig:suavizado}{c}). Conviene no
+exagerar el suavizado, porque un promedio demasiado ancho achata los picos y
+puede desplazarlos ligeramente.
+
+\begin{figure}[ht]
+\centering
+\begin{subfigure}[b]{0.385\textwidth}\centering
+  \foto{figuras/senal-sin-suavizar.jpg}
+  \caption{Señal sin suavizar.}
+\end{subfigure}\hfill
+\begin{subfigure}[b]{0.205\textwidth}\centering
+  \foto{figuras/menu-suavizar.jpg}
+  \caption{Menú \emph{Análisis}.}
+\end{subfigure}\hfill
+\begin{subfigure}[b]{0.385\textwidth}\centering
+  \foto{figuras/senal-suavizada.jpg}
+  \caption{Señal suavizada.}
+\end{subfigure}
+\caption{Suavizado de la señal en PHYWE Measure. (a)~Registro en contrafase:
+el canal azul muestra el ruido característico cerca de los extremos. (b)~La
+opción \emph{Suavizar} del menú \emph{Análisis}, junto a \emph{Análisis de
+pico}, que usamos después. (c)~Modo en fase para $\ell_1$, con los dos canales
+ya suavizados.}
+\label{fig:suavizado}
+\end{figure}
+
+\subsection{Análisis de picos}\label{sec:picos}
+Con la señal suavizada, \emph{Análisis\,$\to$\,Análisis de pico} localiza los
+máximos de uno de los canales (\emph{eje izquierdo} o \emph{derecho}). La
+barra de \emph{Tolerancia} decide qué se considera un pico: hacia
+\emph{menor} detecta también oscilaciones pequeñas; hacia \emph{mayor} solo
+las más pronunciadas. Para cada pico el programa devuelve una tabla con los
+instantes de entrada, máximo y salida, la altura en voltios y el área
+(\figpanel{fig:picos}{a}), y con \emph{Mostrar resultados} los señala sobre la
+gráfica (\figpanel{fig:picos}{b}). De esa tabla tomamos la columna
+\emph{máximo} y la altura del pico: son los datos de las
+\cref{tab:modo1,tab:modo2,tab:modo3}. La primera fila de la
+\figpanel{fig:picos}{a}, por ejemplo, es el máximo $t_1=\SI{2592}{\milli\second}$
+del péndulo~1 en fase para $\ell_1$.
+
+\begin{figure}[ht]
+\centering
+\begin{subfigure}[b]{0.49\textwidth}\centering
+  \foto{figuras/analisis-picos.jpg}
+  \caption{Ventana \emph{Análisis de picos}.}
+\end{subfigure}\hfill
+\begin{subfigure}[b]{0.49\textwidth}\centering
+  \foto{figuras/picos-contrafase.jpg}
+  \caption{Máximos señalados sobre la señal.}
+\end{subfigure}
+\caption{Análisis de picos. (a)~Tabla de resultados para el péndulo~1 en
+fase con $\ell_1$, con los instantes de entrada, máximo y salida de cada pico,
+su altura y su área. (b)~Contrafase para $\ell_1$: el programa marca cada
+máximo del péndulo~2 con su instante y su tensión
+($\SI{1784}{\milli\second}$, $\SI{3672}{\milli\second}$, \dots).}
+\label{fig:picos}
+\end{figure}
+
+\begin{metodo}[Periodo a partir de los máximos]\label{met:periodo}
+Con $N$ máximos consecutivos en los instantes $t_1<t_2<\dots<t_N$ hay $N-1$
+periodos completos, de modo que
+\begin{equation}\label{eq:periodo}
+  T=\frac{t_N-t_1}{N-1}.
+\end{equation}
+Es la media de los $N-1$ intervalos entre máximos, pero no depende de los
+instantes intermedios: solo la cometen los dos extremos, y el error de cada
+uno se reparte entre todos los periodos. En los modos en fase, contrafase y
+en la portadora tomamos $N=6$. La resolución temporal del registro es de
+\SI{4}{\milli\second} (todos los instantes son múltiplos de ese valor), así que
+la que corresponde al periodo es unas cinco veces menor.
+\end{metodo}
+
+Al revisar los intervalos entre máximos encontramos un único valor anómalo:
+el cuarto máximo del péndulo~2 en fase para $\ell_2$, anotado como
+\SI{19824}{\milli\second}, rompía la secuencia con saltos de \num{2568} y
+\SI{1468}{\milli\second}, frente a los $\approx\SI{2000}{\milli\second}$ del resto.
+Se trata de una errata de transcripción (cifras intercambiadas); el valor
+correcto, \SI{19284}{\milli\second}, devuelve los intervalos a \num{2028} y
+\SI{2008}{\milli\second}. Por la \cref{eq:periodo}, la errata no afectaba al
+periodo, pero la corregimos en la \cref{tab:modo1}.
+
+\subsection{El caso pulsante}\label{sec:pulsante}
+El modo pulsante merece un comentario aparte, porque en él conviven dos
+escalas de tiempo muy distintas y cada una se mide de una manera.
+
+\subsubsection{Cómo se ve en la pantalla}
+La \cref{fig:pulsante-fotos} muestra tres registros. Para $\ell_1$ el
+acoplamiento es tan débil que en dos minutos apenas cabe una pulsación: la
+amplitud del péndulo se apaga hacia la mitad del registro y vuelve a crecer
+(\figpanel{fig:pulsante-fotos}{a}). Para longitudes mayores caben varias
+(\figpanel{fig:pulsante-fotos}{b}). Con los dos canales a la vista
+(\figpanel{fig:pulsante-fotos}{c}) se aprecia el intercambio de energía:
+donde la señal azul es más ancha, la roja se estrecha, y viceversa.
+
+\begin{figure}[ht]
+\centering
+\begin{subfigure}[b]{0.325\textwidth}\centering
+  \foto{figuras/pulsante-L1.jpg}
+  \caption{$\ell_1$: una pulsación.}
+\end{subfigure}\hfill
+\begin{subfigure}[b]{0.325\textwidth}\centering
+  \foto{figuras/pulsante-varios.jpg}
+  \caption{Varias pulsaciones.}
+\end{subfigure}\hfill
+\begin{subfigure}[b]{0.325\textwidth}\centering
+  \foto{figuras/pulsante-dos-canales.jpg}
+  \caption{Los dos péndulos.}
+\end{subfigure}
+\caption{Registros del modo pulsante. (a)~Para $\ell_1=\SI{25}{\centi\meter}$
+la envolvente es muy lenta ($\Tb\approx\SI{105}{\second}$) y en el registro
+cabe una sola pulsación. (b)~Con un acoplamiento mayor, la envolvente se
+repite varias veces en el mismo intervalo de tiempo. (c)~Péndulo~1 (rojo) y
+péndulo~2 (azul): la amplitud de uno crece mientras la del otro decrece.}
+\label{fig:pulsante-fotos}
+\end{figure}
+
+\subsubsection{Dos periodos, dos maneras de medir}
+El periodo de la portadora, $\Tp$, se mide exactamente igual que en los
+otros dos modos: seis máximos consecutivos y la \cref{eq:periodo}. El periodo
+de pulsación, $\Tb$, en cambio, exige localizar los máximos de la
+\emph{envolvente}, y la envolvente no es una curva que el programa registre:
+solo la vemos a través de los máximos de la portadora. Lo que hacemos es
+aplicar el análisis de picos a todo el registro y quedarnos, en cada grupo,
+con el máximo más alto (\cref{fig:picos-envolvente}). Para $\ell_1$, por
+ejemplo, los dos máximos de la envolvente quedan en
+\SIlist{2768;107856}{\milli\second}.
+
+\begin{figure}[ht]
+\centering
+\foto[0.62\textwidth]{figuras/picos-envolvente.jpg}
+\caption{Análisis de picos sobre el registro pulsante de $\ell_1$. El programa
+marca todos los máximos de la portadora; el de la envolvente es el más alto
+de cada grupo, aquí el de \SI{2768}{\milli\second} al principio del registro.}
+\label{fig:picos-envolvente}
+\end{figure}
+
+Aquí cambia la naturaleza de la incertidumbre, y así lo anotamos en el propio
+laboratorio (\figpanel{fig:incertidumbre}{a}): \emph{en $\wm$, la
+incertidumbre pasa a ser la distancia entre los máximos}. El máximo de la
+envolvente cae, en general, entre dos máximos de la portadora, y nosotros
+solo podemos señalar uno de ellos. La indeterminación en su posición ya no es
+la del aparato, de unos pocos milisegundos, sino del orden de la separación
+entre máximos de la portadora, $\Tp\approx\SI{2}{\second}$: unas
+quinientas veces mayor (\figpanel{fig:incertidumbre}{b}).
+
+\begin{figure}[ht]
+\centering
+\begin{subfigure}[b]{0.41\textwidth}\centering
+  \foto{figuras/nota-manuscrita.jpg}
+  \caption{Nota tomada en el laboratorio.}
+\end{subfigure}\hfill
+\begin{subfigure}[b]{0.56\textwidth}\centering
+\begin{tikzpicture}
+  \pgfmathsetmacro{\wmT}{0.0886}\pgfmathsetmacro{\wpT}{3.2535}
+  \begin{axis}[datos, width=\linewidth, height=5.4cm,
+               xmin=-9.5, xmax=9.5, ymin=-0.78, ymax=1.5,
+               ytick=\empty, xtick={-8,-4,0,4,8},
+               xlabel={$t-t_{\text{máx}}$ (\si{\second})}, ylabel={$\varphi_2$},
+               grid=none, axis lines=left, clip=false]
+    % envolvente
+    \addplot[envolvente, domain=-9.5:9.5, samples=100] {cos(deg(\wmT*x))};
+    % portadora (solo la parte positiva, como se ve cerca del máximo)
+    \addplot[senal, domain=-9.5:9.5, samples=700]
+      {max(cos(deg(\wmT*x))*cos(deg(\wpT*(x+0.75))),-0.2)};
+    % máximos de la portadora
+    \addplot[puntoA, domain=-3:3, samples=7]
+      ({2*pi/\wpT*x-0.75},{cos(deg(\wmT*(2*pi/\wpT*x-0.75)))});
+    % máximo verdadero de la envolvente y máximo elegido
+    \draw[acento, line width=0.6pt, densely dotted] (axis cs:0,0) -- (axis cs:0,1.0);
+    \draw[acento, line width=0.4pt] (axis cs:0.05,1.01) -- (axis cs:2.2,1.3)
+      node[anchor=south west, inner sep=1pt, font=\footnotesize] {máximo de la envolvente};
+    \draw[azulprof, line width=0.4pt] (axis cs:-0.8,1.04) -- (axis cs:-2.6,1.3)
+      node[anchor=south east, inner sep=1pt, font=\footnotesize] {pico elegido};
+    % separación entre máximos de la portadora
+    \draw[grispizarra, line width=0.45pt, |<->|]
+      (axis cs:{-0.75},-0.36) -- (axis cs:{-0.75+2*pi/\wpT},-0.36)
+      node[midway, below=0pt, text=azulprof, font=\footnotesize] {$\Tp$};
+    \node[anchor=west, align=left, text=grispizarra, font=\scriptsize]
+      at (axis cs:1.8,-0.42) {incertidumbre $\sim$ separación\\entre máximos de la portadora};
+  \end{axis}
+\end{tikzpicture}
+  \caption{Por qué la incertidumbre es del orden de $\Tp$.}
+\end{subfigure}
+\caption{Incertidumbre en los máximos de la envolvente. (a)~Nota que tomamos
+en el laboratorio: la portadora, de frecuencia $\wpl$, dentro de una
+envolvente de frecuencia $\wm$; para esta última la incertidumbre «pasa a ser
+la distancia entre los máximos». (b)~Detalle de un máximo de la envolvente
+(trazo discontinuo), con los parámetros de $\ell_3$: solo conocemos la señal
+en los máximos de la portadora (puntos), separados $\Tp$, y el máximo
+verdadero de la envolvente puede caer en cualquier punto entre dos de ellos.}
+\label{fig:incertidumbre}
+\end{figure}
+
+\subsubsection{Más acoplamiento, más pulsaciones, más precisión}
+Con esta limitación, la precisión de $\Tb$ depende de dos cosas que mejoran a
+medida que aumentamos $\ell$ (\cref{fig:precision}).
+\begin{itemize}
+  \item \emph{Cuántas pulsaciones caben en el registro.} Al crecer $\ell$
+        la envolvente es más rápida: $\Tb$ baja de unos \SI{105}{\second}
+        para $\ell_1$ a menos de \SI{18}{\second} para $\ell_5$. Aun con
+        registros más cortos, pasamos de dos máximos de la envolvente a
+        cuatro, y la indeterminación de los extremos, del orden
+        de $\Tp$, se reparte entre más intervalos, como en la
+        \cref{eq:periodo} (\figpanel{fig:precision}{a}).
+  \item \emph{Qué tan marcado es el máximo.} Cerca de su máximo, la
+        envolvente es casi plana, y varios máximos de la portadora tienen
+        prácticamente la misma altura: con una lectura de tensión de
+        resolución $\varepsilon$, los picos cuya altura difiere del máximo
+        en menos de $\varepsilon$ son indistinguibles. Para una amplitud $A$,
+        esa ventana de indistinguibilidad dura
+        \begin{equation}\label{eq:ventana}
+          \Delta t=\frac{2}{\wm}\arccos\!\Bigl(1-\frac{\varepsilon}{A}\Bigr),
+        \end{equation}
+        inversamente proporcional a $\wm$. Para $\ell_1$ abarca unas diez
+        oscilaciones de la portadora, y para $\ell_5$, menos de dos: a
+        medida que crece $\ell$, la incertidumbre se acerca al límite de la
+        nota, la separación entre máximos (\figpanel{fig:precision}{b}).
+\end{itemize}
+Por eso conviene, en general, registrar tantas oscilaciones como sea
+posible. Para la envolvente seguimos además un criterio común: cuando el
+registro contiene tres o más máximos, descartamos el primero, que coincide con
+el instante en que soltamos los péndulos y queda contaminado por la
+imperfección de la condición inicial. Es visible en $\ell_4$, cuyo primer
+intervalo, de \SI{23,5}{\second}, se aparta claramente de los dos siguientes,
+de \SI{26,1}{\second}.
+
+\begin{figure}[ht]
+\centering
+\begin{tikzpicture}
+  \begin{groupplot}[group style={group size=2 by 1, horizontal sep=1.5cm},
+                    datos, height=5.0cm]
+  \nextgroupplot[width=0.56\textwidth, xmin=0, xmax=110, ymin=-2.65, ymax=1.35,
+                 xlabel={$t$ (\si{\second})}, ytick=\empty, grid=none,
+                 axis y line=none, clip=false,
+                 title={\footnotesize\scshape (a)\; registros de \SI{110}{\second}},
+                 title style={text=grispizarra}]
+    % l1: w- = 0.02989, w+ = 3.1836 ; l5: w- = 0.17651, w+ = 3.2931
+    \addplot[senal, domain=0:110, samples=2200] {0.12+0.5*cos(deg(0.02989*x))*cos(deg(3.1836*x))};
+    \addplot[envolvente, domain=0:110, samples=120] {0.12+0.5*abs(cos(deg(0.02989*x)))};
+    \addplot[senalB, domain=0:110, samples=2200] {-1.62+0.5*cos(deg(0.17651*x))*cos(deg(3.2931*x))};
+    \addplot[envolvente, domain=0:110, samples=200] {-1.62+0.5*abs(cos(deg(0.17651*x)))};
+    \addplot[puntoA, mark size=1.7pt] coordinates {(0,0.62) (105.1,0.62)};
+    \addplot[puntoA, mark size=1.7pt, mark options={fill=turquesa, draw=white}]
+      coordinates {(0,-1.12) (17.8,-1.12) (35.6,-1.12) (53.4,-1.12) (71.2,-1.12) (89.0,-1.12) (106.8,-1.12)};
+    \node[anchor=west, text=azulprof, font=\footnotesize] at (axis cs:2,1.2) {$\ell_1$: 2 máximos de la envolvente};
+    \node[anchor=west, text=turquesa!80!azulprof, font=\footnotesize] at (axis cs:2,-0.68) {$\ell_5$: 7 máximos};
+  \nextgroupplot[width=0.42\textwidth, xmin=20, xmax=70, ymin=0, ymax=21,
+                 xlabel={$\ell$ (\si{\centi\meter})}, ylabel={tiempo (\si{\second})},
+                 xtick={25,35,45,55,65}, ytick={0,5,10,15,20},
+                 title={\footnotesize\scshape (b)\; ventana de indistinción},
+                 title style={text=grispizarra},
+                 legend style={at={(0.97,0.97)}, anchor=north east}]
+    % Delta t = 2 arccos(1 - eps/A)/w-, eps = 0.005 V, A = 0.12 V
+    \addplot[puntoA] table[x=l, y expr={2*rad(acos(1-0.005/0.12))/\thisrow{wm}}] {
+      l   wm       Tp
+      25  0.02989  1.9736
+      35  0.05601  1.9560
+      45  0.08861  1.9312
+      55  0.12027  1.9232
+      65  0.17651  1.9080
+    };
+    \addlegendentry{$\Delta t$, ec.~(\ref*{eq:ventana})}
+    \addplot[puntoB] table[x=l, y=Tp] {
+      l   Tp
+      25  1.9736
+      35  1.9560
+      45  1.9312
+      55  1.9232
+      65  1.9080
+    };
+    \addlegendentry{$\Tp$}
+  \end{groupplot}
+\end{tikzpicture}
+\caption{Por qué gana precisión el modo pulsante al aumentar $\ell$.
+(a)~Señal de la \cref{eq:pulsante} para $\ell_1$ y $\ell_5$ con sus frecuencias
+medidas, durante un mismo intervalo de \SI{110}{\second}: con el acoplamiento
+débil cabe una sola pulsación; con el fuerte, seis. (b)~Duración de la ventana
+en la que los máximos de la portadora son indistinguibles del máximo de la
+envolvente (\cref{eq:ventana}, con $\varepsilon=\SI{0,005}{\volt}$, media
+unidad de la lectura del programa, y $A\approx\SI{0,12}{\volt}$, estimada en la
+pantalla), comparada con la separación entre máximos de la portadora, $\Tp$.}
+\label{fig:precision}
+\end{figure}
+
+\subsection{Tratamiento de incertidumbres}\label{sec:incertidumbres}
+Seguimos la \emph{Guide to the expression of uncertainty in
+measurement}~\cite{GUM}, tal como se recoge en las notas del
+laboratorio~\cite{NUM-ARG}. Para una magnitud $y=f(x_1,\dots,x_N)$ con
+entradas no correlacionadas, la incertidumbre típica se propaga como
+\begin{equation}\label{eq:propagacion}
+  u^{2}(y)=\sum_{k=1}^{N}\left(\frac{\partial f}{\partial x_k}\right)^{\!2}u^{2}(x_k),
+\end{equation}
+y la incertidumbre ampliada al \SI{95}{\percent} es $\ext{y}=\Tcoef\,u(y)$,
+con $\Tcoef$ el factor de cobertura de Student para $\nu$ grados de
+libertad~\cite{NUM-ARG}; el resultado se expresa como $y\pm\ext{y}$. Las
+incertidumbres se dan con una sola cifra significativa, salvo cuando la
+primera es un 1, en cuyo caso se conservan dos, y el valor se redondea a la
+misma posición decimal~\cite{ERR-MP}.
+
+\begin{pendientebox}[incertidumbres]
+Completar con: (i)~la incertidumbre de los instantes de pico en los modos en
+fase y contrafase y en la portadora (resolución de \SI{4}{\milli\second} y
+efecto del suavizado); (ii)~la de los máximos de la envolvente, del orden de
+$\Tp$ (\cref{sec:pulsante}); (iii)~su propagación a $T$, $\wz$, $\wu$,
+$\wm$ y $\wpl$ mediante la \cref{eq:propagacion}; (iv)~la de $\ell$, medida
+con la cinta métrica; y (v)~el método de regresión lineal y las
+incertidumbres de pendiente y ordenada, como en el
+\emph{Método} del informe de Steiner.
+\end{pendientebox}
+
+\ornamento
+
+% =========================================================================
+\newpage
+\seccion{Análisis de datos y resultados}{Lo que dicen las medidas}\label{sec:analisis}
+% =========================================================================
+\subsection{Datos experimentales}\label{sec:datos}
+Las \cref{tab:modo1,tab:modo2,tab:modo3} recogen los instantes de los máximos
+obtenidos con el análisis de picos, junto con la altura de los picos y el
+periodo que resulta de la \cref{eq:periodo}. Las longitudes de acoplamiento
+son $\ell=\SIlist{25;35;45;55;65}{\centi\meter}$, con una incertidumbre
+\pend{$u(\ell)$} debida a la cinta métrica. La \cref{tab:frecuencias} reúne
+los periodos y las frecuencias angulares de cada longitud, que son los datos
+de partida de los ajustes.
+
+\input{tablas/modo1}
+\input{tablas/modo2}
+\input{tablas/modo3}
+\input{tablas/frecuencias}
+
+\subsection{Frecuencia natural y momento de inercia}\label{sec:inercia}
+El modo en fase nos da cuatro medidas del periodo $T_0$: una por péndulo y
+longitud (\cref{tab:omega0}). Las cuatro coinciden dentro de un
+\SI{0,8}{\percent}, como debe ser si $\wz$ es propia de cada péndulo y no del
+acoplamiento, y su media es
+\begin{equation}\label{eq:T0}
+  \mean{T}_0=\valTcero\ \si{\second}
+  \qquad\Longrightarrow\qquad
+  \wz=\frac{2\pi}{\mean{T}_0}=\valWcero\ \si{\radian\per\second},
+  \qquad
+  \wz^{2}=\valWceroDos\ \si{\radian\squared\per\second\squared}.
+\end{equation}
+
+\input{tablas/omega0}
+
+\begin{calculo}[Momento de inercia]\label{calc:I}
+Con $m=\SI{1}{\kilogram}$, $L=\SI{1}{\meter}$ y $g=\SI{9,81}{\meter\per\second\squared}$,
+la \cref{eq:inercia} da
+\begin{equation}\label{eq:Ivalor}
+  I=\frac{mgL}{\wz^{2}}
+   =\frac{\SI{1}{\kilogram}\cdot\SI{9,81}{\meter\per\second\squared}\cdot\SI{1}{\meter}}
+         {\valWceroDos\ \si{\radian\squared\per\second\squared}}
+   =\valI\ \si{\kilogram\meter\squared}.
+\end{equation}
+\end{calculo}
+
+\begin{destacado}[Cuestión 1]
+$\wz=\valWcero\ \si{\radian\per\second}$
+\quad\textperiodcentered\quad
+$I=\valI\ \si{\kilogram\meter\squared}$
+\;\pend{$\pm\,U(I)$, al \SI{95}{\percent}}
+\end{destacado}
+
+\begin{observacion}[Comprobaciones]\label{obs:comprobaciones}
+Hemos contrastado el resultado por dos vías independientes de la hoja de
+cálculo. Promediar las cuatro frecuencias $2\pi/T_0$ en lugar de los
+periodos da \SI{3,1479}{\radian\per\second}, idéntico hasta la cuarta cifra
+decimal. Y si en vez de la \cref{eq:periodo} obtenemos cada periodo como la
+pendiente de la recta $t_i=t_1+(i-1)\,T$ ajustada a los seis máximos, la media
+pasa a ser \SI{1,9974}{\second} e $I=\SI{0,9914}{\kilogram\meter\squared}$: una
+diferencia del \SI{0,14}{\percent}, muy por debajo de la dispersión entre las
+cuatro medidas.
+\end{observacion}
+
+\begin{observacion}[Un péndulo casi simple]\label{obs:simple}
+El valor obtenido es muy próximo al de una masa puntual de \SI{1}{\kilogram}
+a \SI{1}{\meter} del eje, $mL^{2}=\SI{1}{\kilogram\meter\squared}$. Dicho de otro
+modo, el periodo medido, $\mean{T}_0=\SI{1,996}{\second}$, es casi el de un
+péndulo simple de un metro, $2\pi\sqrt{L/g}=\SI{2,006}{\second}$: la masa de la
+varilla y las dimensiones de la lenteja apenas alteran el comportamiento, y
+la pequeña diferencia sugiere que el centro de masas queda algo por encima
+de $L=\SI{1}{\meter}$.
+\end{observacion}
+
+\begin{pendientebox}[cuestión 1]
+Incertidumbre de $\mean{T}_0$ (tipo~A con $s/\sqrt{4}$ y $\nu=3$, y tipo~B por la
+resolución) y su propagación a $\wz$ e $I$ mediante la
+\cref{eq:propagacion}: $u(\wz)=2\pi\,u(\mean{T}_0)/\mean{T}_0^{2}$ y
+$u(I)/I=2\,u(\wz)/\wz$. La hoja de cálculo da, como estimación preliminar,
+$s/\sqrt{4}=\SI{0,0035}{\second}$.
+\end{pendientebox}
+
+\subsection{Ajustes lineales y constante del muelle}\label{sec:ajustes}
+\begin{pendientebox}[cuestión 2]
+Representar $\wu^{2}$, $\wm$ y $\wpl$ frente a $\ell^{2}$ con los datos de la
+\cref{tab:frecuencias} y sus barras de incertidumbre; ajustar las tres rectas
+$y=a\,\ell^{2}+b$; dar pendientes y ordenadas con sus incertidumbres, y
+deducir $k$ con la \cref{eq:k}. Comparar cada ordenada con su valor
+teórico ($\wz^{2}=\valWceroDos\ \si{\radian\squared\per\second\squared}$,
+$0$ y $\wz=\valWcero\ \si{\radian\per\second}$).
+\end{pendientebox}
+
+\begin{figure}[ht]
+\centering
+\huecofigura[4.6cm]{Gráfica: $\wu^{2}$ frente a $\ell^{2}$ con su recta de ajuste.}\\[6pt]
+\huecofigura[4.6cm]{Gráfica: $\wm$ y $\wpl$ frente a $\ell^{2}$ con sus rectas de ajuste.}
+\caption{\pendiente{Pie de figura de los ajustes lineales.}}
+\label{fig:ajustes}
+\end{figure}
+
+\begin{table}[ht]
+\centering
+\caption{Parámetros de los ajustes $y=a\,\ell^{2}+b$ y constante del muelle
+que se deduce de cada uno.}
+\label{tab:ajustes}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{@{}l c c c c c@{}}
+\toprule
+Ajuste & $a\pm U(a)$ & $b\pm U(b)$ & Ordenada teórica & $r$ & $k\pm U(k)$ (\si{\newton\per\meter}) \\
+\midrule
+$\wu^{2}$ frente a $\ell^{2}$ & \pend{} & \pend{} & $\wz^{2}$ & \pend{} & \pend{} \\
+$\wm$ frente a $\ell^{2}$     & \pend{} & \pend{} & $0$       & \pend{} & \pend{} \\
+$\wpl$ frente a $\ell^{2}$    & \pend{} & \pend{} & $\wz$     & \pend{} & \pend{} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Comparación de los tres métodos}\label{sec:comparacion}
+\begin{pendientebox}[cuestión 3]
+Comparar los tres valores de $k$ (compatibilidad de sus intervalos al
+\SI{95}{\percent}) y discutir cuál es más preciso y por qué. Puntos que
+pueden ayudar: la relación de $\wu^{2}$ es exacta, mientras que las de
+$\wm$ y $\wpl$ son aproximadas (\cref{obs:limites}); $\wpl$ cambia muy poco
+con $\ell$, de modo que su pendiente es pequeña frente a la dispersión; y
+$\wm$ procede de la envolvente, cuya incertidumbre es del orden de $\Tp$
+(\cref{sec:pulsante}).
+\end{pendientebox}
+
+\ornamento
+
+% =========================================================================
+\newpage
+\seccion{Discusión y conclusiones}{Lo que aprendemos}\label{sec:discusion}
+% =========================================================================
+\begin{pendientebox}[conclusiones]
+Redactar las conclusiones sobre $\wz$ e $I$ (\cref{sec:inercia}), los ajustes y
+los valores de $k$ (\cref{sec:ajustes}), la comparación entre métodos
+(\cref{sec:comparacion}) y las fuentes de error: amplitudes finitas,
+rozamiento, masa del muelle, condición inicial del modo pulsante y número de
+pulsaciones registradas.
+\end{pendientebox}
+
+% =========================================================================
+\newpage
+%                              BIBLIOGRAFÍA
+% =========================================================================
+\nocite{TIPLER,HUGHES,FIV-T4}
+\printbibliography[title={Referencias}]
+
+\end{document}

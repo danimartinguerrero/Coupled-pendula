@@ -1,0 +1,153 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Portada — estilo artículo científico, motivo: péndulos acoplados
+% Misma estructura que la del informe de Steiner (cabecera con logotipos,
+% motivo gráfico, franja inferior, bloque de título y pie con autores),
+% ahora en la gama de azul marino, petróleo y turquesa. El motivo es el
+% montaje del laboratorio dibujado de frente, en un instante del modo
+% pulsante; debajo, la señal de los dos péndulos con su envolvente.
+% Requiere (definidos en main.tex): colores azulprof, azulacero, turquesa,
+% azulclaro, grispizarra, grisclaro, azulfondo; macros \Universidad,
+% \Facultad, \Titulacion, \Asignatura, \NumPractica, \TituloPractica,
+% \SubtituloPractica, \tipotrabajo, \miNombre, \miTutor, \miUbicacion;
+% y figuras/pendulos.tex.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{titlepage}
+\thispagestyle{empty}
+\pagecolor{white}
+
+\begin{tikzpicture}[remember picture, overlay]
+  \coordinate (O) at (current page.south west);
+
+  % ----------------------------------------------------------------
+  % Cabecera: logotipos y filete
+  % ----------------------------------------------------------------
+  \node[anchor=north west, inner sep=0] at ($(O)+(2.2cm,27.9cm)$)
+    {\includegraphics[height=1.42cm]{figuras/logo-usal.png}};
+  \node[anchor=north east, inner sep=0] at ($(O)+(18.8cm,27.9cm)$)
+    {\includegraphics[height=1.42cm]{figuras/logo-ciencias.png}};
+  \draw[grispizarra!60, line width=0.4pt]
+    ($(O)+(2.2cm,26.0cm)$) -- ($(O)+(18.8cm,26.0cm)$);
+  \node[anchor=north west, inner sep=0, text=grispizarra, font=\scshape\small]
+    at ($(O)+(2.2cm,25.75cm)$)
+    {\textls[80]{\Universidad\ \textbar\ \Facultad}};
+  \node[anchor=north east, inner sep=0, text=grispizarra, font=\scshape\small]
+    at ($(O)+(18.8cm,25.75cm)$)
+    {\textls[80]{\Titulacion}};
+
+  % ----------------------------------------------------------------
+  % Motivo gráfico: los dos péndulos acoplados, vistos de frente, en un
+  % instante del modo pulsante (el izquierdo casi en reposo, el derecho
+  % con toda la amplitud). Arcos punteados: trayectoria de las lentejas.
+  % ----------------------------------------------------------------
+  \begin{scope}[shift={($(O)+(10.5cm,23.75cm)$)}, x=1cm, y=1cm]
+    \def\Lp{6.55}\def\lp{2.95}\def\dsep{5.6}
+    % barra de soporte, muy discreta
+    \draw[grisclaro, line width=2.2pt, line cap=round] (-4.6,0.95) -- (4.6,0.95);
+    % trayectorias de las lentejas y escala angular tenue
+    \foreach \cx in {-2.8,2.8}{
+      \draw[azulclaro, line width=0.5pt, densely dotted]
+        ($(\cx,0)+(-104:\Lp)$) arc[start angle=-104, end angle=-76, radius=\Lp];
+      \foreach \a in {-100,-95,...,-80}{
+        \draw[azulclaro!80, line width=0.3pt]
+          ($(\cx,0)+(\a:\Lp+0.42)$) -- ($(\cx,0)+(\a:\Lp+0.62)$);}}
+    % el par de péndulos
+    \parpendulos{-3}{12}{\lp}{\Lp}{\dsep}{1.2}
+    % ángulos
+    \angulo{P2}{12}{2.0}{$\varphi_2$}
+    \angulo{P1}{-3}{2.0}{$\varphi_1$}
+    % longitud de acoplamiento
+    \draw[grispizarra, line width=0.45pt, |<->|]
+      ($(P2)+(0.55,0)$) -- ($(S2)+(0.55,0)$)
+      node[midway, right=1pt, text=azulprof, fill=white, inner sep=1.5pt] {$\ell$};
+    % longitud del péndulo
+    \draw[grispizarra!70, line width=0.4pt, |<->|]
+      ($(P1)+(-0.75,0)$) -- ($(P1)+(-0.75,-\Lp)$)
+      node[pos=0.62, left=1pt, text=azulprof, fill=white, inner sep=1.5pt] {$L$};
+    % rótulos discretos
+    \draw[grispizarra!70, line width=0.35pt] ($(S1)!0.5!(S2)+(0,-0.12)$) -- ++(0.9,-1.25);
+    \fill[azulacero] ($(S1)!0.5!(S2)+(0,-0.12)$) circle (1.3pt);
+    \node[anchor=west, text=grispizarra, font=\itshape\small]
+      at ($(S1)!0.5!(S2)+(0.95,-1.32)$) {muelle, $k$};
+    \draw[grispizarra!70, line width=0.35pt] ($(B2)+(0.48,0.1)$) -- ++(1.1,0.55);
+    \node[anchor=west, text=grispizarra, font=\itshape\small]
+      at ($(B2)+(1.62,0.68)$) {lenteja, $m$};
+    \draw[grispizarra!70, line width=0.35pt] ($(P1)+(-0.85,0.45)$) -- ++(-1.0,0.45);
+    \node[anchor=east, text=grispizarra, font=\itshape\small]
+      at ($(P1)+(-1.9,0.92)$) {eje de giro y sensor};
+  \end{scope}
+
+  % ----------------------------------------------------------------
+  % Franja: la pulsación. Los dos péndulos se pasan la energía; cada
+  % trazo es una portadora rápida dentro de una envolvente lenta, y las
+  % envolventes están desfasadas un cuarto de ciclo.
+  % ----------------------------------------------------------------
+  \begin{scope}[shift={($(O)+(0,13.55cm)$)}, x=1cm, y=1cm]
+    \def\xa{2.2}\def\xb{18.8}\def\wm{0.2838}\def\wp{6.6}
+    \draw[grispizarra!35, line width=0.3pt] (\xa,0.62) -- (\xb,0.62);
+    \draw[grispizarra!35, line width=0.3pt] (\xa,-0.62) -- (\xb,-0.62);
+    % péndulo 2 (arriba): cos(w- t) cos(w+ t)
+    \draw[azulacero!55, line width=0.35pt, densely dashed, domain=\xa:\xb, samples=120]
+      plot (\x,{0.62+0.48*abs(cos(\wm*(\x-\xa) r))});
+    \draw[azulprof, line width=0.5pt, domain=\xa:\xb, samples=1100]
+      plot (\x,{0.62+0.48*cos(\wm*(\x-\xa) r)*cos(\wp*(\x-\xa) r)});
+    % péndulo 1 (abajo): sin(w- t) sin(w+ t)
+    \draw[turquesa!60, line width=0.35pt, densely dashed, domain=\xa:\xb, samples=120]
+      plot (\x,{-0.62+0.48*abs(sin(\wm*(\x-\xa) r))});
+    \draw[turquesa!90!azulprof, line width=0.5pt, domain=\xa:\xb, samples=1100]
+      plot (\x,{-0.62+0.48*sin(\wm*(\x-\xa) r)*sin(\wp*(\x-\xa) r)});
+    \node[anchor=east, text=azulprof, font=\footnotesize] at (\xa-0.08,0.62) {$\varphi_2$};
+    \node[anchor=east, text=turquesa!90!azulprof, font=\footnotesize] at (\xa-0.08,-0.62) {$\varphi_1$};
+    % periodo de pulsación sobre la envolvente superior
+    \draw[grispizarra, line width=0.4pt, |<->|]
+      (\xa,1.32) -- ({\xa+pi/\wm},1.32)
+      node[midway, above=0pt, text=azulprof, font=\footnotesize, fill=white, inner sep=1.2pt] {$T_{\mathrm{b}}=\pi/\omega_{-}$};
+    \node[anchor=north, text=grispizarra, font=\scshape\scriptsize] at (10.5,-1.32)
+      {\textls[160]{la energía pasa de un péndulo al otro}};
+  \end{scope}
+
+  % ----------------------------------------------------------------
+  % Bloque del título
+  % ----------------------------------------------------------------
+  \node[anchor=north west, inner sep=0, text width=16.6cm, align=left]
+    at ($(O)+(2.2cm,11.35cm)$)
+    {{\color{azulacero}\scshape\large\textls[120]{\Asignatura\ \textbar\ \NumPractica}}\\[12pt]
+     {\color{azulprof}\fontsize{34}{39}\selectfont\bfseries\spaceskip=0.28em\relax\TituloPractica}\\[10pt]
+     {\color{azulprof}\itshape\Large\SubtituloPractica}\\[12pt]
+     {\color{turquesa}\rule{2.5cm}{1.4pt}}\\[9pt]
+     {\color{grispizarra}\large
+      $\omega_1^{2}=\omega_0^{2}+\dfrac{2k}{I}\,\ell^{2}$
+      \quad\textperiodcentered\quad
+      $\omega_{\pm}=\dfrac{\omega_1\pm\omega_0}{2}$}};
+
+  % ----------------------------------------------------------------
+  % Pie: tipo de trabajo, autores, tutores, lugar y fecha
+  % ----------------------------------------------------------------
+  \draw[grispizarra!60, line width=0.4pt]
+    ($(O)+(2.2cm,4.6cm)$) -- ($(O)+(18.8cm,4.6cm)$);
+
+  \node[anchor=north west, inner sep=0, text width=4.6cm, align=left]
+    at ($(O)+(2.2cm,4.25cm)$)
+    {{\scshape\small\color{azulacero}\textls[80]{Documento}}\\[3pt]
+     {\large\bfseries\color{azulprof}\tipotrabajo}};
+
+  \node[anchor=north west, inner sep=0, text width=5.6cm, align=left]
+    at ($(O)+(7.2cm,4.25cm)$)
+    {{\scshape\small\color{azulacero}\textls[80]{Autores}}\\[3pt]
+     {\large\color{black!85}\miNombre}};
+
+  \node[anchor=north west, inner sep=0, text width=5cm, align=left]
+    at ($(O)+(13.8cm,4.25cm)$)
+    {{\scshape\small\color{azulacero}\textls[80]{Tutores}}\\[3pt]
+     {\large\color{black!85}\miTutor}};
+
+  \node[anchor=south east, inner sep=0, text=grispizarra, font=\scshape\small]
+    at ($(O)+(18.8cm,1.2cm)$)
+    {\textls[100]{\miUbicacion, \number\year}};
+  \fill[azulprof] ($(O)+(0,0)$) rectangle ($(O)+(21cm,0.45cm)$);
+  \fill[azulacero] ($(O)+(0,0)$) rectangle ($(O)+(9cm,0.45cm)$);
+  \fill[turquesa] ($(O)+(0,0)$) rectangle ($(O)+(5cm,0.45cm)$);
+  \fill[azulclaro] ($(O)+(0,0)$) rectangle ($(O)+(2cm,0.45cm)$);
+\end{tikzpicture}
+
+\end{titlepage}
