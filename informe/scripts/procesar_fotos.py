@@ -46,8 +46,6 @@ save(enhance(det, contrast=1.05, sharp=1.5, cutoff=0.3), "montaje-muelle.jpg", w
 
 # --- capturas de PHYWE Measure ---
 jobs = {
-    1:  ("senal-sin-suavizar.jpg", [(152, 4), (184, 462), (836, 432), (834, 2)], (1500, 900)),
-    5:  ("senal-suavizada.jpg",    [(62, 42), (66, 640), (872, 628), (880, 60)], (1500, 1060)),
     4:  ("analisis-picos.jpg",     [(182, 150), (182, 446), (790, 466), (822, 204)], (1500, 720)),
     9:  ("picos-contrafase.jpg",   [(52, 20), (60, 606), (850, 612), (870, 26)], (1500, 1080)),
     7:  ("pulsante-L1.jpg",        [(104, 22), (120, 574), (880, 552), (884, 18)], (1500, 1060)),
@@ -57,17 +55,3 @@ jobs = {
 }
 for i, (name, pts, size) in jobs.items():
     save(enhance(quad(load(i), pts, size)), name)
-
-# menú Análisis → Suavizar (foto vertical)
-im = load(2)
-s = im.width / 675
-save(enhance(im.crop((int(0*s), int(60*s), int(500*s), int(640*s)))), "menu-suavizar.jpg")
-
-# anotación manuscrita (girada 90º para leerla en horizontal)
-im = load(10)
-s = im.width / 506
-paper = im.crop((int(0*s), int(80*s), int(506*s), int(760*s))).rotate(90, expand=True)
-g = ImageOps.grayscale(paper)
-g = ImageOps.autocontrast(g, cutoff=1.5)
-g = ImageEnhance.Contrast(g).enhance(1.35)
-save(g.convert("RGB").filter(ImageFilter.UnsharpMask(radius=2, percent=80)), "nota-manuscrita.jpg")

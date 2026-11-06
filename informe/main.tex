@@ -454,9 +454,10 @@ Para ello nos apoyaremos en las \cref{eq:inercia,eq:lineales,eq:k} de la
 \subsection{Material empleado}\label{sec:material}
 Hemos utilizado el siguiente instrumental (\cref{fig:fotos-montaje}):
 \begin{itemize}
-  \item Dos péndulos de gravedad iguales, de masa $m=\SI{1}{\kilogram}$ y
-        longitud $L=\SI{1}{\meter}$~\cite{GUION-P3}, cuyos ejes de giro
-        llevan un sensor de ángulo.
+  \item Dos péndulos de gravitación iguales, de masa $m=\SI{1}{\kilogram}$ y
+        longitud $L=\SI{1}{\meter}$~\cite{GUION-P3}, formados por una varilla
+        con una masa lenticular en su extremo; sus ejes de giro llevan un
+        sensor de ángulo.
   \item Muelle helicoidal de acoplamiento, sujeto a cada varilla con una
         pinza deslizante.
   \item Fuente de alimentación y cables de conexión.
@@ -488,8 +489,8 @@ que cambiamos deslizando a la vez las dos pinzas (\cref{fig:esquema}).
   \begin{minipage}{\linewidth}\small
   La unidad Cobra-3 (al fondo, a la izquierda) recoge la señal de los dos
   sensores; la fuente de alimentación (a la derecha) los alimenta. Las
-  lentejas, de color naranja, cuelgan a $L\approx\SI{1}{\meter}$ de los
-  ejes, y el muelle puede situarse a cualquier altura de las varillas.
+  masas lenticulares, de color naranja, cuelgan a $L\approx\SI{1}{\meter}$
+  de los ejes, y el muelle puede situarse a cualquier altura de las varillas.
   \end{minipage}
 \end{minipage}
 \caption{El montaje en el laboratorio. (a)~Los dos péndulos, con los
@@ -522,7 +523,7 @@ distancia $\ell$ del eje.}
   \draw[acento, line width=0.8pt, ->] (S1) -- ++(-0.95,0) node[above, font=\footnotesize] {$F$};
   \draw[acento, line width=0.8pt, ->] (S2) -- ++(0.95,0) node[above, font=\footnotesize] {$F$};
   % peso
-  \draw[azulacero, line width=0.8pt, ->] (B1) -- ++(0,-1.35) node[right, font=\footnotesize] {$m\vec{g}$};
+  \draw[azulacero, line width=0.8pt, ->] ($(B1)+(0,-0.42)$) -- ++(0,-1.2) node[right, font=\footnotesize] {$m\vec{g}$};
 \end{tikzpicture}
 \caption{Esquema del montaje, de frente y sin escala. Cada péndulo, de masa
 $m$ y longitud $L$, gira alrededor de un eje horizontal; $\varphi_1$ y
@@ -639,7 +640,54 @@ normales del sistema.
 \subsection{Los tres modos fundamentales}\label{sec:tresmodos}
 Partiendo siempre del reposo ($\dot\varphi_1(0)=\dot\varphi_2(0)=0$, de modo
 que $\alpha_0=\alpha_1=0$), la \cref{eq:general} se particulariza en tres
-casos sencillos, que son los que generamos en el laboratorio.
+casos sencillos, que son los que generamos en el laboratorio
+(\cref{fig:regimenes}).
+
+\begin{figure}[ht]
+\centering
+\begin{tikzpicture}[x=0.8cm, y=0.8cm, >=Stealth]
+  \def\Lr{2.15}\def\lr{0.95}\def\dr{1.4}\def\sr{0.42}\def\Rm{2.5}
+  % \panel{x}{phi1}{phi2}{fantasma1}{fantasma2}{rótulo de tiempo}
+  % (si un péndulo está en reposo, su fantasma es "no")
+  \newcommand{\panel}[6]{%
+    \begin{scope}[shift={(#1,0)}]
+      \def\fa{#4}\def\fb{#5}\def\no{no}%
+      \ifx\fa\no\else
+        \fantasma{-0.7,0}{#4}{\Lr}{\sr}
+        \movimiento{-0.7,0}{0.55*#2}{0.55*#4}{\Rm}\fi
+      \ifx\fb\no\else
+        \fantasma{0.7,0}{#5}{\Lr}{\sr}
+        \movimiento{0.7,0}{0.55*#3}{0.55*#5}{\Rm}\fi
+      \parpendulos{#2}{#3}{\lr}{\Lr}{\dr}{\sr}
+      \node[text=grispizarra, font=\footnotesize] at (0,-3.05) {#6};
+    \end{scope}}
+  % (a) en fase
+  \panel{0}{13}{13}{-13}{-13}{$t$}
+  \panel{3.0}{-13}{-13}{13}{13}{$t+T_0/2$}
+  % (b) contrafase
+  \panel{6.5}{-13}{13}{13}{-13}{$t$}
+  \panel{9.5}{13}{-13}{-13}{13}{$t+T_1/2$}
+  % (c) pulsante: la oscilación pasa del péndulo 2 al 1
+  \panel{13.0}{0}{13}{no}{-13}{$t$}
+  \panel{16.0}{-13}{0}{13}{no}{$t+\Tb/2$}
+  % títulos y separadores
+  \foreach \x/\t/\s in {1.5/{(a)\; en fase}/{$\varphi_1=\varphi_2$, frecuencia $\wz$},
+                         8.0/{(b)\; contrafase}/{$\varphi_1=-\varphi_2$, frecuencia $\wu$},
+                         14.5/{(c)\; pulsante}/{la energía pasa de un péndulo al otro}}{
+    \node[anchor=south, align=center, inner sep=1pt] at (\x,0.62)
+      {{\scshape\small\color{azulprof}\t}\\[-1pt]{\footnotesize\color{grispizarra}\s}};}
+  \foreach \x in {4.75,11.25}{
+    \draw[grisclaro, line width=0.6pt] (\x,1.35) -- (\x,-3.25);}
+\end{tikzpicture}
+\caption{Los tres modos fundamentales, cada uno en dos instantes separados
+medio periodo. En trazo oscuro, la posición de los péndulos en ese instante;
+en claro, el extremo opuesto de su oscilación, hacia el que se mueven
+(flechas). (a)~En fase, el muelle conserva su longitud. (b)~En contrafase, se
+estira y se comprime alternativamente. (c)~En el modo pulsante, la oscilación
+pasa de un péndulo al otro en medio periodo de pulsación, $\Tb/2$, mientras
+el compañero queda en reposo.}
+\label{fig:regimenes}
+\end{figure}
 
 \subsubsection*{Oscilación en fase}
 Si soltamos los dos péndulos con la misma desviación, $\varphi_1(0)=\varphi_2(0)$,
@@ -692,10 +740,12 @@ frecuencias de las ondas que lo forman.
 \end{referencia}
 
 \begin{observacion}[Qué periodo se mide en el modo pulsante]\label{obs:pulsacion}
-La amplitud de cada péndulo, $|\cos\wm t|$, vuelve a su máximo cada
-$\pi/\wm$, no cada $2\pi/\wm$. Por eso, si $\Tb$ es el tiempo entre dos
-máximos consecutivos de la envolvente (el \emph{periodo de pulsación}) y
-$\Tp$ el tiempo entre dos máximos consecutivos de la portadora,
+La amplitud de cada péndulo, $|\cos\wm t|$ o $|\sin\wm t|$, vuelve a su
+máximo cada $\pi/\wm$, no cada $2\pi/\wm$, y se anula también cada
+$\pi/\wm$. Por eso, si $\Tb$ es el tiempo entre dos máximos consecutivos de
+la envolvente o, lo que es lo mismo, entre dos \emph{nodos} consecutivos
+(instantes de amplitud nula), que es el \emph{periodo de pulsación}, y $\Tp$
+el tiempo entre dos máximos consecutivos de la portadora,
 \begin{equation}\label{eq:periodospuls}
   \wm=\frac{\pi}{\Tb},
   \qquad
@@ -710,36 +760,48 @@ Usar $2\pi/\Tb$ daría un valor de $\wm$ el doble del correcto.
 \centering
 \begin{tikzpicture}
   \pgfmathsetmacro{\wmT}{0.0872}\pgfmathsetmacro{\wpT}{3.2351}
-  \begin{groupplot}[group style={group size=1 by 2, vertical sep=6pt,
+  \pgfmathsetmacro{\Tbt}{pi/\wmT}
+  \begin{groupplot}[group style={group size=1 by 2, vertical sep=8pt,
                                   xlabels at=edge bottom, xticklabels at=edge bottom},
-                    datos, width=0.95\textwidth, height=3.6cm,
-                    xmin=0, xmax=48, ymin=-1.25, ymax=1.25,
+                    datos, width=0.95\textwidth, height=3.9cm,
+                    xmin=0, xmax=48, ymin=-1.18, ymax=1.72,
                     ytick={-1,0,1}, yticklabels={$-\varphi_0$,$0$,$\varphi_0$},
                     xlabel={$t$ (\si{\second})}, grid=none, clip=false]
   \nextgroupplot[ylabel={$\varphi_2$}]
-    \addplot[envolvente, domain=0:48, samples=150] {abs(cos(deg(\wmT*x)))};
-    \addplot[envolvente, domain=0:48, samples=150] {-abs(cos(deg(\wmT*x)))};
-    \addplot[senal, domain=0:48, samples=1400] {cos(deg(\wmT*x))*cos(deg(\wpT*x))};
-    % periodo de pulsación
-    \draw[grispizarra, line width=0.45pt, |<->|] (axis cs:0,1.15) -- (axis cs:{pi/\wmT},1.15)
-      node[midway, fill=white, inner sep=1.5pt, text=azulprof, font=\footnotesize]
-      {$\Tb=\pi/\wm$};
+    \addplot[azulacero!45, line width=0.45pt, domain=0:48, samples=1400]
+      {cos(deg(\wmT*x))*cos(deg(\wpT*x))};
+    \addplot[azulprof, line width=1.15pt, dash pattern=on 5pt off 2.5pt, domain=0:48, samples=160]
+      {abs(cos(deg(\wmT*x)))};
+    \addplot[azulprof, line width=1.15pt, dash pattern=on 5pt off 2.5pt, domain=0:48, samples=160]
+      {-abs(cos(deg(\wmT*x)))};
+    % periodo de pulsación, por encima de la señal
+    \draw[grispizarra, line width=0.45pt, |<->|] (axis cs:0,1.38) -- (axis cs:\Tbt,1.38)
+      node[midway, above=0pt, text=azulprof, font=\footnotesize] {$\Tb=\pi/\wm$};
   \nextgroupplot[ylabel={$\varphi_1$}]
-    % periodo de la portadora, entre dos máximos de phi_1 cerca del máximo de su envolvente
+    \addplot[turquesa!50, line width=0.45pt, domain=0:48, samples=1400]
+      {sin(deg(\wmT*x))*sin(deg(\wpT*x))};
+    \addplot[turquesa!60!azulprof, line width=1.15pt, dash pattern=on 5pt off 2.5pt, domain=0:48, samples=160]
+      {abs(sin(deg(\wmT*x)))};
+    \addplot[turquesa!60!azulprof, line width=1.15pt, dash pattern=on 5pt off 2.5pt, domain=0:48, samples=160]
+      {-abs(sin(deg(\wmT*x)))};
+    % nodos de la envolvente de phi_1
+    \addplot[only marks, mark=*, mark size=2.2pt, mark options={fill=white, draw=azulprof, line width=0.7pt}]
+      coordinates {(0,0) (\Tbt,0)};
+    \node[anchor=south west, text=azulprof, font=\footnotesize, inner sep=1pt] at (axis cs:0.6,0.42) {nodo};
+    \node[anchor=south, text=azulprof, font=\footnotesize, inner sep=1pt] at (axis cs:\Tbt,0.42) {nodo};
+    % periodo de la portadora, por encima de la señal
     \draw[grispizarra, line width=0.45pt, |<->|]
-      (axis cs:{(pi/2+16*pi)/\wpT},1.13) -- (axis cs:{(pi/2+18*pi)/\wpT},1.13)
-      node[right=1pt, text=azulprof, font=\footnotesize, fill=white, inner sep=1pt] {$\Tp=2\pi/\wpl$};
-    \addplot[envolvente, domain=0:48, samples=150] {abs(sin(deg(\wmT*x)))};
-    \addplot[envolvente, domain=0:48, samples=150] {-abs(sin(deg(\wmT*x)))};
-    \addplot[senalB, domain=0:48, samples=1400] {sin(deg(\wmT*x))*sin(deg(\wpT*x))};
+      (axis cs:{(pi/2+16*pi)/\wpT},1.38) -- (axis cs:{(pi/2+18*pi)/\wpT},1.38)
+      node[right=2pt, text=azulprof, font=\footnotesize] {$\Tp=2\pi/\wpl$};
   \end{groupplot}
 \end{tikzpicture}
 \caption{Modo pulsante según la \cref{eq:pulsante}, con las frecuencias
 medidas para $\ell_3=\SI{45}{\centi\meter}$ ($\wz=\SI{3,148}{\radian\per\second}$,
-$\wu=\SI{3,322}{\radian\per\second}$) y sin rozamiento. En discontinua, las
-envolventes $\pm|\cos\wm t|$ y $\pm|\sin\wm t|$: cuando un péndulo alcanza su
-máxima amplitud, el otro está en reposo. El periodo de pulsación $\Tb$ separa
-dos máximos consecutivos de la misma envolvente.}
+$\wu=\SI{3,322}{\radian\per\second}$) y sin rozamiento. En trazo grueso
+discontinuo, las envolventes $\pm|\cos\wm t|$ y $\pm|\sin\wm t|$; en claro,
+la portadora. Cuando un péndulo alcanza su máxima amplitud, el otro está en
+reposo (nodo de su envolvente). El periodo de pulsación $\Tb$ separa dos
+máximos, o dos nodos, consecutivos de la misma envolvente.}
 \label{fig:pulsante-teo}
 \end{figure}
 
@@ -813,36 +875,13 @@ dos primeras longitudes, que bastan para determinarlo.
 \subsection{Suavizado de la señal}\label{sec:suavizado}
 La señal de los sensores no llega limpia: el conversor de la unidad trabaja
 en escalones de tensión y hay ruido eléctrico, de modo que cerca de cada
-máximo la curva presenta pequeños dientes (\figpanel{fig:suavizado}{a}). Si
-buscáramos los máximos directamente, el programa confundiría esos dientes con
-picos. Por eso aplicamos antes \emph{Análisis\,$\to$\,Suavizar}
-(\figpanel{fig:suavizado}{b}), que sustituye cada punto por un promedio de
-sus vecinos: el ruido desaparece y la posición de los máximos, que es lo que
-nos interesa, apenas cambia (\figpanel{fig:suavizado}{c}). Conviene no
-exagerar el suavizado, porque un promedio demasiado ancho achata los picos y
-puede desplazarlos ligeramente.
-
-\begin{figure}[ht]
-\centering
-\begin{subfigure}[b]{0.385\textwidth}\centering
-  \foto{figuras/senal-sin-suavizar.jpg}
-  \caption{Señal sin suavizar.}
-\end{subfigure}\hfill
-\begin{subfigure}[b]{0.205\textwidth}\centering
-  \foto{figuras/menu-suavizar.jpg}
-  \caption{Menú \emph{Análisis}.}
-\end{subfigure}\hfill
-\begin{subfigure}[b]{0.385\textwidth}\centering
-  \foto{figuras/senal-suavizada.jpg}
-  \caption{Señal suavizada.}
-\end{subfigure}
-\caption{Suavizado de la señal en PHYWE Measure. (a)~Registro en contrafase:
-el canal azul muestra el ruido característico cerca de los extremos. (b)~La
-opción \emph{Suavizar} del menú \emph{Análisis}, junto a \emph{Análisis de
-pico}, que usamos después. (c)~Modo en fase para $\ell_1$, con los dos canales
-ya suavizados.}
-\label{fig:suavizado}
-\end{figure}
+máximo la curva presenta pequeños dientes. Si buscáramos los máximos
+directamente, el programa confundiría esos dientes con picos. Por eso
+aplicamos antes la función \emph{Suavizar} del menú \emph{Análisis}, que
+sustituye cada punto por un promedio de sus vecinos: el ruido desaparece y
+la posición de los máximos, que es lo que nos interesa, apenas cambia.
+Conviene no exagerar el suavizado, porque un promedio demasiado ancho achata
+los picos y puede desplazarlos ligeramente.
 
 \subsection{Análisis de picos}\label{sec:picos}
 Con la señal suavizada, \emph{Análisis\,$\to$\,Análisis de pico} localiza los
@@ -937,150 +976,177 @@ péndulo~2 (azul): la amplitud de uno crece mientras la del otro decrece.}
 \subsubsection{Dos periodos, dos maneras de medir}
 El periodo de la portadora, $\Tp$, se mide exactamente igual que en los
 otros dos modos: seis máximos consecutivos y la \cref{eq:periodo}. El periodo
-de pulsación, $\Tb$, en cambio, exige localizar los máximos de la
-\emph{envolvente}, y la envolvente no es una curva que el programa registre:
-solo la vemos a través de los máximos de la portadora. Lo que hacemos es
-aplicar el análisis de picos a todo el registro y quedarnos, en cada grupo,
-con el máximo más alto (\cref{fig:picos-envolvente}). Para $\ell_1$, por
-ejemplo, los dos máximos de la envolvente quedan en
-\SIlist{2768;107856}{\milli\second}.
+de pulsación, $\Tb$, en cambio, exige localizar la \emph{envolvente}, y la
+envolvente no es una curva que el programa registre: solo la vemos a través
+de las oscilaciones de la portadora. En lugar de sus máximos, donde la
+envolvente es casi plana y varios picos tienen prácticamente la misma altura,
+medimos sus \emph{nodos}: los instantes en que la amplitud se anula y la señal
+se estrangula sobre la posición de equilibrio, como los nodos de una onda
+estacionaria. Si trazamos sobre la gráfica una recta horizontal a la altura
+del equilibrio, los nodos son los puntos de la señal que quedan sobre ella
+(\cref{fig:picos-envolvente}). Como $|\sin\wm t|$ se anula cada $\pi/\wm$, la
+separación entre nodos consecutivos es el mismo periodo de pulsación de la
+\cref{obs:pulsacion}, y $\wm=\pi/\Tb$ sigue siendo válida. Para $\ell_1$, por
+ejemplo, los dos nodos registrados quedan en
+\SIlist{2768;107856}{\milli\second}. Su altura, \SI{-0,22}{\volt}, es la del
+equilibrio del canal, muy distinta de la de los máximos de la portadora, en
+torno a \SI{-0,13}{\volt} (\cref{tab:modo3}).
 
 \begin{figure}[ht]
 \centering
 \foto[0.62\textwidth]{figuras/picos-envolvente.jpg}
 \caption{Análisis de picos sobre el registro pulsante de $\ell_1$. El programa
-marca todos los máximos de la portadora; el de la envolvente es el más alto
-de cada grupo, aquí el de \SI{2768}{\milli\second} al principio del registro.}
+marca los picos de la portadora con su instante y su tensión. Los nodos de la
+envolvente son los puntos que quedan sobre la línea de equilibrio, a
+\SI{-0,22}{\volt}, como el de \SI{2768}{\milli\second} al principio del
+registro, donde la amplitud es mínima.}
 \label{fig:picos-envolvente}
 \end{figure}
 
-Aquí cambia la naturaleza de la incertidumbre, y así lo anotamos en el propio
-laboratorio (\figpanel{fig:incertidumbre}{a}): \emph{en $\wm$, la
-incertidumbre pasa a ser la distancia entre los máximos}. El máximo de la
-envolvente cae, en general, entre dos máximos de la portadora, y nosotros
-solo podemos señalar uno de ellos. La indeterminación en su posición ya no es
-la del aparato, de unos pocos milisegundos, sino del orden de la separación
-entre máximos de la portadora, $\Tp\approx\SI{2}{\second}$: unas
-quinientas veces mayor (\figpanel{fig:incertidumbre}{b}).
+Aquí cambia la naturaleza de la incertidumbre, tal como anotamos en el propio
+laboratorio: \emph{en $\wm$, la incertidumbre pasa a ser la distancia entre
+los máximos}. El nodo de la envolvente cae, en general, entre dos
+oscilaciones de la portadora, y la señal solo nos lo deja ver a través de
+ellas. La indeterminación en su posición ya no es la del aparato, de unos
+pocos milisegundos, sino del orden de la separación entre máximos de la
+portadora, $\Tp\approx\SI{2}{\second}$: unas quinientas veces mayor
+(\cref{fig:incertidumbre}).
 
 \begin{figure}[ht]
 \centering
-\begin{subfigure}[b]{0.41\textwidth}\centering
-  \foto{figuras/nota-manuscrita.jpg}
-  \caption{Nota tomada en el laboratorio.}
-\end{subfigure}\hfill
-\begin{subfigure}[b]{0.56\textwidth}\centering
 \begin{tikzpicture}
   \pgfmathsetmacro{\wmT}{0.0886}\pgfmathsetmacro{\wpT}{3.2535}
-  \begin{axis}[datos, width=\linewidth, height=5.4cm,
-               xmin=-9.5, xmax=9.5, ymin=-0.78, ymax=1.5,
-               ytick=\empty, xtick={-8,-4,0,4,8},
-               xlabel={$t-t_{\text{máx}}$ (\si{\second})}, ylabel={$\varphi_2$},
+  \pgfmathsetmacro{\ds}{0.6}
+  \begin{axis}[datos, width=0.66\textwidth, height=5.3cm,
+               xmin=-9.5, xmax=9.5, ymin=-1.0, ymax=1.3,
+               ytick={0}, yticklabels={equilibrio},
+               xtick={-8,-4,0,4,8},
+               xlabel={$t-t_{\text{nodo}}$ (\si{\second})}, ylabel={$\varphi_1$},
                grid=none, axis lines=left, clip=false]
-    % envolvente
-    \addplot[envolvente, domain=-9.5:9.5, samples=100] {cos(deg(\wmT*x))};
-    % portadora (solo la parte positiva, como se ve cerca del máximo)
-    \addplot[senal, domain=-9.5:9.5, samples=700]
-      {max(cos(deg(\wmT*x))*cos(deg(\wpT*(x+0.75))),-0.2)};
-    % máximos de la portadora
-    \addplot[puntoA, domain=-3:3, samples=7]
-      ({2*pi/\wpT*x-0.75},{cos(deg(\wmT*(2*pi/\wpT*x-0.75)))});
-    % máximo verdadero de la envolvente y máximo elegido
-    \draw[acento, line width=0.6pt, densely dotted] (axis cs:0,0) -- (axis cs:0,1.0);
-    \draw[acento, line width=0.4pt] (axis cs:0.05,1.01) -- (axis cs:2.2,1.3)
-      node[anchor=south west, inner sep=1pt, font=\footnotesize] {máximo de la envolvente};
-    \draw[azulprof, line width=0.4pt] (axis cs:-0.8,1.04) -- (axis cs:-2.6,1.3)
-      node[anchor=south east, inner sep=1pt, font=\footnotesize] {pico elegido};
-    % separación entre máximos de la portadora
+    % línea de equilibrio
+    \draw[grispizarra!60, line width=0.5pt] (axis cs:-9.5,0) -- (axis cs:9.5,0);
+    % portadora y envolvente
+    \addplot[azulacero!50, line width=0.5pt, domain=-9.5:9.5, samples=700]
+      {sin(deg(\wmT*x))*cos(deg(\wpT*(x+\ds)))};
+    \addplot[azulprof, line width=1.1pt, dash pattern=on 5pt off 2.5pt, domain=-9.5:9.5, samples=120]
+      {abs(sin(deg(\wmT*x)))};
+    \addplot[azulprof, line width=1.1pt, dash pattern=on 5pt off 2.5pt, domain=-9.5:9.5, samples=120]
+      {-abs(sin(deg(\wmT*x)))};
+    % extremos de la portadora: lo único que vemos de la envolvente
+    \addplot[puntoA, mark size=1.6pt, domain=-5:5, samples=11]
+      ({pi/\wpT*x-\ds},{sin(deg(\wmT*(pi/\wpT*x-\ds)))*cos(deg(pi*x))});
+    % nodo
+    \addplot[only marks, mark=*, mark size=2.6pt, mark options={fill=white, draw=acento, line width=0.9pt}]
+      coordinates {(0,0)};
+    \draw[acento, line width=0.4pt] (axis cs:-0.15,0.06) -- (axis cs:-2.6,1.02)
+      node[anchor=south east, inner sep=1pt, font=\footnotesize] {nodo de la envolvente};
+    % separación entre máximos de la portadora, junto al nodo
     \draw[grispizarra, line width=0.45pt, |<->|]
-      (axis cs:{-0.75},-0.36) -- (axis cs:{-0.75+2*pi/\wpT},-0.36)
-      node[midway, below=0pt, text=azulprof, font=\footnotesize] {$\Tp$};
-    \node[anchor=west, align=left, text=grispizarra, font=\scriptsize]
-      at (axis cs:1.8,-0.42) {incertidumbre $\sim$ separación\\entre máximos de la portadora};
+      (axis cs:{-\ds},0.42) -- (axis cs:{2*pi/\wpT-\ds},0.42)
+      node[midway, above=0pt, text=azulprof, font=\footnotesize] {$\Tp$};
   \end{axis}
 \end{tikzpicture}
-  \caption{Por qué la incertidumbre es del orden de $\Tp$.}
-\end{subfigure}
-\caption{Incertidumbre en los máximos de la envolvente. (a)~Nota que tomamos
-en el laboratorio: la portadora, de frecuencia $\wpl$, dentro de una
-envolvente de frecuencia $\wm$; para esta última la incertidumbre «pasa a ser
-la distancia entre los máximos». (b)~Detalle de un máximo de la envolvente
-(trazo discontinuo), con los parámetros de $\ell_3$: solo conocemos la señal
-en los máximos de la portadora (puntos), separados $\Tp$, y el máximo
-verdadero de la envolvente puede caer en cualquier punto entre dos de ellos.}
+\caption{Incertidumbre en los nodos de la envolvente. Detalle de un nodo con
+los parámetros de $\ell_3$: la envolvente (trazo grueso discontinuo) solo se
+manifiesta a través de los extremos de la portadora (puntos), separados medio
+periodo, y el nodo verdadero puede caer en cualquier punto entre dos
+oscilaciones. Su incertidumbre deja de ser la resolución del aparato
+(\SI{4}{\milli\second}) y pasa a ser del orden de la separación entre máximos
+de la portadora, $\Tp$.}
 \label{fig:incertidumbre}
 \end{figure}
 
 \subsubsection{Más acoplamiento, más pulsaciones, más precisión}
-Con esta limitación, la precisión de $\Tb$ depende de dos cosas que mejoran a
-medida que aumentamos $\ell$ (\cref{fig:precision}).
+Con esta limitación, la precisión de $\Tb$ mejora a medida que aumentamos
+$\ell$, por dos razones (\cref{fig:precision}).
 \begin{itemize}
-  \item \emph{Cuántas pulsaciones caben en el registro.} Al crecer $\ell$
-        la envolvente es más rápida: $\Tb$ baja de unos \SI{105}{\second}
-        para $\ell_1$ a menos de \SI{18}{\second} para $\ell_5$. Aun con
-        registros más cortos, pasamos de dos máximos de la envolvente a
-        cuatro, y la indeterminación de los extremos, del orden
-        de $\Tp$, se reparte entre más intervalos, como en la
-        \cref{eq:periodo} (\figpanel{fig:precision}{a}).
-  \item \emph{Qué tan marcado es el máximo.} Cerca de su máximo, la
-        envolvente es casi plana, y varios máximos de la portadora tienen
-        prácticamente la misma altura: con una lectura de tensión de
-        resolución $\varepsilon$, los picos cuya altura difiere del máximo
-        en menos de $\varepsilon$ son indistinguibles. Para una amplitud $A$,
-        esa ventana de indistinguibilidad dura
+  \item \emph{Caben más pulsaciones en el registro.} Al crecer $\ell$ la
+        envolvente es más rápida: $\Tb$ baja de unos \SI{105}{\second} para
+        $\ell_1$ a menos de \SI{18}{\second} para $\ell_5$. Aun con registros
+        más cortos, pasamos de dos nodos de la envolvente a cuatro, y la
+        indeterminación de los extremos, del orden de $\Tp$, se reparte entre
+        más intervalos, como en la \cref{eq:periodo}
+        (\figpanel{fig:precision}{a}).
+  \item \emph{El nodo está mejor definido.} Con una lectura de tensión de
+        resolución $\varepsilon$, los instantes en que la amplitud
+        $A\,|\sin\wm t|$ no supera $\varepsilon$ son indistinguibles del
+        nodo. Esa ventana dura
         \begin{equation}\label{eq:ventana}
-          \Delta t=\frac{2}{\wm}\arccos\!\Bigl(1-\frac{\varepsilon}{A}\Bigr),
+          \Delta t_{\text{nodo}}=\frac{2}{\wm}\arcsin\frac{\varepsilon}{A}
+          \simeq\frac{2\varepsilon}{A\,\wm},
         \end{equation}
-        inversamente proporcional a $\wm$. Para $\ell_1$ abarca unas diez
-        oscilaciones de la portadora, y para $\ell_5$, menos de dos: a
-        medida que crece $\ell$, la incertidumbre se acerca al límite de la
-        nota, la separación entre máximos (\figpanel{fig:precision}{b}).
+        inversamente proporcional a $\wm$: pasa de unos \SI{2,8}{\second}
+        para $\ell_1$ a medio segundo para $\ell_5$, y desde $\ell_2$ queda
+        por debajo de $\Tp$, de modo que la incertidumbre la fija la
+        separación entre máximos de la portadora, como decía la nota
+        (\figpanel{fig:precision}{b}). En un máximo, donde la envolvente es
+        plana, la ventana equivalente,
+        $\Delta t_{\text{máx}}=(2/\wm)\arccos(1-\varepsilon/A)$, sería unas
+        siete veces mayor: de ahí que midamos nodos y no máximos.
 \end{itemize}
 Por eso conviene, en general, registrar tantas oscilaciones como sea
 posible. Para la envolvente seguimos además un criterio común: cuando el
-registro contiene tres o más máximos, descartamos el primero, que coincide con
-el instante en que soltamos los péndulos y queda contaminado por la
-imperfección de la condición inicial. Es visible en $\ell_4$, cuyo primer
-intervalo, de \SI{23,5}{\second}, se aparta claramente de los dos siguientes,
-de \SI{26,1}{\second}.
+registro contiene tres o más nodos, descartamos el primero. En el péndulo que
+parte del reposo, ese nodo coincide con el instante en que lo soltamos:
+mientras lo sujetamos la amplitud ya es nula, y el arranque, nunca perfecto,
+contamina su posición. Es visible en $\ell_4$, cuyo primer intervalo, de
+\SI{23,5}{\second}, se aparta claramente de los dos siguientes, de
+\SI{26,1}{\second}.
 
 \begin{figure}[ht]
 \centering
 \begin{tikzpicture}
-  \begin{groupplot}[group style={group size=2 by 1, horizontal sep=1.5cm},
-                    datos, height=5.0cm]
-  \nextgroupplot[width=0.56\textwidth, xmin=0, xmax=110, ymin=-2.65, ymax=1.35,
+  \begin{groupplot}[group style={group size=2 by 1, horizontal sep=1.6cm},
+                    datos, height=5.2cm]
+  \nextgroupplot[width=0.55\textwidth, xmin=0, xmax=110, ymin=-2.35, ymax=1.5,
                  xlabel={$t$ (\si{\second})}, ytick=\empty, grid=none,
                  axis y line=none, clip=false,
                  title={\footnotesize\scshape (a)\; registros de \SI{110}{\second}},
                  title style={text=grispizarra}]
-    % l1: w- = 0.02989, w+ = 3.1836 ; l5: w- = 0.17651, w+ = 3.2931
-    \addplot[senal, domain=0:110, samples=2200] {0.12+0.5*cos(deg(0.02989*x))*cos(deg(3.1836*x))};
-    \addplot[envolvente, domain=0:110, samples=120] {0.12+0.5*abs(cos(deg(0.02989*x)))};
-    \addplot[senalB, domain=0:110, samples=2200] {-1.62+0.5*cos(deg(0.17651*x))*cos(deg(3.2931*x))};
-    \addplot[envolvente, domain=0:110, samples=200] {-1.62+0.5*abs(cos(deg(0.17651*x)))};
-    \addplot[puntoA, mark size=1.7pt] coordinates {(0,0.62) (105.1,0.62)};
-    \addplot[puntoA, mark size=1.7pt, mark options={fill=turquesa, draw=white}]
-      coordinates {(0,-1.12) (17.8,-1.12) (35.6,-1.12) (53.4,-1.12) (71.2,-1.12) (89.0,-1.12) (106.8,-1.12)};
-    \node[anchor=west, text=azulprof, font=\footnotesize] at (axis cs:2,1.2) {$\ell_1$: 2 máximos de la envolvente};
-    \node[anchor=west, text=turquesa!80!azulprof, font=\footnotesize] at (axis cs:2,-0.68) {$\ell_5$: 7 máximos};
-  \nextgroupplot[width=0.42\textwidth, xmin=20, xmax=70, ymin=0, ymax=21,
+    % l1: w- = 0.02989, w+ = 3.1836 ; l5: w- = 0.17651, w+ = 3.2931 (péndulo que parte del reposo)
+    \draw[grispizarra!40, line width=0.4pt] (axis cs:0,0.25) -- (axis cs:110,0.25);
+    \draw[grispizarra!40, line width=0.4pt] (axis cs:0,-1.45) -- (axis cs:110,-1.45);
+    \addplot[azulacero!55, line width=0.4pt, domain=0:110, samples=2200]
+      {0.25+0.5*sin(deg(0.02989*x))*sin(deg(3.1836*x))};
+    \addplot[azulprof, line width=0.9pt, dash pattern=on 4pt off 2pt, domain=0:110, samples=150]
+      {0.25+0.5*abs(sin(deg(0.02989*x)))};
+    \addplot[turquesa!55, line width=0.4pt, domain=0:110, samples=2200]
+      {-1.45+0.5*sin(deg(0.17651*x))*sin(deg(3.2931*x))};
+    \addplot[turquesa!60!azulprof, line width=0.9pt, dash pattern=on 4pt off 2pt, domain=0:110, samples=250]
+      {-1.45+0.5*abs(sin(deg(0.17651*x)))};
+    \addplot[only marks, mark=*, mark size=1.9pt, mark options={fill=white, draw=azulprof, line width=0.7pt}]
+      coordinates {(0,0.25) (105.1,0.25)};
+    \addplot[only marks, mark=*, mark size=1.9pt, mark options={fill=white, draw=turquesa!60!azulprof, line width=0.7pt}]
+      coordinates {(0,-1.45) (17.8,-1.45) (35.6,-1.45) (53.4,-1.45) (71.2,-1.45) (89.0,-1.45) (106.8,-1.45)};
+    \node[anchor=south west, text=azulprof, font=\footnotesize, inner sep=1pt] at (axis cs:0,0.85) {$\ell_1$: 2 nodos};
+    \node[anchor=south west, text=turquesa!60!azulprof, font=\footnotesize, inner sep=1pt] at (axis cs:0,-0.85) {$\ell_5$: 7 nodos};
+  \nextgroupplot[width=0.41\textwidth, xmin=20, xmax=70, ymin=0.3, ymax=160, ymode=log,
                  xlabel={$\ell$ (\si{\centi\meter})}, ylabel={tiempo (\si{\second})},
-                 xtick={25,35,45,55,65}, ytick={0,5,10,15,20},
+                 xtick={25,35,45,55,65}, ytick={0.5,1,2,5,10,20},
+                 yticklabels={{0,5},1,2,5,10,20},
                  title={\footnotesize\scshape (b)\; ventana de indistinción},
                  title style={text=grispizarra},
-                 legend style={at={(0.97,0.97)}, anchor=north east}]
-    % Delta t = 2 arccos(1 - eps/A)/w-, eps = 0.005 V, A = 0.12 V
-    \addplot[puntoA] table[x=l, y expr={2*rad(acos(1-0.005/0.12))/\thisrow{wm}}] {
-      l   wm       Tp
-      25  0.02989  1.9736
-      35  0.05601  1.9560
-      45  0.08861  1.9312
-      55  0.12027  1.9232
-      65  0.17651  1.9080
+                 legend style={at={(0.98,0.98)}, anchor=north east, font=\scriptsize}]
+    % eps = 0.005 V, A = 0.12 V
+    \addplot[puntoB] table[x=l, y expr={2*rad(acos(1-0.005/0.12))/\thisrow{wm}}] {
+      l   wm
+      25  0.02989
+      35  0.05601
+      45  0.08861
+      55  0.12027
+      65  0.17651
     };
-    \addlegendentry{$\Delta t$, ec.~(\ref*{eq:ventana})}
-    \addplot[puntoB] table[x=l, y=Tp] {
+    \addlegendentry{máximo}
+    \addplot[puntoA] table[x=l, y expr={2*rad(asin(0.005/0.12))/\thisrow{wm}}] {
+      l   wm
+      25  0.02989
+      35  0.05601
+      45  0.08861
+      55  0.12027
+      65  0.17651
+    };
+    \addlegendentry{nodo, ec.~(\ref*{eq:ventana})}
+    \addplot[teorica, mark=none] table[x=l, y=Tp] {
       l   Tp
       25  1.9736
       35  1.9560
@@ -1092,13 +1158,15 @@ de \SI{26,1}{\second}.
   \end{groupplot}
 \end{tikzpicture}
 \caption{Por qué gana precisión el modo pulsante al aumentar $\ell$.
-(a)~Señal de la \cref{eq:pulsante} para $\ell_1$ y $\ell_5$ con sus frecuencias
-medidas, durante un mismo intervalo de \SI{110}{\second}: con el acoplamiento
-débil cabe una sola pulsación; con el fuerte, seis. (b)~Duración de la ventana
-en la que los máximos de la portadora son indistinguibles del máximo de la
-envolvente (\cref{eq:ventana}, con $\varepsilon=\SI{0,005}{\volt}$, media
-unidad de la lectura del programa, y $A\approx\SI{0,12}{\volt}$, estimada en la
-pantalla), comparada con la separación entre máximos de la portadora, $\Tp$.}
+(a)~Señal del péndulo que parte del reposo (\cref{eq:pulsante}) para $\ell_1$
+y $\ell_5$, con sus frecuencias medidas, durante un mismo intervalo de
+\SI{110}{\second}: con el acoplamiento débil cabe una sola pulsación; con el
+fuerte, seis. Los círculos son los nodos. (b)~Duración de la ventana en la que
+la amplitud no se distingue de la del nodo (\cref{eq:ventana}) o de la del
+máximo, con $\varepsilon=\SI{0,005}{\volt}$, media unidad de la lectura del
+programa, y $A\approx\SI{0,12}{\volt}$, estimada en la pantalla; en
+discontinua, la separación entre máximos de la portadora, $\Tp$. Escala
+vertical logarítmica.}
 \label{fig:precision}
 \end{figure}
 
@@ -1120,7 +1188,7 @@ misma posición decimal~\cite{ERR-MP}.
 \begin{pendientebox}[incertidumbres]
 Completar con: (i)~la incertidumbre de los instantes de pico en los modos en
 fase y contrafase y en la portadora (resolución de \SI{4}{\milli\second} y
-efecto del suavizado); (ii)~la de los máximos de la envolvente, del orden de
+efecto del suavizado); (ii)~la de los nodos de la envolvente, del orden de
 $\Tp$ (\cref{sec:pulsante}); (iii)~su propagación a $T$, $\wz$, $\wu$,
 $\wm$ y $\wpl$ mediante la \cref{eq:propagacion}; (iv)~la de $\ell$, medida
 con la cinta métrica; y (v)~el método de regresión lineal y las
@@ -1197,7 +1265,7 @@ El valor obtenido es muy próximo al de una masa puntual de \SI{1}{\kilogram}
 a \SI{1}{\meter} del eje, $mL^{2}=\SI{1}{\kilogram\meter\squared}$. Dicho de otro
 modo, el periodo medido, $\mean{T}_0=\SI{1,996}{\second}$, es casi el de un
 péndulo simple de un metro, $2\pi\sqrt{L/g}=\SI{2,006}{\second}$: la masa de la
-varilla y las dimensiones de la lenteja apenas alteran el comportamiento, y
+varilla y las dimensiones de la masa lenticular apenas alteran el comportamiento, y
 la pequeña diferencia sugiere que el centro de masas queda algo por encima
 de $L=\SI{1}{\meter}$.
 \end{observacion}
