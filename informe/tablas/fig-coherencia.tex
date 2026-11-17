@@ -1,0 +1,35 @@
+% Generado por scripts/tablas.py a partir de Practica3_pendulos_acoplados.xlsx. No editar a mano.
+
+\begin{tikzpicture}
+  \pgfplotstableread{
+      x wm uwm tm utm wp uwp tp
+      0.0625 0.029895 0.000794 0.027275 0.002975 3.183616 0.001825 3.175164
+      0.1225 0.056008 0.002762 0.054837 0.002980 3.212262 0.001858 3.202725
+      0.2025 0.088605 0.006825 0.087219 0.002986 3.253514 0.001906 3.235108
+      0.3025 0.120266 0.006261 0.095340 0.002988 3.267047 0.001922 3.243228
+      0.4225 0.176514 0.013380 0.128631 0.002995 3.293074 0.001953 3.276520
+  }\datoscoh
+  \begin{groupplot}[group style={group size=2 by 1, horizontal sep=1.6cm},
+                    datos, width=0.47\textwidth, height=5.4cm, xmin=0.03, xmax=0.46,
+                    xlabel={$\ell^{2}$ (\si{\meter\squared})},
+                    legend pos=north west, legend style={font=\scriptsize},
+                    xtick={0.1,0.2,0.3,0.4}, xticklabel style={/pgf/number format/fixed},
+                    yticklabel style={/pgf/number format/fixed, /pgf/number format/precision=3}]
+  \nextgroupplot[ylabel={$\omega_{-}$ (\si{\radian\per\second})},
+                 title={\footnotesize\scshape (a)\; frecuencia de modulación}, title style={text=grispizarra}]
+    \addplot[puntoA, error bars/.cd, y dir=both, y explicit, error bar style={azulprof}]
+      table[x=x, y=wm, y error=uwm] {\datoscoh};
+    \addlegendentry{$\omega_{-}=\pi/T_{\mathrm{b}}$ (pulsante)}
+    \addplot[puntoB, error bars/.cd, y dir=both, y explicit, error bar style={azulacero}]
+      table[x=x, y=tm, y error=utm] {\datoscoh};
+    \addlegendentry{$(\omega_1-\omega_0)/2$ (fase y contrafase)}
+  \nextgroupplot[ylabel={$\omega_{+}$ (\si{\radian\per\second})},
+                 title={\footnotesize\scshape (b)\; frecuencia portadora}, title style={text=grispizarra}]
+    \addplot[puntoA, error bars/.cd, y dir=both, y explicit, error bar style={azulprof}]
+      table[x=x, y=wp, y error=uwp] {\datoscoh};
+    \addlegendentry{$\omega_{+}=2\pi/T_{+}$ (pulsante)}
+    \addplot[puntoB, error bars/.cd, y dir=both, y explicit, error bar style={azulacero}]
+      table[x=x, y=tp, y error=utm] {\datoscoh};
+    \addlegendentry{$(\omega_1+\omega_0)/2$ (fase y contrafase)}
+  \end{groupplot}
+\end{tikzpicture}

@@ -1,18 +1,5 @@
 \documentclass[a4paper,11pt]{amsart}
 
-% =========================================================================
-%  Informe de laboratorio — Práctica 3: Péndulos acoplados
-%  Estilo: el del informe de Steiner (artículo científico minimalista,
-%  versalitas, enunciados numerados por sección, cajas de referencia y de
-%  método), con dos variaciones: tipografía Libertinus, más propia de los
-%  artículos científicos, y una paleta de azul marino, azul petróleo,
-%  turquesa y celeste.
-%
-%  Partes pendientes (marcadas en gris con \pend y \pendiente):
-%  incertidumbres, ajustes lineales de la cuestión 2, comparación de la
-%  cuestión 3 y conclusiones.
-% =========================================================================
-
 % --- IDIOMA Y CODIFICACIÓN ------------------------------------------------
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
@@ -28,7 +15,7 @@
 \usepackage{bm}
 \usepackage{siunitx}
 \sisetup{
-  output-decimal-marker = {,},
+  output-decimal-marker = {.},
   group-minimum-digits  = 4,
   group-digits          = integer,
   group-separator       = {\,},
@@ -155,6 +142,11 @@
 \renewcommand{\contentsnamefont}{\scshape\color{azulprof}\lsstyle}
 \makeatother
 \numberwithin{equation}{section}
+% Párrafos: encabezado en cursiva, en línea con el texto
+\makeatletter
+\def\paragraph{\@startsection{paragraph}{4}{\z@}{6pt plus 2pt}{-0.6em}%
+  {\normalfont\itshape\color{azulprof}}}
+\makeatother
 \setcounter{tocdepth}{2}
 \makeatletter
 \def\@@and{y}
@@ -315,7 +307,7 @@
     legend style={font=\scriptsize, draw=none, fill=white, fill opacity=0.9,
                   text opacity=1, cells={anchor=west}},
     legend cell align=left,
-    /pgf/number format/use comma, /pgf/number format/1000 sep={\,},
+    /pgf/number format/use period, /pgf/number format/1000 sep={\,},
     scaled ticks=false,
   },
   senal/.style={azulprof, line width=0.55pt},
@@ -397,12 +389,14 @@ los tres modos para cinco longitudes de acoplamiento, entre
 \SIlist{25;65}{\centi\meter}, con sensores de ángulo, la unidad Cobra-3 y el
 programa PHYWE Measure, cuyas herramientas de suavizado y de análisis de
 picos nos dan los instantes de los máximos y, de ellos, los periodos. Del
-modo en fase obtenemos $\wz=\valWcero\ \si{\radian\per\second}$ y, con él,
-el momento de inercia de cada péndulo, $I=\valI\ \si{\kilogram\meter\squared}$.
+modo en fase obtenemos $\wz=(\valWceroU)\ \si{\radian\per\second}$ y, con
+él, el momento de inercia de cada péndulo, $I=(\valIU)\ \si{\kilogram\meter\squared}$.
 Después ajustamos linealmente $\wu^{2}$, $\wm$ y $\wpl$ frente a $\ell^{2}$ y,
-de cada pendiente, deducimos la constante elástica del muelle,
-$k=$\,\pend{$k_{1}$}, \pend{$k_{2}$} y \pend{$k_{3}$}, cuyos valores
-comparamos para discutir qué método es más preciso. Los resultados se
+de cada pendiente, deducimos la constante elástica del muelle:
+$k=(\valKUno)$, $(\valKMenos)$ y $(\valKMas)\ \si{\newton\per\meter}$,
+respectivamente. Los tres valores son compatibles al \SI{95}{\percent},
+aunque los de $\wm$ y $\wu^{2}$ solo al límite, y el método de $\wm$ resulta
+el más preciso y el más robusto. Los resultados se
 expresan con su incertidumbre típica y ampliada al \SI{95}{\percent},
 siguiendo \emph{Notes on Uncertainty in Measurements}.
 \end{abstract}
@@ -573,7 +567,7 @@ $\tau=I\ddot\varphi$~\cite{GUION-P3}, obtenemos
 Llamamos \emph{frecuencia natural} del péndulo aislado y \emph{frecuencia de
 acoplamiento} a
 \begin{equation}\label{eq:defs}
-  \wz^{2}=\frac{mgL}{I},
+  \omega_0^{2}=\frac{mgL}{I},
   \qquad
   \Omega^{2}=\frac{k\ell^{2}}{I}.
 \end{equation}
@@ -620,7 +614,7 @@ frecuencia $\wz$, y otro antisimétrico, de frecuencia
 En el modo simétrico ($q_1=0$) los péndulos van a la par y el muelle nunca se
 deforma: por eso su frecuencia es la del péndulo aislado. En el antisimétrico
 ($q_0=0$) el muelle trabaja con toda su fuerza y añade rigidez al sistema, lo
-que eleva la frecuencia tanto más cuanto más abajo lo sujetamos. Deshaciendo
+que eleva la frecuencia tanto más cuanto más abajo lo sujetamos ~\cite{FeynLec}. Deshaciendo
 el cambio de la \cref{eq:coordnormales}, la solución general es
 \begin{equation}\label{eq:general}
 \begin{aligned}
@@ -1171,30 +1165,121 @@ vertical logarítmica.}
 \end{figure}
 
 \subsection{Tratamiento de incertidumbres}\label{sec:incertidumbres}
-Seguimos la \emph{Guide to the expression of uncertainty in
-measurement}~\cite{GUM}, tal como se recoge en las notas del
-laboratorio~\cite{NUM-ARG}. Para una magnitud $y=f(x_1,\dots,x_N)$ con
-entradas no correlacionadas, la incertidumbre típica se propaga como
+Seguimos la \emph{Guide to the expression of uncertainty in measurement}~\cite{GUM}, tal como se recoge en las notas del laboratorio~\cite{NUM-ARG}. Para una magnitud $y=f(x_1,\dots,x_N)$ con entradas no correlacionadas, la incertidumbre típica se propaga como
 \begin{equation}\label{eq:propagacion}
   u^{2}(y)=\sum_{k=1}^{N}\left(\frac{\partial f}{\partial x_k}\right)^{\!2}u^{2}(x_k),
 \end{equation}
-y la incertidumbre ampliada al \SI{95}{\percent} es $\ext{y}=\Tcoef\,u(y)$,
-con $\Tcoef$ el factor de cobertura de Student para $\nu$ grados de
-libertad~\cite{NUM-ARG}; el resultado se expresa como $y\pm\ext{y}$. Las
-incertidumbres se dan con una sola cifra significativa, salvo cuando la
-primera es un 1, en cuyo caso se conservan dos, y el valor se redondea a la
-misma posición decimal~\cite{ERR-MP}.
+y la incertidumbre ampliada al \SI{95}{\percent} es $U(y)=t_{95,\nu}\,u(y)$, con $t_{95,\nu}$ el factor de cobertura de Student para $\nu$ grados de libertad~\cite{NUM-ARG}; el resultado se expresa como $y\pm U(y)$. Las incertidumbres se dan con una sola cifra significativa, salvo cuando la primera es un 1, en cuyo caso se conservan dos, y el valor se redondea a la misma posición decimal~\cite{ERR-MP}.
 
-\begin{pendientebox}[incertidumbres]
-Completar con: (i)~la incertidumbre de los instantes de pico en los modos en
-fase y contrafase y en la portadora (resolución de \SI{4}{\milli\second} y
-efecto del suavizado); (ii)~la de los nodos de la envolvente, del orden de
-$\Tp$ (\cref{sec:pulsante}); (iii)~su propagación a $T$, $\wz$, $\wu$,
-$\wm$ y $\wpl$ mediante la \cref{eq:propagacion}; (iv)~la de $\ell$, medida
-con la cinta métrica; y (v)~el método de regresión lineal y las
-incertidumbres de pendiente y ordenada, como en el
-\emph{Método} del informe de Steiner.
-\end{pendientebox}
+\subsubsection{Incertidumbre de los instantes de pico en los modos en fase y contrafase, así como en la portadora}
+Como se ha señalado anteriormente, tras el suavizado de la señal los instantes
+temporales de los picos obtenidos son múltiplos de \SI{4}{\milli\second}. Por
+lo tanto, la incertidumbre que buscamos coincide con esta resolución
+instrumental:
+\begin{equation}\label{eq:uti}
+  u(t_i)=\SI{4}{\milli\second}.
+\end{equation}
+
+\subsubsection{Incertidumbre de los nodos de la envolvente}
+Para hallar los nodos de la envolvente en el modo pulsante, la señal solo se
+manifiesta a través de las oscilaciones de la portadora. El nodo verdadero cae
+entre dos oscilaciones, por lo que la indeterminación en su posición no viene
+dada por la resolución del aparato, sino por la separación temporal entre
+máximos de la portadora, $\Tp\approx\SI{2}{\second}$:
+\begin{equation}\label{eq:unodo}
+  u(t_{\text{nodo}})\approx\Tp\approx\SI{2}{\second}.
+\end{equation}
+
+\subsubsection{Incertidumbres de magnitudes intermedias: periodos ($T_0$, $T_1$, $\Tp$)}
+El periodo medio a partir de $N=6$ picos consecutivos ($N-1=5$ intervalos) se
+calcula como $T=(t_6-t_1)/5$. Aplicando la \cref{eq:propagacion}, podemos
+hallar su incertidumbre por propagación:
+\begin{equation}\label{eq:uT}
+  u(T)=\sqrt{\left(\frac{\partial T}{\partial t_6}\right)^{\!2}u^{2}(t_6)
+            +\left(\frac{\partial T}{\partial t_1}\right)^{\!2}u^{2}(t_1)}
+      =\frac{\sqrt{2}}{5}\,u(t_i)
+      =\frac{\sqrt{2}}{5}\cdot\SI{4}{\milli\second}
+      \approx\SI{1,1}{\milli\second}.
+\end{equation}
+Como $T_1$ es la media de los periodos de los dos péndulos en contrafase, su
+incertidumbre es $u(T_1)=u(T)/\sqrt{2}\approx\SI{0,8}{\milli\second}$.
+
+La incertidumbre del periodo de pulsación, $\Tb$, se calcula teniendo en cuenta
+que, para la envolvente con $n$ intervalos entre nodos,
+$\Tb=(t_{\text{últ}}-t_{\text{pri}})/n$. Luego, por propagación:
+\begin{equation}\label{eq:uTb}
+  u(\Tb)=\frac{\sqrt{2}}{n}\,u(t_{\text{nodo}})\approx\frac{\sqrt{2}}{n}\,\Tp .
+\end{equation}
+
+Por su parte, el periodo medio del modo en fase, $\mean{T}_0$, tiene una
+incertidumbre que resulta de combinar las cuatro medidas independientes del
+periodo en fase (combinando la incertidumbre de tipo~A, dada por la desviación
+típica de la media, $s/\sqrt{4}$, y la incertidumbre instrumental de tipo~B):
+\begin{equation}\label{eq:uT0}
+  u(\mean{T}_0)=\sqrt{\left(\frac{s}{\sqrt{4}}\right)^{\!2}+u^{2}(T_0)} .
+\end{equation}
+
+\subsubsection{Incertidumbres de las frecuencias angulares ($\wz$, $\wu$, $\wm$, $\wpl$ y $\wu^{2}$)}
+Las frecuencias angulares dependen de forma inversa de sus respectivos
+periodos.
+
+\paragraph{Frecuencia natural, $\wz=2\pi/\mean{T}_0$, y frecuencia en contrafase, $\wu=2\pi/T_1$.}
+\begin{equation}\label{eq:uw0w1}
+  u(\wz)=\left|\frac{\partial\wz}{\partial\mean{T}_0}\right|u(\mean{T}_0)
+        =\frac{2\pi}{\mean{T}_0^{2}}\,u(\mean{T}_0),
+  \qquad
+  u(\wu)=\left|\frac{\partial\wu}{\partial T_1}\right|u(T_1)
+        =\frac{2\pi}{T_1^{2}}\,u(T_1).
+\end{equation}
+
+\paragraph{Cuadrado de la frecuencia en contrafase, $\wu^{2}$.}
+\begin{equation}\label{eq:uw12}
+  u(\wu^{2})=\left|\frac{\partial(\wu^{2})}{\partial\wu}\right|u(\wu)
+            =2\wu\,u(\wu)=\frac{8\pi^{2}}{T_1^{3}}\,u(T_1).
+\end{equation}
+
+\paragraph{Frecuencia lenta o de pulsación, $\wm=\pi/\Tb$.}
+\begin{equation}\label{eq:uwm}
+  u(\wm)=\left|\frac{\partial\wm}{\partial\Tb}\right|u(\Tb)=\frac{\pi}{\Tb^{2}}\,u(\Tb).
+\end{equation}
+
+\paragraph{Frecuencia de la portadora, $\wpl=2\pi/\Tp$.}
+\begin{equation}\label{eq:uwp}
+  u(\wpl)=\left|\frac{\partial\wpl}{\partial\Tp}\right|u(\Tp)=\frac{2\pi}{\Tp^{2}}\,u(\Tp).
+\end{equation}
+
+\subsubsection{Incertidumbre del momento de inercia ($I$)}
+El momento de inercia se obtiene como $I=mgL/\wz^{2}$. Asumiendo
+incertidumbres despreciables en la masa $m$, la gravedad $g$ y la longitud $L$
+frente a la de la frecuencia:
+\begin{equation}\label{eq:uI}
+  u(I)=\left|\frac{\partial I}{\partial\wz}\right|u(\wz)=\frac{2mgL}{\wz^{3}}\,u(\wz)
+  \quad\Longrightarrow\quad
+  \frac{u(I)}{I}=2\,\frac{u(\wz)}{\wz}=2\,\frac{u(\mean{T}_0)}{\mean{T}_0}.
+\end{equation}
+
+\subsubsection{Incertidumbres de la constante elástica del muelle ($k$)}
+A partir de los ajustes lineales $y=a\,\ell^{2}+b$ de las magnitudes
+$\wu^{2}$, $\wm$ y $\wpl$ frente a $\ell^{2}$, se obtienen tres estimaciones
+de $k$ con sus correspondientes incertidumbres propagadas (donde $u(a)$ es la
+incertidumbre de la pendiente dada por el ajuste lineal por mínimos cuadrados
+y $u(\ell)=\SI{1}{\milli\meter}$ es la incertidumbre de la cinta métrica).
+
+\paragraph{Método 1: a partir de $\wu^{2}$ frente a $\ell^{2}$, $k_1=I\,a_1/2$.}
+Dado que depende del momento de inercia $I$ y de la pendiente $a_1$:
+\begin{equation}\label{eq:uk1}
+  u(k_1)=\sqrt{\left(\frac{\partial k_1}{\partial a_1}\right)^{\!2}u^{2}(a_1)
+               +\left(\frac{\partial k_1}{\partial I}\right)^{\!2}u^{2}(I)}
+        =\sqrt{\left(\frac{I}{2}\right)^{\!2}u^{2}(a_1)+\left(\frac{a_1}{2}\right)^{\!2}u^{2}(I)} .
+\end{equation}
+
+\paragraph{Métodos 2 y 3: a partir de $\wm$ y $\wpl$ frente a $\ell^{2}$, $k=2mgL\,a_{-}/\wz$ o $k=2mgL\,a_{+}/\wz$.}
+Para una pendiente genérica $a$ ($a_{-}$ o $a_{+}$):
+\begin{equation}\label{eq:uk23}
+  u(k)=\sqrt{\left(\frac{\partial k}{\partial a}\right)^{\!2}u^{2}(a)
+             +\left(\frac{\partial k}{\partial\wz}\right)^{\!2}u^{2}(\wz)}
+      =\frac{2mgL}{\wz}\sqrt{u^{2}(a)+\left(\frac{a}{\wz}\right)^{\!2}u^{2}(\wz)} .
+\end{equation}
 
 \ornamento
 
@@ -1207,7 +1292,7 @@ Las \cref{tab:modo1,tab:modo2,tab:modo3} recogen los instantes de los máximos
 obtenidos con el análisis de picos, junto con la altura de los picos y el
 periodo que resulta de la \cref{eq:periodo}. Las longitudes de acoplamiento
 son $\ell=\SIlist{25;35;45;55;65}{\centi\meter}$, con una incertidumbre
-\pend{$u(\ell)$} debida a la cinta métrica. La \cref{tab:frecuencias} reúne
+$u(\ell)=\SI{1}{\milli\meter}$ debida a la cinta métrica. La \cref{tab:frecuencias} reúne
 los periodos y las frecuencias angulares de cada longitud, que son los datos
 de partida de los ajustes.
 
@@ -1242,11 +1327,47 @@ la \cref{eq:inercia} da
 \end{equation}
 \end{calculo}
 
+A partir de los periodos del modo en fase registrados en la
+\cref{tab:omega0}, la media aritmética resulta
+$\mean{T}_0=\SI{1,9960}{\second}$. Para determinar su incertidumbre típica,
+$u(\mean{T}_0)$, combinamos en cuadratura la incertidumbre de tipo~A (debida a
+la dispersión de las $N=4$ medidas independientes) y la incertidumbre de
+tipo~B (asociada a la resolución del equipo):
+\begin{equation}\label{eq:uT0valor}
+  u(\mean{T}_0)=\sqrt{\left(\frac{s}{\sqrt{4}}\right)^{\!2}+u^{2}(T_0)}
+  =\sqrt{(\SI{0,0035}{\second})^{2}+(\SI{0,0011}{\second})^{2}}
+  =\SI{0,00368}{\second}\approx\SI{0,004}{\second},
+\end{equation}
+donde $s/\sqrt{4}=\SI{0,0035}{\second}$ es la estimación de la desviación
+típica de la media, con $\nu=3$ grados de libertad, y
+$u(T_0)=\frac{\sqrt{2}}{5}\cdot\SI{4}{\milli\second}\approx\SI{0,0011}{\second}$
+es la incertidumbre instrumental de cada periodo individual. Propagando la
+incertidumbre mediante la \cref{eq:propagacion} a la frecuencia natural,
+$\wz=2\pi/\mean{T}_0$, y al momento de inercia, $I=mgL/\wz^{2}$:
+\begin{align}
+  u(\wz)&=\frac{2\pi}{\mean{T}_0^{2}}\,u(\mean{T}_0)
+         =\frac{2\pi}{(\SI{1,9960}{\second})^{2}}\cdot\SI{0,00368}{\second}
+         =\SI{0,00580}{\radian\per\second},\label{eq:uw0valor}\\
+  u(I)&=2\,I\,\frac{u(\mean{T}_0)}{\mean{T}_0}
+       =2\cdot\SI{0,9900}{\kilogram\meter\squared}\cdot\frac{\SI{0,00368}{\second}}{\SI{1,9960}{\second}}
+       =\SI{0,00365}{\kilogram\meter\squared}.\label{eq:uIvalor}
+\end{align}
+Para un factor de cobertura de Student $t_{95,3}=\num{3,182}$,
+correspondiente al \SI{95}{\percent} de confianza ($\nu=3$), las
+incertidumbres ampliadas $U=t_{95,3}\,u$ resultan
+\begin{align*}
+  U(\wz)&=\num{3,182}\cdot\SI{0,00580}{\radian\per\second}
+         =\SI{0,0185}{\radian\per\second}\approx\SI{0,018}{\radian\per\second},\\
+  U(I)&=\num{3,182}\cdot\SI{0,00365}{\kilogram\meter\squared}
+       =\SI{0,0116}{\kilogram\meter\squared}\approx\SI{0,012}{\kilogram\meter\squared}.
+\end{align*}
+Por tanto, los valores finales expresados al \SI{95}{\percent} de confianza
+son:
+
 \begin{destacado}[Cuestión 1]
-$\wz=\valWcero\ \si{\radian\per\second}$
+$\wz=(\valWceroU)\ \si{\radian\per\second}$
 \quad\textperiodcentered\quad
-$I=\valI\ \si{\kilogram\meter\squared}$
-\;\pend{$\pm\,U(I)$, al \SI{95}{\percent}}
+$I=(\valIU)\ \si{\kilogram\meter\squared}$
 \end{destacado}
 
 \begin{observacion}[Comprobaciones]\label{obs:comprobaciones}
@@ -1270,59 +1391,261 @@ la pequeña diferencia sugiere que el centro de masas queda algo por encima
 de $L=\SI{1}{\meter}$.
 \end{observacion}
 
-\begin{pendientebox}[cuestión 1]
-Incertidumbre de $\mean{T}_0$ (tipo~A con $s/\sqrt{4}$ y $\nu=3$, y tipo~B por la
-resolución) y su propagación a $\wz$ e $I$ mediante la
-\cref{eq:propagacion}: $u(\wz)=2\pi\,u(\mean{T}_0)/\mean{T}_0^{2}$ y
-$u(I)/I=2\,u(\wz)/\wz$. La hoja de cálculo da, como estimación preliminar,
-$s/\sqrt{4}=\SI{0,0035}{\second}$.
-\end{pendientebox}
-
 \subsection{Ajustes lineales y constante del muelle}\label{sec:ajustes}
-\begin{pendientebox}[cuestión 2]
-Representar $\wu^{2}$, $\wm$ y $\wpl$ frente a $\ell^{2}$ con los datos de la
-\cref{tab:frecuencias} y sus barras de incertidumbre; ajustar las tres rectas
-$y=a\,\ell^{2}+b$; dar pendientes y ordenadas con sus incertidumbres, y
-deducir $k$ con la \cref{eq:k}. Comparar cada ordenada con su valor
-teórico ($\wz^{2}=\valWceroDos\ \si{\radian\squared\per\second\squared}$,
-$0$ y $\wz=\valWcero\ \si{\radian\per\second}$).
-\end{pendientebox}
+Una vez calculadas las frecuencias $\wu^{2}$, $\wpl$ y $\wm$, procedemos a
+realizar el ajuste lineal y la representación de dichas frecuencias frente a
+$\ell^{2}$. En la \cref{tab:ajustes_lineales} recogemos los valores de cada
+ajuste, así como la $k$ calculada junto a su incertidumbre, siguiendo la
+expresión recogida en el apartado de \emph{Cálculo de $k$ y su
+incertidumbre}. Tras ello, se muestran las gráficas con sus respectivos
+ajustes (\cref{fig:ajuste-w1,fig:ajuste-wm,fig:ajuste-wp}).
+
+\input{tablas/ajustes}
+
+\begin{destacado}[Cálculo de $k$ y su incertidumbre]
+A partir del ajuste lineal de $\wu^{2}$ frente a $\ell^{2}$ podemos calcular
+la constante elástica del muelle, $k$, tal y como se recoge en la
+\cref{eq:k}, y que volvemos a definir:
+\begin{align*}
+  k_1&=\frac{I\,a_1}{2}
+  &&\longrightarrow\quad
+  u(k_1)=\sqrt{\left(\frac{I}{2}\right)^{\!2}u^{2}(a_1)+\left(\frac{a_1}{2}\right)^{\!2}u^{2}(I)},\\[0.4em]
+  k&=\frac{2mgL}{\wz}\,a
+  &&\longrightarrow\quad
+  u(k)=\frac{2mgL}{\wz}\sqrt{u^{2}(a)+\left(\frac{a}{\wz}\right)^{\!2}u^{2}(\wz)} .
+\end{align*}
+\end{destacado}
 
 \begin{figure}[ht]
 \centering
-\huecofigura[4.6cm]{Gráfica: $\wu^{2}$ frente a $\ell^{2}$ con su recta de ajuste.}\\[6pt]
-\huecofigura[4.6cm]{Gráfica: $\wm$ y $\wpl$ frente a $\ell^{2}$ con sus rectas de ajuste.}
-\caption{\pendiente{Pie de figura de los ajustes lineales.}}
-\label{fig:ajustes}
+\input{tablas/fig-ajuste-w1}
+\caption{Ajuste lineal de $\wu^{2}$ frente a $\ell^{2}$, con una pendiente
+$a=\SI{3,5 \pm 0,5}{\radian\squared\per\second\squared\per\meter\squared}$ y
+una ordenada en el origen $b=\SI{10,15 \pm 0,12}{\radian\squared\per\second\squared}$.
+(a)~Cuadrado de la frecuencia del modo en contrafase, $\wu^{2}$, en función del
+cuadrado de la longitud de acoplamiento, $\ell^{2}$, para las cinco longitudes
+medidas; las barras son las incertidumbres típicas de la \cref{tab:frecuencias}
+(apenas visibles a esta escala). La recta ajusta los datos a $y=a\,\ell^{2}+b$
+por mínimos cuadrados, sin pesos, y $a$ y $b$ se dan con su incertidumbre
+típica. (b)~Residuo de cada punto, $y_i-(a\,\ell_i^{2}+b)$, en función de
+$\ell^{2}$.}
+\label{fig:ajuste-w1}
 \end{figure}
+
+\begin{figure}[ht]
+\centering
+\input{tablas/fig-ajuste-wm}
+\caption{Ajuste lineal de $\wm$ frente a $\ell^{2}$, con una pendiente
+$a=\SI{0,398 \pm 0,014}{\radian\per\second\per\meter\squared}$ y una ordenada
+en el origen $b=\SI{0,006 \pm 0,004}{\radian\per\second}$. (a)~Frecuencia de
+modulación del modo pulsante, $\wm=\pi/\Tb$, obtenida de los nodos de la
+envolvente, en función del cuadrado de la longitud de acoplamiento,
+$\ell^{2}$; las barras son las incertidumbres típicas de la
+\cref{tab:frecuencias}. La recta ajusta los datos a $y=a\,\ell^{2}+b$ por
+mínimos cuadrados, sin pesos, y $a$ y $b$ se dan con su incertidumbre típica;
+el ajuste ponderado por $1/u_i^{2}$ da la misma pendiente
+(\cref{sec:comparacion}). (b)~Residuo de cada punto, $y_i-(a\,\ell_i^{2}+b)$,
+en función de $\ell^{2}$.}
+\label{fig:ajuste-wm}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\input{tablas/fig-ajuste-wp}
+\caption{Ajuste lineal de $\wpl$ frente a $\ell^{2}$, con una pendiente
+$a=\SI{0,29 \pm 0,04}{\radian\per\second\per\meter\squared}$ y una ordenada en
+el origen $b=\SI{3,176 \pm 0,011}{\radian\per\second}$. (a)~Frecuencia de la
+portadora del modo pulsante, $\wpl=2\pi/\Tp$, en función del cuadrado de la
+longitud de acoplamiento, $\ell^{2}$; las barras son las incertidumbres
+típicas de la \cref{tab:frecuencias}. La recta ajusta los datos a
+$y=a\,\ell^{2}+b$ por mínimos cuadrados, sin pesos, y $a$ y $b$ se dan con su
+incertidumbre típica. (b)~Residuo de cada punto, $y_i-(a\,\ell_i^{2}+b)$, en
+función de $\ell^{2}$.}
+\label{fig:ajuste-wp}
+\end{figure}
+
+\subsection{Comparación de los tres métodos}\label{sec:comparacion}
+Los tres ajustes miden la misma constante del muelle por caminos distintos, y
+dan
+\begin{equation}\label{eq:ktres}
+  k_{1}=\valKUno\ \si{\newton\per\meter},
+  \qquad
+  k_{-}=\valKMenos\ \si{\newton\per\meter},
+  \qquad
+  k_{+}=\valKMas\ \si{\newton\per\meter},
+\end{equation}
+con incertidumbres ampliadas al \SI{95}{\percent}. Para compararlos nos hacemos
+tres preguntas: si son compatibles entre sí, cuál es más preciso y por qué, y
+de dónde viene la diferencia entre ellos.
+
+\subsubsection{Compatibilidad}
+Como $k$ es proporcional a la pendiente $a$, hereda su distribución, y la
+incertidumbre de la pendiente ($\nu=N-2=3$) domina sobre la de $I$ o $\wz$.
+Por eso la fórmula de Welch--Satterthwaite~\cite[ec.~(67)]{NUM-ARG} da
+$\nu_{\text{eff}}=3$ en los tres casos, y la incertidumbre ampliada es
+$\ext{k}=t_{95,3}\,u(k)$, con $t_{95,3}=\num{3,182}$. Dos valores son
+compatibles al \SI{95}{\percent} si su diferencia no supera la incertidumbre
+ampliada combinada, $|k_a-k_b|\le\sqrt{\ext{k_a}^{2}+\ext{k_b}^{2}}$. La
+\cref{tab:compatibilidad} aplica el criterio a las tres parejas. Los valores
+de $\wu^{2}$ y de $\wpl$ coinciden casi exactamente; el de $\wm$ es compatible
+con el de $\wpl$, pero con el de $\wu^{2}$ solo lo es por muy poco: en
+incertidumbres típicas, los separan unas $3\sigma$.
 
 \begin{table}[ht]
 \centering
-\caption{Parámetros de los ajustes $y=a\,\ell^{2}+b$ y constante del muelle
-que se deduce de cada uno.}
-\label{tab:ajustes}
-\renewcommand{\arraystretch}{1.3}
-\begin{tabular}{@{}l c c c c c@{}}
+\caption{Compatibilidad de los tres valores de $k$ al \SI{95}{\percent}. La
+última columna da la misma diferencia en unidades de la incertidumbre típica
+combinada, $\sigma=\sqrt{u_a^{2}+u_b^{2}}$.}
+\label{tab:compatibilidad}
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{@{}l c c c c@{}}
 \toprule
-Ajuste & $a\pm U(a)$ & $b\pm U(b)$ & Ordenada teórica & $r$ & $k\pm U(k)$ (\si{\newton\per\meter}) \\
+Pareja & $|k_a-k_b|$ (\si{\newton\per\meter}) & $\sqrt{U_a^{2}+U_b^{2}}$ (\si{\newton\per\meter}) & ¿Compatibles? & $|k_a-k_b|/\sigma$ \\
 \midrule
-$\wu^{2}$ frente a $\ell^{2}$ & \pend{} & \pend{} & $\wz^{2}$ & \pend{} & \pend{} \\
-$\wm$ frente a $\ell^{2}$     & \pend{} & \pend{} & $0$       & \pend{} & \pend{} \\
-$\wpl$ frente a $\ell^{2}$    & \pend{} & \pend{} & $\wz$     & \pend{} & \pend{} \\
+$k_{1}$ y $k_{+}$ & \num{0,11} & \num{1,14} & sí, holgadamente & \num{0,3} \\
+$k_{+}$ y $k_{-}$ & \num{0,64} & \num{0,93} & sí              & \num{2,2} \\
+$k_{1}$ y $k_{-}$ & \num{0,75} & \num{0,77} & sí, al límite    & \num{3,1} \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-\subsection{Comparación de los tres métodos}\label{sec:comparacion}
-\begin{pendientebox}[cuestión 3]
-Comparar los tres valores de $k$ (compatibilidad de sus intervalos al
-\SI{95}{\percent}) y discutir cuál es más preciso y por qué. Puntos que
-pueden ayudar: la relación de $\wu^{2}$ es exacta, mientras que las de
-$\wm$ y $\wpl$ son aproximadas (\cref{obs:limites}); $\wpl$ cambia muy poco
-con $\ell$, de modo que su pendiente es pequeña frente a la dispersión; y
-$\wm$ procede de la envolvente, cuya incertidumbre es del orden de $\Tp$
-(\cref{sec:pulsante}).
-\end{pendientebox}
+\subsubsection{Qué método es más preciso, y por qué}
+El método de $\wm$ es, con diferencia, el más preciso: su incertidumbre
+relativa es del \SI{4}{\percent}, frente al \SI{13}{\percent} de $\wu^{2}$ y el
+\SI{15}{\percent} de $\wpl$, y su ajuste es el mejor ($R^{2}=\num{0,996}$,
+frente a \num{0,95} y \num{0,94}). La razón está en lo que mide cada
+magnitud. Lo que buscamos es el efecto del muelle, y ese efecto es pequeño
+comparado con la frecuencia propia del péndulo:
+\begin{itemize}
+  \item $\wpl$ solo crece un \SI{3,4}{\percent} entre $\ell_1$ y $\ell_5$, y
+        $\wu^{2}$, un \SI{13}{\percent}. Ambas llevan dentro todo el «fondo»
+        de $\wz$ ($\wz\approx\SI{3,15}{\radian\per\second}$,
+        $\wz^{2}\approx\SI{9,9}{\radian\squared\per\second\squared}$), y el
+        acoplamiento es una pequeña corrección encima. Cualquier pequeño error
+        en los periodos pesa mucho frente a ese cambio y se traslada a la
+        pendiente.
+  \item $\wm$, en cambio, valdría cero sin muelle, y entre $\ell_1$ y $\ell_5$
+        se multiplica por seis. Mide directamente la diferencia
+        $(\wu-\wz)/2$, y esa resta la hace la propia física, a través del
+        batido, no nosotros con dos números casi iguales. Es el mismo
+        principio por el que se afina un instrumento escuchando los batidos:
+        comparar dos frecuencias muy próximas por su diferencia es mucho más
+        sensible que medirlas por separado~\cite{FIV}.
+\end{itemize}
+
+Las barras de error lo confirman. Cuando las incertidumbres de los datos son
+distintas, las notas del laboratorio recomiendan ajustar minimizando
+$\chi^{2}=\sum_i(y_i-a\,x_i-b)^{2}/u_i^{2}$, y comprobar que su mínimo es
+comparable al número de grados de libertad, $\chi^{2}_{\min}\approx N-2=3$,
+como prueba de que el modelo y las incertidumbres describen los
+datos~\cite{NUM-ARG}. Hemos repetido así los tres ajustes:
+\begin{itemize}
+  \item En $\wu^{2}$ y $\wpl$ todas las barras son prácticamente iguales, de
+        modo que el ajuste sin pesos está justificado y da la misma recta.
+        Pero el mínimo es enorme: $\chi^{2}_{\min}\approx620$ y $140$. Los
+        puntos se separan de la recta hasta
+        \SI{0,18}{\radian\squared\per\second\squared} y
+        \SI{0,018}{\radian\per\second}, veinte y diez veces más que sus barras,
+        que solo recogen la resolución temporal
+        (\cref{fig:ajuste-w1,fig:ajuste-wp}). Hay, por tanto, efectos de un
+        registro a otro que la resolución no ve, y la incertidumbre realista de
+        la pendiente es la que da la dispersión de los datos, como hace el
+        ajuste por mínimos cuadrados sin pesos.
+  \item En $\wm$, cuyas barras sí son muy distintas (de \num{0,0008} a
+        \SI{0,013}{\radian\per\second}), el ajuste ponderado da exactamente la
+        misma pendiente que el no ponderado,
+        $a=\SI{0,398 \pm 0,019}{\radian\per\second\per\meter\squared}$, con
+        $\chi^{2}_{\min}=\num{1,6}$, del orden de $\nu=3$: la recta y la
+        incertidumbre que asignamos a los nodos, del orden de $\Tp$
+        (\cref{eq:unodo}), describen bien los datos. La constante resulta
+        $k_{-}=\SI{2,48 \pm 0,12}{\newton\per\meter}$, es decir,
+        $\SI{2,5 \pm 0,4}{\newton\per\meter}$ al \SI{95}{\percent}, idéntica a la
+        de la \cref{tab:ajustes_lineales} y compatible ya con holgura con
+        $k_{1}$.
+\end{itemize}
+La incertidumbre de $\ell$ no cambia este panorama: $u(\ell^{2})=2\ell\,u(\ell)$
+no pasa de \SI{0,0013}{\meter\squared}, que en $\wu^{2}$ equivale a
+$a_1\,u(\ell^{2})\approx\SI{0,005}{\radian\squared\per\second\squared}$, muy por
+debajo de los residuos.
+
+\subsubsection{Si $\wm$ es el más preciso, ¿por qué no coinciden los tres valores?}
+Que un método sea preciso no garantiza que los demás den lo mismo: la
+diferencia entre $k_{-}$ y los otros dos tiene que venir de los datos, y los
+$\chi^{2}$ anteriores ya señalan dónde buscar, en los modos en contrafase y en
+la portadora. Para localizarla usamos una propiedad de la \cref{eq:wpm}: el
+modo pulsante y los modos normales deben estar de acuerdo, es decir,
+$\wm\simeq(\wu-\wz)/2$ y $\wpl\simeq(\wu+\wz)/2$ (\cref{fig:coherencia}).
+\begin{itemize}
+  \item De $\ell_1$ a $\ell_3$ el acuerdo es bueno, con diferencias de hasta
+        \SI{0,02}{\radian\per\second}: los tres modos cuentan la misma
+        historia.
+  \item En $\ell_4$ y $\ell_5$ la separación entre modos que se deduce del
+        modo pulsante, $\wpl+\wm\approx\num{3,387}$ y
+        \SI{3,470}{\radian\per\second}, es claramente mayor que la que se mide
+        en contrafase, $\wu=\num{3,339}$ y \SI{3,405}{\radian\per\second}. El modo en contrafase
+        «se queda corto» precisamente en los dos acoplamientos más fuertes, y
+        eso aplana la recta de $\wu^{2}$ y, con ella, rebaja $k_{1}$.
+\end{itemize}
+
+\begin{figure}[ht]
+\centering
+\input{tablas/fig-coherencia}
+\caption{Coherencia entre el modo pulsante y los modos normales. (a)~$\wm$
+medido a partir de los nodos de la envolvente (círculos), frente a
+$(\wu-\wz)/2$ calculado con los modos en fase y contrafase (cuadrados).
+(b)~Lo mismo para $\wpl$ y $(\wu+\wz)/2$. Barras: incertidumbres típicas. Hasta
+$\ell_3$ ambos caminos coinciden; en $\ell_4$ y $\ell_5$ el modo pulsante
+indica una separación entre modos mayor que la medida en contrafase.}
+\label{fig:coherencia}
+\end{figure}
+
+La \cref{tab:robustez} lo confirma: si repetimos los ajustes sin las
+longitudes mayores, $k_{-}$ apenas se mueve (entre
+\SIlist{2,35;2,61}{\newton\per\meter}), mientras que $k_{1}$ y $k_{+}$ pasan de
+\SIlist{1,7;1,8}{\newton\per\meter} con las cinco longitudes a
+\SIlist{2,8;3,1}{\newton\per\meter} con las tres primeras, en torno al valor
+de $k_{-}$. Con un solo grado de libertad estos ajustes reducidos no
+permiten dar valores, pero sí indican que la discrepancia procede de $\ell_4$ y
+$\ell_5$ y no del método de $\wm$. Comparados con la tendencia de $\ell_1$ a
+$\ell_3$, los dos puntos se comportan de forma distinta:
+\begin{itemize}
+  \item En $\ell_4$ las tres magnitudes quedan por debajo de esa tendencia
+        ($\wu^{2}$ un \SI{4}{\percent} y $\wm$ un \SI{8}{\percent}; $\wpl$, algo
+        menos), y $\wu^{2}$ apenas supera al valor de $\ell_3$
+        (\cref{fig:ajuste-w1}). Una causa común a los tres modos en esa
+        longitud, como que el muelle quedara sujeto algo más arriba de
+        \SI{55}{\centi\meter}, lo explicaría.
+  \item En $\ell_5$, $\wm$ cae solo un \SI{2,5}{\percent}, dentro de su
+        incertidumbre y en la línea de la curvatura que desprecia la
+        aproximación de acoplamiento débil (\cref{obs:limites}). En cambio,
+        $\wu^{2}$, cuya relación con $\ell^{2}$ es exacta, cae un
+        \SI{5,5}{\percent}, y eso no tiene la misma excusa: el registro en
+        contrafase de $\ell_5$ es el que más se aparta.
+\end{itemize}
+
+\input{tablas/robustez}
+
+No podemos establecer con seguridad el origen último de estas desviaciones.
+Las candidatas son una colocación del muelle algo distinta entre registros de
+la misma longitud, amplitudes que dejan de ser pequeñas cuando el muelle
+trabaja con más fuerza (lo que ocurre precisamente en contrafase y con $\ell$
+grande) y un muelle que no es ideal: en la \figpanel{fig:fotos-montaje}{b} se
+aprecia que cuelga combado por su propio peso. La aproximación de
+acoplamiento débil, por sí sola, no basta: su efecto es a lo sumo del
+\SI{4}{\percent} y tiende además a rebajar la pendiente, no a subirla.
+
+\begin{resultado}[Cuestión 3]\label{res:cuestion3}
+Los tres valores de $k$ son compatibles al \SI{95}{\percent}, aunque $k_{1}$ y
+$k_{-}$ solo al límite. El método más preciso es el de $\wm$: mide
+directamente el efecto del acoplamiento, sin el fondo de $\wz$ que domina en
+$\wu^{2}$ y $\wpl$, su ajuste ponderado es coherente con sus incertidumbres
+($\chi^{2}_{\min}\approx\nu$) y es el más robusto frente a la elección de
+longitudes. La diferencia con los otros dos métodos se concentra en los
+registros de $\ell_4$ y $\ell_5$, sobre todo en contrafase, cuya dispersión
+supera con mucho la resolución temporal. El de $\wu^{2}$ descansa en una
+relación exacta, pero su precisión queda limitada por esa dispersión, y el de
+$\wpl$ es el menos sensible de los tres.
+\end{resultado}
 
 \ornamento
 

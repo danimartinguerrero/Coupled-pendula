@@ -1,0 +1,35 @@
+% Generado por scripts/tablas.py a partir de Practica3_pendulos_acoplados.xlsx. No editar a mano.
+
+\begin{tikzpicture}
+  \pgfplotstableread{
+      x y uy r
+      0.0625 0.029895 0.000794 -0.000736
+      0.1225 0.056008 0.002762 0.001517
+      0.2025 0.088605 0.006825 0.002301
+      0.3025 0.120266 0.006261 -0.005805
+      0.4225 0.176514 0.013380 0.002722
+  }\datosMenos
+  \begin{groupplot}[group style={group size=1 by 2, vertical sep=6pt,
+                      xlabels at=edge bottom, xticklabels at=edge bottom},
+                    datos, width=0.82\linewidth, xmin=0.03, xmax=0.46,
+                    xlabel={$\ell^{2}$ (\si{\meter\squared})},
+                    xtick={0.1,0.2,0.3,0.4}, xticklabel style={/pgf/number format/fixed},
+                    enlarge y limits=0.15,
+                    yticklabel style={/pgf/number format/fixed, /pgf/number format/precision=3}]
+  \nextgroupplot[height=5.4cm, ylabel={$\omega_{-}$ (\si{\radian\per\second})}, legend pos=north west,
+                 legend style={font=\scriptsize}]
+    \addplot[azulprof, line width=1.0pt, domain=0.035:0.455, samples=2] {0.397670*x+0.005776};
+    \addlegendentry{Ajuste: $y=0.3977\,x+0.0058$, $R^{2}=\num{0.9962}$}
+    \addplot[puntoA, error bars/.cd, y dir=both, y explicit,
+              error bar style={line width=0.6pt, azulprof}, error mark options={rotate=90, mark size=2pt, azulprof}]
+      table[x=x, y=y, y error=uy] {\datosMenos};
+    \addlegendentry{Datos experimentales}
+    \node[anchor=south east, font=\small, text=grispizarra] at (rel axis cs:0.99,0.03) {(a)};
+  \nextgroupplot[height=3.0cm, ylabel={Residuo}]
+    \draw[grispizarra, line width=0.5pt, densely dashed] (axis cs:0.03,0) -- (axis cs:0.46,0);
+    \node[anchor=north west, font=\small, text=grispizarra] at (rel axis cs:0.01,0.97) {(b)};
+    \addplot[puntoA, error bars/.cd, y dir=both, y explicit,
+              error bar style={line width=0.6pt, azulprof}, error mark options={rotate=90, mark size=2pt, azulprof}]
+      table[x=x, y=r, y error=uy] {\datosMenos};
+  \end{groupplot}
+\end{tikzpicture}
