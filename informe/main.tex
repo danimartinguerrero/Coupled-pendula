@@ -1632,26 +1632,30 @@ $\wpl=\wz+\wm$                        & \num{3,148} & \num{3,175} & \num{3,235} 
 \end{tabular}
 \end{table}
 
-Podemos entenderlo con un ejemplo cotidiano. Si queremos saber cuánto pesa un
-gato, podemos pesarnos con él en brazos y sin él y restar, o bien pesarlo
+Podemos entenderlo con un ejemplo cotidiano. Para saber cuánto pesa un gato,
+podemos pesarnos con él en brazos y sin él y restar, o bien pesarlo
 directamente. En el primer caso medimos dos números grandes, de unos
 \SI{70}{\kilogram}, y el error de la báscula, de medio kilo, se come buena
 parte de los \SI{4}{\kilogram} del gato; en el segundo, todo lo que medimos es
-gato. Al medir $\wpl$ o $\wu^{2}$ hacemos lo primero: medimos «péndulo más
-muelle», y cualquier pequeño error en un periodo de unos \SI{2}{\second} es
-comparable al cambio que buscamos, pues $\wpl$ solo crece un
-\SI{3,4}{\percent} entre $\ell_1$ y $\ell_5$. Al medir $\wm$ hacemos lo
-segundo: sin muelle valdría cero, de modo que todo lo que medimos es efecto
-del acoplamiento, y entre $\ell_1$ y $\ell_5$ se multiplica por seis. Además,
-la resta la hace la propia física, a través del batido, y no nosotros con dos
-números casi iguales. Si para $\ell_1$ calculásemos $\wm$ restando las
-frecuencias medidas en fase y en contrafase, cada una con un error de unos
-\SI{0,01}{\radian\per\second}, obtendríamos $\num{0,054}\pm\SI{0,014}{\radian\per\second}$
-para $\wu-\wz$, un \SI{26}{\percent} de incertidumbre; midiendo directamente el
-periodo de pulsación, $\Tb\approx\SI{105}{\second}$, el error es solo del
-\SI{3}{\percent}. Es el mismo principio por el que se afina un instrumento
-escuchando los batidos: dos notas casi iguales no se distinguen por separado,
-pero juntas producen un vaivén lento que delata su diferencia~\cite{FIV}.
+gato. Lo mismo nos ocurre con nuestras frecuencias:
+\begin{itemize}
+  \item Al medir $\wpl$ o $\wu^{2}$ hacemos lo primero: medimos «péndulo más
+        muelle», y un pequeño error en un periodo de unos \SI{2}{\second} ya
+        es comparable al cambio que buscamos, pues $\wpl$ solo crece un
+        \SI{3,4}{\percent} entre $\ell_1$ y $\ell_5$.
+  \item Al medir $\wm$ hacemos lo segundo: sin muelle valdría cero, así que
+        todo lo que medimos es efecto del acoplamiento, y entre $\ell_1$ y
+        $\ell_5$ se multiplica por seis.
+\end{itemize}
+
+Además, la resta la hace la propia física, a través del batido. Si para
+$\ell_1$ calculásemos $\wu-\wz$ restando las frecuencias medidas en fase y en
+contrafase, con un error de unos \SI{0,01}{\radian\per\second} en cada una,
+obtendríamos $\SI{0,054 \pm 0,014}{\radian\per\second}$, un \SI{26}{\percent} de
+incertidumbre; midiendo directamente el periodo de pulsación,
+$\Tb\approx\SI{105}{\second}$, el error es solo del \SI{3}{\percent}. Es el mismo
+principio por el que se afina un instrumento escuchando los
+batidos~\cite{FIV}.
 
 El ajuste ponderado lo confirma. Como las barras de $\wm$ son muy distintas
 (de \num{0,0008} a \SI{0,013}{\radian\per\second}), minimizamos
