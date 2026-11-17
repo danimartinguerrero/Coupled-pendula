@@ -1528,79 +1528,150 @@ $k_{1}$ y $k_{-}$ & \num{0,75} & \num{0,77} & sí, al límite    & \num{3,1} \\
 El método de $\wm$ es, con diferencia, el más preciso: su incertidumbre
 relativa es del \SI{4}{\percent}, frente al \SI{13}{\percent} de $\wu^{2}$ y el
 \SI{15}{\percent} de $\wpl$, y su ajuste es el mejor ($R^{2}=\num{0,996}$,
-frente a \num{0,95} y \num{0,94}). La razón está en lo que mide cada
-magnitud. Lo que buscamos es el efecto del muelle, y ese efecto es pequeño
-comparado con la frecuencia propia del péndulo:
-\begin{itemize}
-  \item $\wpl$ solo crece un \SI{3,4}{\percent} entre $\ell_1$ y $\ell_5$, y
-        $\wu^{2}$, un \SI{13}{\percent}. Ambas llevan dentro todo el «fondo»
-        de $\wz$ ($\wz\approx\SI{3,15}{\radian\per\second}$,
-        $\wz^{2}\approx\SI{9,9}{\radian\squared\per\second\squared}$), y el
-        acoplamiento es una pequeña corrección encima. Cualquier pequeño error
-        en los periodos pesa mucho frente a ese cambio y se traslada a la
-        pendiente.
-  \item $\wm$, en cambio, valdría cero sin muelle, y entre $\ell_1$ y $\ell_5$
-        se multiplica por seis. Mide directamente la diferencia
-        $(\wu-\wz)/2$, y esa resta la hace la propia física, a través del
-        batido, no nosotros con dos números casi iguales. Es el mismo
-        principio por el que se afina un instrumento escuchando los batidos:
-        comparar dos frecuencias muy próximas por su diferencia es mucho más
-        sensible que medirlas por separado~\cite{FIV}.
-\end{itemize}
+frente a \num{0,95} y \num{0,94}). Para entender por qué, conviene fijarnos en
+qué parte de cada magnitud se debe realmente al muelle.
 
-Las barras de error lo confirman. Cuando las incertidumbres de los datos son
-distintas, las notas del laboratorio recomiendan ajustar minimizando
-$\chi^{2}=\sum_i(y_i-a\,x_i-b)^{2}/u_i^{2}$, y comprobar que su mínimo es
-comparable al número de grados de libertad, $\chi^{2}_{\min}\approx N-2=3$,
-como prueba de que el modelo y las incertidumbres describen los
-datos~\cite{NUM-ARG}. Hemos repetido así los tres ajustes:
-\begin{itemize}
-  \item En $\wu^{2}$ y $\wpl$ todas las barras son prácticamente iguales, de
-        modo que el ajuste sin pesos está justificado y da la misma recta.
-        Pero el mínimo es enorme: $\chi^{2}_{\min}\approx620$ y $140$. Los
-        puntos se separan de la recta hasta
-        \SI{0,18}{\radian\squared\per\second\squared} y
-        \SI{0,018}{\radian\per\second}, veinte y diez veces más que sus barras,
-        que solo recogen la resolución temporal
-        (\cref{fig:ajuste-w1,fig:ajuste-wp}). Hay, por tanto, efectos de un
-        registro a otro que la resolución no ve, y la incertidumbre realista de
-        la pendiente es la que da la dispersión de los datos, como hace el
-        ajuste por mínimos cuadrados sin pesos.
-  \item En $\wm$, cuyas barras sí son muy distintas (de \num{0,0008} a
-        \SI{0,013}{\radian\per\second}), el ajuste ponderado da exactamente la
-        misma pendiente que el no ponderado,
-        $a=\SI{0,398 \pm 0,019}{\radian\per\second\per\meter\squared}$, con
-        $\chi^{2}_{\min}=\num{1,6}$, del orden de $\nu=3$: la recta y la
-        incertidumbre que asignamos a los nodos, del orden de $\Tp$
-        (\cref{eq:unodo}), describen bien los datos. La constante resulta
-        $k_{-}=\SI{2,48 \pm 0,12}{\newton\per\meter}$, es decir,
-        $\SI{2,5 \pm 0,4}{\newton\per\meter}$ al \SI{95}{\percent}, idéntica a la
-        de la \cref{tab:ajustes_lineales} y compatible ya con holgura con
-        $k_{1}$.
-\end{itemize}
-La incertidumbre de $\ell$ no cambia este panorama: $u(\ell^{2})=2\ell\,u(\ell)$
-no pasa de \SI{0,0013}{\meter\squared}, que en $\wu^{2}$ equivale a
-$a_1\,u(\ell^{2})\approx\SI{0,005}{\radian\squared\per\second\squared}$, muy por
-debajo de los residuos.
+Sin muelle, los dos modos oscilarían con la frecuencia natural del péndulo,
+$\wz=\SI{3,148}{\radian\per\second}$. Al acoplarlos, el modo en fase no cambia,
+porque el muelle ni se estira ni se comprime; en contrafase, en cambio, el
+muelle trabaja todo el tiempo y suma su fuerza recuperadora a la de la
+gravedad, de modo que el sistema se vuelve más rígido y oscila algo más
+deprisa, tanto más cuanto mayor es $\ell$. La pulsación nace precisamente de
+esa pequeña diferencia de ritmo (\cref{fig:batido}): los dos modos empiezan a
+la par, el de contrafase va ganando ventaja, a mitad de camino van a contrapié
+y se cancelan (el nodo), y al cabo de $\Tb$ vuelven a ir a la par, con una
+oscilación de ventaja. Por eso la envolvente solo depende de la diferencia
+entre las dos frecuencias, y la portadora, de su media. De la \cref{eq:wpm} se
+sigue, además, una igualdad que lo resume todo:
+\begin{equation}\label{eq:wmaswmenos}
+  \wpl=\wz+\wm .
+\end{equation}
+Es decir, $\wpl$ y $\wm$ contienen exactamente el mismo efecto del muelle,
+pero $\wpl$ lo lleva sumado a la frecuencia natural del péndulo, que no
+depende de $\ell$ (\cref{tab:efecto}). Lo mismo le ocurre a
+$\wu^{2}=\wz^{2}+2k\ell^{2}/I$, en la que el término del muelle es solo entre
+un \SI{3}{\percent} y un \SI{15}{\percent} del total.
+
+\begin{figure}[ht]
+\centering
+\begin{tikzpicture}
+  \pgfmathsetmacro{\wzB}{3.1479}\pgfmathsetmacro{\wuB}{3.3223}
+  \pgfmathsetmacro{\wmB}{(\wuB-\wzB)/2}\pgfmathsetmacro{\wpB}{(\wuB+\wzB)/2}
+  \pgfmathsetmacro{\TbB}{pi/\wmB}
+  \begin{groupplot}[group style={group size=1 by 3, vertical sep=1.6cm},
+                    datos, width=0.86\textwidth, height=3.6cm, grid=none,
+                    ymin=-1.3, ymax=1.75, ytick=\empty, axis y line=none,
+                    clip=false,
+                    title style={font=\small\scshape, text=grispizarra, anchor=south west, at={(0,1.08)}}]
+  % (a) los dos modos por separado
+  \nextgroupplot[xmin=0, xmax=40, title={(a)\; los dos modos normales, por separado (tiempo en segundos)}]
+    \addplot[azulprof, line width=0.6pt, domain=0:40, samples=900] {cos(deg(\wzB*x))};
+    \addplot[turquesa, line width=0.6pt, domain=0:40, samples=900] {cos(deg(\wuB*x))};
+    \node[azulprof, anchor=west, font=\footnotesize] at (axis cs:40.6,0.5) {en fase, $\wz$};
+    \node[turquesa!85!azulprof, anchor=west, font=\footnotesize] at (axis cs:40.6,-0.5) {contrafase, $\wu$};
+    \node[acento, font=\footnotesize] at (axis cs:2.6,1.45) {a la par};
+    \node[acento, font=\footnotesize] at (axis cs:18,1.45) {a contrapié};
+    \node[acento, font=\footnotesize] at (axis cs:35.4,1.45) {a la par};
+    \draw[acento, line width=0.5pt, -{Stealth[length=4pt]}] (axis cs:5.6,1.45) -- (axis cs:14.2,1.45);
+    \draw[acento, line width=0.5pt, -{Stealth[length=4pt]}] (axis cs:21.8,1.45) -- (axis cs:32.4,1.45);
+  % (b) su suma: el modo pulsante
+  \nextgroupplot[xmin=0, xmax=40, title={(b)\; su suma: el modo pulsante}]
+    \addplot[azulacero!55, line width=0.5pt, domain=0:40, samples=1200]
+      {cos(deg(\wmB*x))*cos(deg(\wpB*x))};
+    \addplot[azulprof, line width=1.1pt, dash pattern=on 5pt off 2.5pt, domain=0:40, samples=160]
+      {abs(cos(deg(\wmB*x)))};
+    \addplot[azulprof, line width=1.1pt, dash pattern=on 5pt off 2.5pt, domain=0:40, samples=160]
+      {-abs(cos(deg(\wmB*x)))};
+    \draw[grispizarra, line width=0.45pt, |<->|] (axis cs:0,1.35) -- (axis cs:\TbB,1.35)
+      node[midway, above=0pt, text=azulprof, font=\footnotesize] {$\Tb=\pi/\wm\approx\SI{36}{\second}$};
+    \addplot[only marks, mark=*, mark size=2.2pt, mark options={fill=white, draw=acento, line width=0.8pt}]
+      coordinates {(\TbB/2,0)};
+    \node[acento, anchor=south, font=\footnotesize] at (axis cs:\TbB/2,0.32) {nodo};
+    \node[azulprof, anchor=west, font=\footnotesize] at (axis cs:40.6,0.55) {envolvente, $\wm$};
+    \node[azulacero, anchor=west, font=\footnotesize] at (axis cs:40.6,-0.55) {portadora, $\wpl$};
+  % (c) detalle: la portadora
+  \nextgroupplot[xmin=0, xmax=8, xtick={0,2,...,8}, xlabel={$t$ (\si{\second})},
+                 title={(c)\; detalle de los primeros segundos}]
+    \addplot[azulacero, line width=0.8pt, domain=0:8, samples=400]
+      {cos(deg(\wmB*x))*cos(deg(\wpB*x))};
+    \addplot[azulprof, line width=1.1pt, dash pattern=on 5pt off 2.5pt, domain=0:8, samples=40]
+      {abs(cos(deg(\wmB*x)))};
+    \draw[grispizarra, line width=0.45pt, |<->|] (axis cs:{2*pi/\wpB},1.3) -- (axis cs:{4*pi/\wpB},1.3)
+      node[midway, above=0pt, text=azulprof, font=\footnotesize] {$\Tp=2\pi/\wpl\approx\SI{1,94}{\second}$};
+  \end{groupplot}
+\end{tikzpicture}
+\caption{Origen del batido, con las frecuencias medidas para
+$\ell_3=\SI{45}{\centi\meter}$ ($\wz=\SI{3,148}{\radian\per\second}$,
+$\wu=\SI{3,322}{\radian\per\second}$). (a)~Los dos modos normales, representados
+por separado: como el de contrafase es algo más rápido, se adelanta poco a
+poco, pasa de ir a la par a ir a contrapié y vuelve a ir a la par al cabo de
+$\Tb$. (b)~Su suma, que es lo que describe un péndulo en el modo pulsante: una
+oscilación rápida (la portadora, de frecuencia $\wpl$, media de $\wz$ y $\wu$)
+dentro de una envolvente lenta (discontinua, de frecuencia $\wm$, mitad de su
+diferencia), que se anula en el nodo cuando los modos se cancelan.
+(c)~Detalle de los primeros segundos: en un periodo de la portadora la
+envolvente apenas cambia.}
+\label{fig:batido}
+\end{figure}
+
+\begin{table}[ht]
+\centering
+\caption{Parte de $\wpl$ y $\wm$ que se debe al muelle, calculada a partir de
+$\wz$ y de $\wu$ medidos (\si{\radian\per\second}). La frecuencia natural del
+péndulo es la misma en todas las columnas; solo cambia lo que añade el
+muelle.}
+\label{tab:efecto}
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{@{}l c c c c@{}}
+\toprule
+ & Sin muelle & $\ell_1=\SI{25}{\centi\meter}$ & $\ell_3=\SI{45}{\centi\meter}$ & $\ell_5=\SI{65}{\centi\meter}$ \\
+\midrule
+Efecto del muelle, $\wm=(\wu-\wz)/2$ & \num{0}     & \num{0,027} & \num{0,087} & \num{0,129} \\
+$\wpl=\wz+\wm$                        & \num{3,148} & \num{3,175} & \num{3,235} & \num{3,277} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Podemos entenderlo con un ejemplo cotidiano. Si queremos saber cuánto pesa un
+gato, podemos pesarnos con él en brazos y sin él y restar, o bien pesarlo
+directamente. En el primer caso medimos dos números grandes, de unos
+\SI{70}{\kilogram}, y el error de la báscula, de medio kilo, se come buena
+parte de los \SI{4}{\kilogram} del gato; en el segundo, todo lo que medimos es
+gato. Al medir $\wpl$ o $\wu^{2}$ hacemos lo primero: medimos «péndulo más
+muelle», y cualquier pequeño error en un periodo de unos \SI{2}{\second} es
+comparable al cambio que buscamos, pues $\wpl$ solo crece un
+\SI{3,4}{\percent} entre $\ell_1$ y $\ell_5$. Al medir $\wm$ hacemos lo
+segundo: sin muelle valdría cero, de modo que todo lo que medimos es efecto
+del acoplamiento, y entre $\ell_1$ y $\ell_5$ se multiplica por seis. Además,
+la resta la hace la propia física, a través del batido, y no nosotros con dos
+números casi iguales. Si para $\ell_1$ calculásemos $\wm$ restando las
+frecuencias medidas en fase y en contrafase, cada una con un error de unos
+\SI{0,01}{\radian\per\second}, obtendríamos $\num{0,054}\pm\SI{0,014}{\radian\per\second}$
+para $\wu-\wz$, un \SI{26}{\percent} de incertidumbre; midiendo directamente el
+periodo de pulsación, $\Tb\approx\SI{105}{\second}$, el error es solo del
+\SI{3}{\percent}. Es el mismo principio por el que se afina un instrumento
+escuchando los batidos: dos notas casi iguales no se distinguen por separado,
+pero juntas producen un vaivén lento que delata su diferencia~\cite{FIV}.
+
+El ajuste ponderado lo confirma. Como las barras de $\wm$ son muy distintas
+(de \num{0,0008} a \SI{0,013}{\radian\per\second}), minimizamos
+$\chi^{2}=\sum_i(y_i-a\,x_i-b)^{2}/u_i^{2}$~\cite{NUM-ARG}: la pendiente no
+cambia, $a=\SI{0,398 \pm 0,019}{\radian\per\second\per\meter\squared}$, y
+$\chi^{2}_{\min}=\num{1,6}$ es del orden de $\nu=3$, de modo que la recta y las
+incertidumbres que asignamos a los nodos describen bien los datos; resulta
+$k_{-}=\SI{2,5 \pm 0,4}{\newton\per\meter}$ al \SI{95}{\percent}. En $\wu^{2}$ y
+$\wpl$, con barras casi iguales, el ajuste sin pesos está justificado, pero
+$\chi^{2}_{\min}\approx620$ y $140$: los puntos se dispersan entre diez y veinte
+veces más de lo que explica la resolución temporal, señal de errores que
+cambian de un registro a otro. La incertidumbre de $\ell$, por su parte, es
+despreciable: $a_1\,u(\ell^{2})\lesssim\SI{0,005}{\radian\squared\per\second\squared}$.
 
 \subsubsection{Si $\wm$ es el más preciso, ¿por qué no coinciden los tres valores?}
-Que un método sea preciso no garantiza que los demás den lo mismo: la
-diferencia entre $k_{-}$ y los otros dos tiene que venir de los datos, y los
-$\chi^{2}$ anteriores ya señalan dónde buscar, en los modos en contrafase y en
-la portadora. Para localizarla usamos una propiedad de la \cref{eq:wpm}: el
-modo pulsante y los modos normales deben estar de acuerdo, es decir,
-$\wm\simeq(\wu-\wz)/2$ y $\wpl\simeq(\wu+\wz)/2$ (\cref{fig:coherencia}).
-\begin{itemize}
-  \item De $\ell_1$ a $\ell_3$ el acuerdo es bueno, con diferencias de hasta
-        \SI{0,02}{\radian\per\second}: los tres modos cuentan la misma
-        historia.
-  \item En $\ell_4$ y $\ell_5$ la separación entre modos que se deduce del
-        modo pulsante, $\wpl+\wm\approx\num{3,387}$ y
-        \SI{3,470}{\radian\per\second}, es claramente mayor que la que se mide
-        en contrafase, $\wu=\num{3,339}$ y \SI{3,405}{\radian\per\second}. El modo en contrafase
-        «se queda corto» precisamente en los dos acoplamientos más fuertes, y
-        eso aplana la recta de $\wu^{2}$ y, con ella, rebaja $k_{1}$.
-\end{itemize}
+La respuesta está en los datos de $\ell_4$ y $\ell_5$. El modo pulsante y los
+modos normales deben cumplir $\wm\simeq(\wu-\wz)/2$ y $\wpl\simeq(\wu+\wz)/2$, y
+así ocurre hasta $\ell_3$; en $\ell_4$ y $\ell_5$, en cambio, el modo pulsante
+indica una separación entre modos mayor que la medida en contrafase
+(\cref{fig:coherencia}).
 
 \begin{figure}[ht]
 \centering
@@ -1615,22 +1686,20 @@ indica una separación entre modos mayor que la medida en contrafase.}
 \end{figure}
 
 En particular, si analizamos la \cref{tab:frecuencias} y nos fijamos en la
-tercera columna, podemos percatarnos de un detalle interesante. La diferencia
-de periodo $T_1$ entre $\ell_3$ y $\ell_4$ (\SI{0,009}{\second}) es muy pequeña
-en comparación con la diferencia observable para los valores de $\ell$
-anteriores (unos \SI{0,03}{\second}). Es decir, esta pequeña diferencia o
-similitud entre periodos puede ser una fuente de error de cara a nuestro
-ajuste. Ahora bien, lo que esperamos teóricamente que sea lineal no es $T_1$,
-sino $\wu^{2}$ frente a $\ell^{2}$ (\cref{eq:lineales}), y como $\ell^{2}$
-crece cada vez más deprisa, los saltos de $T_1$ deberían ser incluso algo
-mayores. Prolongando la recta de $\ell_1$ a $\ell_3$, esperaríamos unos
-periodos de aproximadamente \SIlist{1,845;1,794}{\second} para $\ell_4$ y
-$\ell_5$, frente a los \SIlist{1,882;1,845}{\second} medidos: ambos son entre
-un \SIrange{2}{3}{\percent} más largos, y, curiosamente, el periodo medido
-para $\ell_5$ coincide con el que esperaríamos para $\ell_4$. Por lo tanto, si
-despreciamos esos dos últimos datos para el ajuste de $\wu^{2}$ frente a
-$\ell^{2}$, obtendríamos un ajuste más coherente con el resto de las medidas
-(\cref{fig:ajuste-tres}).
+tercera columna, la diferencia de periodo $T_1$ entre $\ell_3$ y $\ell_4$
+(\SI{0,009}{\second}) es muy pequeña en comparación con la de los valores de
+$\ell$ anteriores (unos \SI{0,03}{\second}). Prolongando la recta de $\wu^{2}$
+frente a $\ell^{2}$ de $\ell_1$ a $\ell_3$ (lo que esperamos lineal es
+$\wu^{2}$, no $T_1$), esperaríamos unos periodos de aproximadamente
+\SIlist{1,845;1,794}{\second} para $\ell_4$ y $\ell_5$, frente a los
+\SIlist{1,882;1,845}{\second} medidos. Por lo tanto, si despreciamos esos dos
+últimos datos, el ajuste de $\wu^{2}$ es mucho más lineal
+($R^{2}=\num{0,9991}$, \cref{fig:ajuste-tres}) y da
+$k=\SI{2,76 \pm 0,09}{\newton\per\meter}$, un valor similar al obtenido para
+$\wm$, aunque, con tres puntos y un grado de libertad, su intervalo al
+\SI{95}{\percent} se ensancha hasta $\pm\SI{1,1}{\newton\per\meter}$. No tendría
+sentido, en cambio, ajustar unos valores «esperados» para $\ell_4$ y $\ell_5$,
+porque reproducirían por construcción la recta de $\ell_1$ a $\ell_3$.
 
 \begin{figure}[ht]
 \centering
@@ -1648,73 +1717,26 @@ $y_i-(a\,\ell_i^{2}+b)$.}
 \label{fig:ajuste-tres}
 \end{figure}
 
-Tal y como se puede apreciar en este primer ajuste, despreciando los datos
-del periodo $T_1$ para $\ell_4$ y $\ell_5$, el cuadrado del coeficiente de
-correlación de Pearson, $R^{2}=\num{0,9991}$, nos informa de un ajuste mucho
-más lineal que el original, aunque, al tener solo tres puntos (un grado de
-libertad), debemos tomarlo con cautela. En particular, dado el valor de la
-nueva pendiente del ajuste,
-$a=\SI{5,57 \pm 0,17}{\radian\squared\per\second\squared\per\meter\squared}$, la
-constante del muelle resultante es $k=\SI{2,76 \pm 0,09}{\newton\per\meter}$
-(incertidumbre típica), un valor similar al obtenido para la frecuencia
-$\wm$. Al \SI{95}{\percent}, con $t_{95,1}=\num{12,71}$, el intervalo se
-ensancha hasta $k=\SI{2,8 \pm 1,1}{\newton\per\meter}$, compatible con $k_{-}$.
-
-Cabría pensar en un segundo ajuste, sustituyendo los valores de $\ell_4$ y
-$\ell_5$ por los que esperaríamos haber obtenido. Sin embargo, esos valores
-esperados salen de la propia recta de $\ell_1$ a $\ell_3$, de modo que el
-ajuste la reproduciría por construcción y no aportaría información nueva; y
-si los estimamos suponiendo saltos constantes de $T_1$, no siguen la relación
-lineal entre $\wu^{2}$ y $\ell^{2}$ y los residuos muestran una curvatura
-artificial. Por eso nos quedamos con el ajuste de tres puntos como
-comprobación.
-
-La \cref{tab:robustez} extiende esta comprobación a los tres métodos: si
-repetimos los ajustes sin las longitudes mayores, $k_{-}$ apenas se mueve (entre
-\SIlist{2,35;2,61}{\newton\per\meter}), mientras que $k_{1}$ y $k_{+}$ pasan de
-\SIlist{1,7;1,8}{\newton\per\meter} con las cinco longitudes a
-\SIlist{2,8;3,1}{\newton\per\meter} con las tres primeras, en torno al valor
-de $k_{-}$. Con un solo grado de libertad estos ajustes reducidos no
-permiten dar valores, pero sí indican que la discrepancia procede de $\ell_4$ y
-$\ell_5$ y no del método de $\wm$. Comparados con la tendencia de $\ell_1$ a
-$\ell_3$, los dos puntos se comportan de forma distinta:
-\begin{itemize}
-  \item En $\ell_4$ las tres magnitudes quedan por debajo de esa tendencia
-        ($\wu^{2}$ un \SI{4}{\percent} y $\wm$ un \SI{8}{\percent}; $\wpl$, algo
-        menos); es la pequeña diferencia de $T_1$ entre $\ell_3$ y $\ell_4$ que
-        señalábamos antes. Una causa común a los tres modos en esa
-        longitud, como que el muelle quedara sujeto algo más arriba de
-        \SI{55}{\centi\meter}, lo explicaría.
-  \item En $\ell_5$, $\wm$ cae solo un \SI{2,5}{\percent}, dentro de su
-        incertidumbre y en la línea de la curvatura que desprecia la
-        aproximación de acoplamiento débil (\cref{obs:limites}). En cambio,
-        $\wu^{2}$, cuya relación con $\ell^{2}$ es exacta, cae un
-        \SI{5,5}{\percent}, y eso no tiene la misma excusa: el registro en
-        contrafase de $\ell_5$ es el que más se aparta.
-\end{itemize}
+La \cref{tab:robustez} extiende esta comprobación a los tres métodos: al
+retirar las longitudes mayores, $k_{-}$ apenas se mueve (entre
+\SIlist{2,35;2,61}{\newton\per\meter}), mientras que $k_{1}$ y $k_{+}$ suben de
+\SIlist{1,7;1,8}{\newton\per\meter} a \SIlist{2,8;3,1}{\newton\per\meter}. La
+discrepancia procede, pues, de los registros de $\ell_4$ y $\ell_5$, sobre todo
+en contrafase, y no del método de $\wm$. Su origen último no podemos
+establecerlo con seguridad: una colocación del muelle algo distinta entre
+registros, amplitudes no tan pequeñas cuando el muelle trabaja con más fuerza
+o un muelle que cuelga combado por su propio peso
+(\figpanel{fig:fotos-montaje}{b}); la aproximación de acoplamiento débil, por
+sí sola, no basta (\cref{obs:limites}).
 
 \input{tablas/robustez}
 
-No podemos establecer con seguridad el origen último de estas desviaciones.
-Las candidatas son una colocación del muelle algo distinta entre registros de
-la misma longitud, amplitudes que dejan de ser pequeñas cuando el muelle
-trabaja con más fuerza (lo que ocurre precisamente en contrafase y con $\ell$
-grande) y un muelle que no es ideal: en la \figpanel{fig:fotos-montaje}{b} se
-aprecia que cuelga combado por su propio peso. La aproximación de
-acoplamiento débil, por sí sola, no basta: su efecto es a lo sumo del
-\SI{4}{\percent} y tiende además a rebajar la pendiente, no a subirla.
-
 \begin{resultado}[Cuestión 3]\label{res:cuestion3}
 Los tres valores de $k$ son compatibles al \SI{95}{\percent}, aunque $k_{1}$ y
-$k_{-}$ solo al límite. El método más preciso es el de $\wm$: mide
-directamente el efecto del acoplamiento, sin el fondo de $\wz$ que domina en
-$\wu^{2}$ y $\wpl$, su ajuste ponderado es coherente con sus incertidumbres
-($\chi^{2}_{\min}\approx\nu$) y es el más robusto frente a la elección de
-longitudes. La diferencia con los otros dos métodos se concentra en los
-registros de $\ell_4$ y $\ell_5$, sobre todo en contrafase, cuya dispersión
-supera con mucho la resolución temporal. El de $\wu^{2}$ descansa en una
-relación exacta, pero su precisión queda limitada por esa dispersión, y el de
-$\wpl$ es el menos sensible de los tres.
+$k_{-}$ solo al límite. El método más preciso y más robusto es el de $\wm$,
+porque mide directamente el efecto del acoplamiento, sin la frecuencia natural
+del péndulo que domina en $\wu^{2}$ y $\wpl$. La diferencia con los otros dos
+procede de los registros de $\ell_4$ y $\ell_5$, sobre todo en contrafase.
 \end{resultado}
 
 \ornamento
