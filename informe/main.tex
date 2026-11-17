@@ -1478,6 +1478,21 @@ con incertidumbres ampliadas al \SI{95}{\percent}. Para compararlos nos hacemos
 tres preguntas: si son compatibles entre sí, cuál es más preciso y por qué, y
 de dónde viene la diferencia entre ellos.
 
+A simple vista, la \cref{tab:ajustes_lineales} nos proporciona información
+muy interesante acerca de lo ocurrido durante la práctica. Tras realizar los
+ajustes lineales correspondientes y emplear las fórmulas mostradas para el
+cálculo de $k$, observamos una discrepancia en el valor de la misma para las
+frecuencias $\wu$, $\wpl$ y $\wm$. A pesar de que los valores de la constante
+del muelle son similares en los casos de $\wu$ y $\wpl$, eso no debe
+eclipsar o distraernos respecto de la información que nos dice cuán fiable es
+un ajuste. Estamos hablando, por supuesto, del cuadrado del coeficiente de
+correlación de Pearson, $R^{2}$, junto con la incertidumbre relativa de la
+pendiente. El ajuste que tiene un mejor coeficiente de correlación (y también
+la menor incertidumbre relativa) es precisamente el relativo a $\wm$. Por lo
+tanto, podemos afirmar que es más fiable la constante del muelle $k$ obtenida
+para dicha frecuencia que la de las otras dos, como justificamos a
+continuación.
+
 \subsubsection{Compatibilidad}
 Como $k$ es proporcional a la pendiente $a$, hereda su distribución, y la
 incertidumbre de la pendiente ($\nu=N-2=3$) domina sobre la de $I$ o $\wz$.
@@ -1599,8 +1614,63 @@ indica una separación entre modos mayor que la medida en contrafase.}
 \label{fig:coherencia}
 \end{figure}
 
-La \cref{tab:robustez} lo confirma: si repetimos los ajustes sin las
-longitudes mayores, $k_{-}$ apenas se mueve (entre
+En particular, si analizamos la \cref{tab:frecuencias} y nos fijamos en la
+tercera columna, podemos percatarnos de un detalle interesante. La diferencia
+de periodo $T_1$ entre $\ell_3$ y $\ell_4$ (\SI{0,009}{\second}) es muy pequeña
+en comparación con la diferencia observable para los valores de $\ell$
+anteriores (unos \SI{0,03}{\second}). Es decir, esta pequeña diferencia o
+similitud entre periodos puede ser una fuente de error de cara a nuestro
+ajuste. Ahora bien, lo que esperamos teóricamente que sea lineal no es $T_1$,
+sino $\wu^{2}$ frente a $\ell^{2}$ (\cref{eq:lineales}), y como $\ell^{2}$
+crece cada vez más deprisa, los saltos de $T_1$ deberían ser incluso algo
+mayores. Prolongando la recta de $\ell_1$ a $\ell_3$, esperaríamos unos
+periodos de aproximadamente \SIlist{1,845;1,794}{\second} para $\ell_4$ y
+$\ell_5$, frente a los \SIlist{1,882;1,845}{\second} medidos: ambos son entre
+un \SIrange{2}{3}{\percent} más largos, y, curiosamente, el periodo medido
+para $\ell_5$ coincide con el que esperaríamos para $\ell_4$. Por lo tanto, si
+despreciamos esos dos últimos datos para el ajuste de $\wu^{2}$ frente a
+$\ell^{2}$, obtendríamos un ajuste más coherente con el resto de las medidas
+(\cref{fig:ajuste-tres}).
+
+\begin{figure}[ht]
+\centering
+\input{tablas/fig-ajuste-tres-w1}
+\caption{Ajuste lineal de $\wu^{2}$ frente a $\ell^{2}$ para los tres primeros
+valores de $\ell$. (a)~Cuadrado de la frecuencia del modo en contrafase,
+$\wu^{2}$, en función del cuadrado de la longitud de acoplamiento,
+$\ell^{2}$. La recta continua ajusta por mínimos cuadrados, sin pesos, los
+datos de $\ell_1$ a $\ell_3$ (círculos llenos), con
+$a=\SI{5,57 \pm 0,17}{\radian\squared\per\second\squared\per\meter\squared}$ y
+$b=\SI{9,92 \pm 0,02}{\radian\squared\per\second\squared}$; en discontinua, su
+prolongación. Los puntos de $\ell_4$ y $\ell_5$ (círculos vacíos) no
+intervienen en el ajuste. (b)~Residuo de cada punto respecto de esa recta,
+$y_i-(a\,\ell_i^{2}+b)$.}
+\label{fig:ajuste-tres}
+\end{figure}
+
+Tal y como se puede apreciar en este primer ajuste, despreciando los datos
+del periodo $T_1$ para $\ell_4$ y $\ell_5$, el cuadrado del coeficiente de
+correlación de Pearson, $R^{2}=\num{0,9991}$, nos informa de un ajuste mucho
+más lineal que el original, aunque, al tener solo tres puntos (un grado de
+libertad), debemos tomarlo con cautela. En particular, dado el valor de la
+nueva pendiente del ajuste,
+$a=\SI{5,57 \pm 0,17}{\radian\squared\per\second\squared\per\meter\squared}$, la
+constante del muelle resultante es $k=\SI{2,76 \pm 0,09}{\newton\per\meter}$
+(incertidumbre típica), un valor similar al obtenido para la frecuencia
+$\wm$. Al \SI{95}{\percent}, con $t_{95,1}=\num{12,71}$, el intervalo se
+ensancha hasta $k=\SI{2,8 \pm 1,1}{\newton\per\meter}$, compatible con $k_{-}$.
+
+Cabría pensar en un segundo ajuste, sustituyendo los valores de $\ell_4$ y
+$\ell_5$ por los que esperaríamos haber obtenido. Sin embargo, esos valores
+esperados salen de la propia recta de $\ell_1$ a $\ell_3$, de modo que el
+ajuste la reproduciría por construcción y no aportaría información nueva; y
+si los estimamos suponiendo saltos constantes de $T_1$, no siguen la relación
+lineal entre $\wu^{2}$ y $\ell^{2}$ y los residuos muestran una curvatura
+artificial. Por eso nos quedamos con el ajuste de tres puntos como
+comprobación.
+
+La \cref{tab:robustez} extiende esta comprobación a los tres métodos: si
+repetimos los ajustes sin las longitudes mayores, $k_{-}$ apenas se mueve (entre
 \SIlist{2,35;2,61}{\newton\per\meter}), mientras que $k_{1}$ y $k_{+}$ pasan de
 \SIlist{1,7;1,8}{\newton\per\meter} con las cinco longitudes a
 \SIlist{2,8;3,1}{\newton\per\meter} con las tres primeras, en torno al valor
@@ -1611,8 +1681,8 @@ $\ell_3$, los dos puntos se comportan de forma distinta:
 \begin{itemize}
   \item En $\ell_4$ las tres magnitudes quedan por debajo de esa tendencia
         ($\wu^{2}$ un \SI{4}{\percent} y $\wm$ un \SI{8}{\percent}; $\wpl$, algo
-        menos), y $\wu^{2}$ apenas supera al valor de $\ell_3$
-        (\cref{fig:ajuste-w1}). Una causa común a los tres modos en esa
+        menos); es la pequeña diferencia de $T_1$ entre $\ell_3$ y $\ell_4$ que
+        señalábamos antes. Una causa común a los tres modos en esa
         longitud, como que el muelle quedara sujeto algo más arriba de
         \SI{55}{\centi\meter}, lo explicaría.
   \item En $\ell_5$, $\wm$ cae solo un \SI{2,5}{\percent}, dentro de su
@@ -1653,13 +1723,67 @@ $\wpl$ es el menos sensible de los tres.
 \newpage
 \seccion{Discusión y conclusiones}{Lo que aprendemos}\label{sec:discusion}
 % =========================================================================
-\begin{pendientebox}[conclusiones]
-Redactar las conclusiones sobre $\wz$ e $I$ (\cref{sec:inercia}), los ajustes y
-los valores de $k$ (\cref{sec:ajustes}), la comparación entre métodos
-(\cref{sec:comparacion}) y las fuentes de error: amplitudes finitas,
-rozamiento, masa del muelle, condición inicial del modo pulsante y número de
-pulsaciones registradas.
-\end{pendientebox}
+En esta práctica hemos estudiado dos péndulos acoplados por un muelle en sus
+tres modos fundamentales de oscilación, y a partir de ellos hemos
+determinado el momento de inercia de los péndulos y la constante del muelle
+por tres caminos distintos. Resumimos a continuación lo que hemos aprendido.
+
+\begin{conclusion}[Frecuencia natural y momento de inercia]\label{conc:inercia}
+A partir del modo en fase hemos obtenido $\wz=(\valWceroU)\ \si{\radian\per\second}$
+y, con él, $I=(\valIU)\ \si{\kilogram\meter\squared}$, al \SI{95}{\percent}. Las
+cuatro medidas del periodo coinciden dentro de un \SI{0,8}{\percent}, como
+corresponde a una frecuencia propia de cada péndulo e independiente del
+muelle, y el valor de $I$, muy próximo a $mL^{2}=\SI{1}{\kilogram\meter\squared}$,
+nos dice que nuestros péndulos se comportan casi como péndulos simples de un
+metro.
+\end{conclusion}
+
+\begin{conclusion}[Ajustes lineales]\label{conc:ajustes}
+Las tres magnitudes crecen linealmente con $\ell^{2}$, como predice el modelo,
+y sus ordenadas en el origen son compatibles al \SI{95}{\percent} con los
+valores teóricos: $b=\SI{10,2 \pm 0,4}{\radian\squared\per\second\squared}$
+frente a $\wz^{2}=\SI{9,91}{\radian\squared\per\second\squared}$,
+$b=\SI{0,006 \pm 0,012}{\radian\per\second}$ frente a $0$ y
+$b=\SI{3,18 \pm 0,04}{\radian\per\second}$ frente a
+$\wz=\SI{3,148}{\radian\per\second}$. De sus pendientes obtenemos
+$k_{1}=(\valKUno)$, $k_{-}=(\valKMenos)$ y $k_{+}=(\valKMas)\ \si{\newton\per\meter}$.
+\end{conclusion}
+
+\begin{conclusion}[Comparación de los tres métodos]\label{conc:comparacion}
+Los tres valores son compatibles al \SI{95}{\percent}, aunque $k_{1}$ y
+$k_{-}$ solo al límite. El método de $\wm$ es el más preciso (un
+\SI{4}{\percent} de incertidumbre relativa, frente al \SI{13}{\percent} y el
+\SI{15}{\percent} de los otros dos) y también el más fiable: mide
+directamente el efecto del acoplamiento, su ajuste ponderado es coherente con
+sus incertidumbres y apenas cambia al prescindir de alguna longitud. La
+discrepancia con los otros dos métodos procede de los registros de $\ell_4$ y
+$\ell_5$, sobre todo en contrafase: sin ellos, el ajuste de $\wu^{2}$ da
+$k\approx\SI{2,8}{\newton\per\meter}$, en línea con $k_{-}$. Tomamos por tanto
+como mejor estimación de la constante del muelle
+$k=(\valKMenos)\ \si{\newton\per\meter}$.
+\end{conclusion}
+
+\begin{observacion}[Fuentes de error y posibles mejoras]\label{obs:mejoras}
+La resolución temporal, de \SI{4}{\milli\second}, no es nuestra principal
+limitación: la dispersión de $\wu^{2}$ y $\wpl$ alrededor de sus rectas es
+entre diez y veinte veces mayor de lo que ella explicaría. Los errores
+dominantes son sistemáticos y varían de un registro a otro: la colocación del
+muelle, amplitudes que quizá no siempre fueron pequeñas, un muelle con masa
+que cuelga combado, el rozamiento, que amortigua la pulsación, y, en el modo
+pulsante, la suelta de los péndulos, que contamina el primer nodo. Para
+mejorar la práctica convendría registrar los tres modos de cada longitud sin
+mover las pinzas y midiendo $\ell$ antes de cada registro, repetir las medidas
+en contrafase de $\ell_4$ y $\ell_5$, usar amplitudes menores, añadir más
+longitudes y alargar los registros del modo pulsante para capturar más nodos.
+\end{observacion}
+
+En conjunto, la práctica cumple sus objetivos. Hemos comprobado cómo el
+movimiento, en apariencia irregular, de dos osciladores acoplados se
+descompone en dos modos normales, y cómo la pulsación, al medir directamente
+la diferencia entre sus frecuencias, es la vía más sensible para
+caracterizar el acoplamiento. Las discrepancias encontradas en $\ell_4$ y
+$\ell_5$ nos recuerdan, además, que con una instrumentación sencilla comparar
+métodos independientes es tan valioso como calcular la propia incertidumbre.
 
 % =========================================================================
 \newpage

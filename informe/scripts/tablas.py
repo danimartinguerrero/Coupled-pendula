@@ -302,6 +302,50 @@ for clave, (sim, uni, y, uy, fa, fb) in ETIQ.items():
         "  \\end{groupplot}",
         "\\end{tikzpicture}"]
 
+# ajuste de omega_1^2 con las tres primeras longitudes (comprobación de la cuestión 3)
+a3, ua3, b3, ub3, r23, _ = ajuste(X[:3], W1C[:3])
+k3 = I * a3 / 2
+uk3 = math.hypot(I / 2 * ua3, a3 / 2 * uI)
+T1ESP = [2 * math.pi / math.sqrt(a3 * x + b3) for x in X]
+print("tres puntos: a", a3, "ua", ua3, "b", b3, "R2", r23, "k", k3, "uk", uk3, "U(nu=1)", 12.706 * uk3,
+      "T1 esperados", [round(v, 4) for v in T1ESP])
+lines.append("%%FILE fig-ajuste-tres-w1")
+filas3 = "\n".join(f"      {x:.4f} {y:.6f} {u:.6f} {y - (a3 * x + b3):.6f}" for x, y, u in zip(X, W1C, UW1C))
+lines += [
+    "\\begin{tikzpicture}",
+    "  \\pgfplotstableread{",
+    "      x y uy r",
+    filas3,
+    "  }\\datosTres",
+    "  \\begin{groupplot}[group style={group size=1 by 2, vertical sep=6pt,",
+    "                      xlabels at=edge bottom, xticklabels at=edge bottom},",
+    "                    datos, width=0.82\\linewidth, xmin=0.03, xmax=0.46,",
+    "                    xlabel={$\\ell^{2}$ (\\si{\\meter\\squared})},",
+    "                    xtick={0.1,0.2,0.3,0.4}, xticklabel style={/pgf/number format/fixed},",
+    "                    enlarge y limits=0.12,",
+    "                    yticklabel style={/pgf/number format/fixed, /pgf/number format/precision=3}]",
+    "  \\nextgroupplot[height=5.4cm, ylabel={$\\omega_1^{2}$ (\\si{\\radian\\squared\\per\\second\\squared})},",
+    "                 legend pos=north west, legend style={font=\\scriptsize}]",
+    f"    \\addplot[azulprof, line width=1.0pt, domain=0.035:0.2025, samples=2] {{{a3:.6f}*x+{b3:.6f}}};",
+    f"    \\addlegendentry{{Ajuste ($\\ell_1$ a $\\ell_3$): $y={a3:.3f}\\,x+{b3:.3f}$, $R^{{2}}=\\num{{{r23:.4f}}}$}}",
+    f"    \\addplot[azulprof, line width=0.8pt, densely dashed, domain=0.2025:0.455, samples=2, forget plot] {{{a3:.6f}*x+{b3:.6f}}};",
+    "    \\addplot[puntoA, error bars/.cd, y dir=both, y explicit,",
+    "              error bar style={line width=0.6pt, azulprof}, error mark options={rotate=90, mark size=2pt, azulprof}]",
+    "      table[x=x, y=y, y error=uy, skip coords between index={3}{5}] {\\datosTres};",
+    "    \\addlegendentry{Datos ajustados ($\\ell_1$ a $\\ell_3$)}",
+    "    \\addplot[only marks, mark=o, mark size=2.3pt, mark options={draw=acento, line width=0.8pt}]",
+    "      table[x=x, y=y, skip coords between index={0}{3}] {\\datosTres};",
+    "    \\addlegendentry{$\\ell_4$ y $\\ell_5$ (sin ajustar)}",
+    "    \\node[anchor=south east, font=\\small, text=grispizarra] at (rel axis cs:0.99,0.03) {(a)};",
+    "  \\nextgroupplot[height=3.0cm, ylabel={Residuo}]",
+    "    \\draw[grispizarra, line width=0.5pt, densely dashed] (axis cs:0.03,0) -- (axis cs:0.46,0);",
+    "    \\addplot[puntoA] table[x=x, y=r, skip coords between index={3}{5}] {\\datosTres};",
+    "    \\addplot[only marks, mark=o, mark size=2.3pt, mark options={draw=acento, line width=0.8pt}]",
+    "      table[x=x, y=r, skip coords between index={0}{3}] {\\datosTres};",
+    "    \\node[anchor=north east, font=\\small, text=grispizarra] at (rel axis cs:0.99,0.97) {(b)};",
+    "  \\end{groupplot}",
+    "\\end{tikzpicture}"]
+
 # coherencia entre modos: omega_- y omega_+ medidos frente a (omega_1 -+ omega_0)/2
 lines.append("%%FILE fig-coherencia")
 filas_c = []
