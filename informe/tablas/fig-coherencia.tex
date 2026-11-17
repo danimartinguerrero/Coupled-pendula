@@ -15,7 +15,7 @@
                     legend pos=north west, legend style={font=\scriptsize},
                     xtick={0.1,0.2,0.3,0.4}, xticklabel style={/pgf/number format/fixed},
                     yticklabel style={/pgf/number format/fixed, /pgf/number format/precision=3}]
-  \nextgroupplot[ylabel={$\omega_{-}$ (\si{\radian\per\second})},
+  \nextgroupplot[ylabel={$\omega_{-}$ (\si{\radian\per\second})}, ymin=0, ymax=0.25,
                  title={\footnotesize\scshape (a)\; frecuencia de modulación}, title style={text=grispizarra}]
     \addplot[puntoA, error bars/.cd, y dir=both, y explicit, error bar style={azulprof}]
       table[x=x, y=wm, y error=uwm] {\datoscoh};
@@ -23,7 +23,7 @@
     \addplot[puntoB, error bars/.cd, y dir=both, y explicit, error bar style={azulacero}]
       table[x=x, y=tm, y error=utm] {\datoscoh};
     \addlegendentry{$(\omega_1-\omega_0)/2$ (fase y contrafase)}
-  \nextgroupplot[ylabel={$\omega_{+}$ (\si{\radian\per\second})},
+  \nextgroupplot[ylabel={$\omega_{+}$ (\si{\radian\per\second})}, ymin=3.16, ymax=3.36,
                  title={\footnotesize\scshape (b)\; frecuencia portadora}, title style={text=grispizarra}]
     \addplot[puntoA, error bars/.cd, y dir=both, y explicit, error bar style={azulprof}]
       table[x=x, y=wp, y error=uwp] {\datoscoh};
