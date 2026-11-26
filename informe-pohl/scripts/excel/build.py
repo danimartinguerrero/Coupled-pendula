@@ -1,7 +1,6 @@
 """Reconstruye RESONANCIA.xlsx con formato formal y fórmulas para T, Ω y β.
 
-Uso: python3 build.py RESONANCIA_original.xlsx RESONANCIA.xlsx (desde esta carpeta).
-fórmulas para T, Ω, β y sus incertidumbres, anotaciones y gráficas."""
+Uso: python3 build.py RESONANCIA_original.xlsx RESONANCIA.xlsx (desde esta carpeta)."""
 import io, sys, math
 import numpy as np
 from openpyxl import Workbook, load_workbook
