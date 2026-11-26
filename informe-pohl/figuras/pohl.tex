@@ -1,0 +1,111 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Piezas de dibujo del péndulo de Pohl (TikZ)
+%
+% Vista frontal y minimalista del aparato del laboratorio: la escala
+% graduada fija, el anillo de cobre con sus radios, el muelle en espiral
+% del eje, el fiel, el electroimán que abraza la parte inferior del anillo
+% y el excitador (palanca, biela y disco excéntrico del motor).
+% Se usan en la portada y en el esquema del montaje experimental.
+% Requiere los colores azulprof, azulacero, azulpetroleo, turquesa,
+% aguamarina, azulclaro, grispizarra y grisclaro (definidos en main.tex).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Escala graduada fija: corona con ranuras cada 6 grados (más largas cada 30)
+% \escalapohl{radio interior}{radio exterior}
+\newcommand{\escalapohl}[2]{%
+  \fill[azulprof, even odd rule] (0,0) circle (#2) (0,0) circle (#1);
+  \foreach \a in {0,6,...,354}{%
+    \pgfmathtruncatemacro{\largo}{mod(\a,30)==0 ? 1 : 0}%
+    \ifnum\largo=1
+      \draw[white, line width=0.9pt, line cap=round]
+        (\a:{#1+0.34*(#2-#1)}) -- (\a:{#2-0.16*(#2-#1)});
+    \else
+      \draw[white!80!azulclaro, line width=0.45pt, line cap=round]
+        (\a:{#1+0.52*(#2-#1)}) -- (\a:{#2-0.18*(#2-#1)});
+    \fi}}
+
+% Anillo de cobre (gira con el ángulo #1): corona, cuatro radios y cubo
+% \anillopohl{ángulo}{radio interior}{radio exterior}
+\newcommand{\anillopohl}[3]{%
+  \begin{scope}[rotate=#1]
+    \foreach \a in {45,135,225,315}{%
+      \fill[azulpetroleo!85!azulprof, rounded corners=0.4pt]
+        (\a-4:0.32) -- (\a-1.6:#2+0.05) -- (\a+1.6:#2+0.05) -- (\a+4:0.32) -- cycle;}
+    \fill[turquesa!78!azulpetroleo, even odd rule] (0,0) circle (#3) (0,0) circle (#2);
+    \draw[azulpetroleo!80!azulprof, line width=0.5pt] (0,0) circle (#3);
+    \draw[azulpetroleo!80!azulprof, line width=0.5pt] (0,0) circle (#2);
+    \draw[white, opacity=0.35, line width=0.6pt] (100:{#3-0.07}) arc[start angle=100, end angle=165, radius={#3-0.07}];
+    % fiel: aguja solidaria con el anillo que apunta a la escala
+    \fill[white, draw=azulprof, line width=0.45pt]
+      (90:{#2-0.1}) -- ($(90:{#3+0.12})+(-0.075,0)$) -- (90:{#3+0.52})
+      -- ($(90:{#3+0.12})+(0.075,0)$) -- cycle;
+  \end{scope}}
+
+% Muelle en espiral del eje (espiral de Arquímedes); su extremo exterior
+% gira con el excitador (ángulo #1)
+% \muelleespiral{ángulo del extremo exterior}{radio interior}{radio exterior}{vueltas}
+\newcommand{\muelleespiral}[4]{%
+  \draw[azulprof, line width=0.85pt, line cap=round, domain=0:#4*360, samples=220, smooth, variable=\t]
+    plot ({(#2+(#3-#2)*\t/(#4*360))*cos(\t+#1)}, {(#2+(#3-#2)*\t/(#4*360))*sin(\t+#1)});
+  \fill[grisclaro, draw=azulprof, line width=0.5pt] (0,0) circle (#2);
+  \fill[azulprof] (0,0) circle (0.045);}
+
+% Electroimán: dos bobinas que abrazan la parte inferior del anillo
+% \electroiman{radio medio del anillo}{activo: 1 dibuja el campo}
+\newcommand{\electroiman}[2]{%
+  \begin{scope}[shift={(0,-#1)}]
+    \fill[grisclaro, draw=grispizarra, line width=0.45pt, rounded corners=1pt]
+      (-0.62,-0.46) rectangle (0.62,0.30);
+    \foreach \x in {-0.48,-0.36,...,0.5}{%
+      \draw[azulacero!55, line width=0.35pt] (\x,-0.40) -- (\x,0.24);}
+    \fill[azulprof, rounded corners=0.8pt] (-0.72,-0.62) rectangle (0.72,-0.46);
+    \ifnum#2=1
+      \foreach \x in {-0.3,0.3}{%
+        \draw[azulprof, line width=0.45pt, fill=white] (\x,-0.08) circle (0.11);
+        \draw[azulprof, line width=0.45pt] (\x,-0.08) ++(-0.075,-0.075) -- ++(0.15,0.15)
+          (\x,-0.08) ++(-0.075,0.075) -- ++(0.15,-0.15);}
+    \fi
+  \end{scope}}
+
+% Excitador: palanca solidaria con el extremo exterior del muelle, biela
+% y disco excéntrico del motor (fase de giro #1, en grados)
+% \excitador{fase}{punto de la palanca}{centro del disco}{radio de la excéntrica}
+\newcommand{\excitador}[4]{%
+  \coordinate (PinE) at ($(#3)+(#1:#4)$);
+  % motor: carcasa discreta y disco
+  \fill[grisclaro, draw=grispizarra!80, line width=0.4pt, rounded corners=2pt]
+    ($(#3)+(0.25,-0.62)$) rectangle ($(#3)+(2.05,0.55)$);
+  \foreach \y in {0.30,0.18,0.06}{\draw[grispizarra!45, line width=0.4pt]
+    ($(#3)+(0.55,\y)$) -- ($(#3)+(1.0,\y)$);}
+  \fill[grispizarra!80] ($(#3)+(1.45,-0.08)$) circle (0.09);
+  \fill[grispizarra!80] ($(#3)+(1.72,-0.32)$) circle (0.08);
+  \fill[azulprof] (#3) circle (0.62);
+  \draw[white, line width=0.5pt] (#3) circle (0.48);
+  \fill[white] (#3) circle (0.05);
+  % biela
+  \draw[azulacero, line width=1.3pt, line cap=round] (#2) -- (PinE);
+  \fill[white, draw=azulprof, line width=0.5pt] (#2) circle (0.075);
+  \fill[white, draw=azulprof, line width=0.5pt] (PinE) circle (0.075);}
+
+% Péndulo de Pohl completo
+% \pohl{ángulo del anillo}{fase del motor}{dibuja el campo (0/1)}
+\newcommand{\pohl}[3]{%
+  \coordinate (Palanca) at (-1.15,-3.95);
+  \coordinate (Motor) at (4.05,-4.25);
+  \escalapohl{2.85}{3.45}
+  \anillopohl{#1}{2.02}{2.42}
+  \electroiman{2.22}{#3}
+  % palanca del excitador: arranca del extremo exterior del muelle
+  \draw[azulprof, line width=2.1pt, line cap=round] (-106:1.1) -- (Palanca);
+  \muelleespiral{110}{0.17}{1.1}{3.4}
+  \excitador{#2}{Palanca}{Motor}{0.36}}
+
+% Ornamento: una oscilación amortiguada con su envolvente
+% \ondita[escala]
+\newcommand{\ondita}[1][1]{%
+  \tikz[baseline=-0.55ex, x=#1*1pt, y=#1*1pt]{%
+    \draw[azulprof!55, line width=0.3pt, densely dotted]
+      plot[domain=0:18, samples=30, smooth, variable=\t] ({\t},{2.8*exp(-\t/9)});
+    \draw[turquesa, line width=0.45pt, line join=round]
+      plot[domain=0:18, samples=90, smooth, variable=\t]
+      ({\t},{2.8*exp(-\t/9)*cos(1.9*\t r)});}}

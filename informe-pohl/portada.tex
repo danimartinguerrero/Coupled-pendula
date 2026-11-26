@@ -1,0 +1,163 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Portada — estilo artículo científico, motivo: el péndulo de Pohl
+% Misma estructura que las de los informes anteriores (cabecera con
+% logotipos, motivo gráfico, franja, bloque de título y pie con autores),
+% en una gama de azules que va del marino al aguamarina. El motivo es el
+% aparato del laboratorio dibujado de frente; debajo, las dos mitades de
+% la práctica: la oscilación libre que se apaga y las curvas de resonancia.
+% Requiere (definidos en main.tex): colores azulprof, azulacero,
+% azulpetroleo, turquesa, aguamarina, azulclaro, grispizarra, grisclaro,
+% azulfondo; macros \Universidad, \Facultad, \Titulacion, \Asignatura,
+% \NumPractica, \TituloPractica, \SubtituloPractica, \tipotrabajo,
+% \miNombre, \miTutor, \miUbicacion; y figuras/pohl.tex.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{titlepage}
+\thispagestyle{empty}
+\pagecolor{white}
+
+\begin{tikzpicture}[remember picture, overlay]
+  \coordinate (O) at (current page.south west);
+
+  % ----------------------------------------------------------------
+  % Cabecera: logotipos y filete
+  % ----------------------------------------------------------------
+  \node[anchor=north west, inner sep=0] at ($(O)+(2.2cm,27.9cm)$)
+    {\includegraphics[height=1.42cm]{figuras/logo-usal.png}};
+  \node[anchor=north east, inner sep=0] at ($(O)+(18.8cm,27.9cm)$)
+    {\includegraphics[height=1.42cm]{figuras/logo-ciencias.png}};
+  \draw[grispizarra!60, line width=0.4pt]
+    ($(O)+(2.2cm,26.0cm)$) -- ($(O)+(18.8cm,26.0cm)$);
+  \node[anchor=north west, inner sep=0, text=grispizarra, font=\scshape\small]
+    at ($(O)+(2.2cm,25.75cm)$)
+    {\textls[80]{\Universidad\ \textbar\ \Facultad}};
+  \node[anchor=north east, inner sep=0, text=grispizarra, font=\scshape\small]
+    at ($(O)+(18.8cm,25.75cm)$)
+    {\textls[80]{\Titulacion}};
+
+  % ----------------------------------------------------------------
+  % Motivo gráfico: el péndulo de Pohl de frente, con el anillo desviado
+  % y el motor a media vuelta. Rótulos discretos, por fuera del aparato.
+  % ----------------------------------------------------------------
+  \begin{scope}[shift={($(O)+(9.55cm,20.05cm)$)}, x=0.88cm, y=0.88cm]
+    % halo tenue detrás de la escala
+    \fill[azulfondo] (0,0) circle (4.05);
+    \draw[azulclaro, line width=0.4pt] (0,0) circle (4.05);
+    \pohl{-28}{205}{0}
+    % ángulo de giro
+    \draw[grispizarra!60, densely dashed, line width=0.4pt] (0,0) -- (90:4.3);
+    \draw[azulprof, line width=0.5pt, -{Stealth[length=4pt]}]
+      (90:3.75) arc[start angle=90, end angle=62, radius=3.75];
+    \node[text=azulprof] at (76:4.12) {$\varphi$};
+    % rótulos
+    \draw[grispizarra!70, line width=0.35pt] (150:0.85) -- (150:2.0) -- ++(-3.05,0);
+    \fill[azulprof] (150:0.85) circle (1.2pt);
+    \node[anchor=east, text=grispizarra, font=\itshape\small]
+      at ($(150:2.0)+(-3.1,0)$) {muelle en espiral, $k$};
+    \draw[grispizarra!70, line width=0.35pt] (200:2.22) -- (200:4.35) -- ++(-0.6,0);
+    \fill[azulprof] (200:2.22) circle (1.2pt);
+    \node[anchor=east, text=grispizarra, font=\itshape\small]
+      at ($(200:4.35)+(-0.65,0)$) {anillo de cobre, $I$};
+    \draw[grispizarra!70, line width=0.35pt] (-8:3.15) -- (-8:4.45) -- ++(0.6,0);
+    \fill[white] (-8:3.15) circle (1.3pt);
+    \node[anchor=west, text=grispizarra, font=\itshape\small]
+      at ($(-8:4.45)+(0.65,0)$) {escala graduada};
+    \draw[grispizarra!70, line width=0.35pt] (0.64,-2.25) -- (1.9,-2.25) -- (2.6,-1.55) -- ++(2.3,0);
+    \fill[azulprof] (0.64,-2.25) circle (1.2pt);
+    \node[anchor=west, text=grispizarra, font=\itshape\small]
+      at (4.95,-1.55) {electroimán, $\gamma$};
+    \draw[grispizarra!70, line width=0.35pt] ($(Motor)+(0,-0.62)$) -- ++(0,-0.38) -- ++(-1.05,0);
+    \fill[azulprof] ($(Motor)+(0,-0.62)$) circle (1.2pt);
+    \node[anchor=east, text=grispizarra, font=\itshape\small]
+      at ($(Motor)+(-1.1,-1.0)$) {motor y biela, $\Omega$};
+  \end{scope}
+
+  % ----------------------------------------------------------------
+  % Franja: las dos mitades de la práctica. A la izquierda, la oscilación
+  % libre que se apaga dentro de su envolvente exponencial, con los puntos
+  % de retorno; a la derecha, las curvas de resonancia para tres
+  % amortiguamientos.
+  % ----------------------------------------------------------------
+  \begin{scope}[shift={($(O)+(0,13.35cm)$)}, x=1cm, y=1cm]
+    % oscilación libre: phi0 e^{-g t} [cos(w t) + (g/w) sin(w t)]
+    \def\xa{2.2}\def\xb{9.9}\def\gm{0.27}\def\wv{5.3}\def\Am{0.98}
+    \draw[grispizarra!35, line width=0.3pt] (\xa,0) -- (\xb,0);
+    \draw[azulacero!75, line width=0.5pt, densely dashed, domain=\xa:\xb, samples=80]
+      plot (\x,{\Am*exp(-\gm*(\x-\xa))});
+    \draw[azulacero!75, line width=0.5pt, densely dashed, domain=\xa:\xb, samples=80]
+      plot (\x,{-\Am*exp(-\gm*(\x-\xa))});
+    \draw[azulprof, line width=0.6pt, domain=\xa:\xb, samples=700, smooth]
+      plot (\x,{\Am*exp(-\gm*(\x-\xa))*(cos(\wv*(\x-\xa) r)+(\gm/\wv)*sin(\wv*(\x-\xa) r))});
+    \foreach \n in {0,...,13}{
+      \pgfmathsetmacro{\tn}{\n*pi/\wv}
+      \pgfmathsetmacro{\yn}{(-1)^\n*\Am*exp(-\gm*\tn)}
+      \fill[turquesa, draw=white, line width=0.3pt] (\xa+\tn,\yn) circle (1.5pt);}
+    \node[anchor=east, text=azulprof, font=\footnotesize] at (\xa-0.08,0) {$\varphi$};
+    \node[anchor=south west, text=azulacero, font=\footnotesize, fill=white, inner sep=1.2pt]
+      at (\xa+3.0,0.5) {$\pm\varphi_0e^{-\gamma t}$};
+    \node[anchor=north, text=grispizarra, font=\scshape\scriptsize] at ({(\xa+\xb)/2},-1.32)
+      {\textls[160]{la oscilación libre se apaga}};
+    % separador
+    \fill[azulclaro] (10.5,0) circle (1.4pt);
+    % curvas de resonancia: u = Omega/omega0 en [0.35, 1.65]
+    \def\xc{11.1}\def\xd{18.8}
+    \pgfmathsetmacro{\escx}{(\xd-\xc)/1.3}
+    \draw[grispizarra!35, line width=0.3pt] (\xc,-1.0) -- (\xd,-1.0);
+    \draw[grispizarra!50, densely dotted, line width=0.4pt]
+      ({\xc+0.65*\escx},-1.0) -- ({\xc+0.65*\escx},1.25);
+    \foreach \g/\c in {0.1/azulprof, 0.18/azulacero, 0.32/turquesa}{
+      \draw[\c, line width=0.6pt, domain=0.35:1.65, samples=220, smooth]
+        plot ({\xc+(\x-0.35)*\escx},{-1.0+0.4*1/sqrt((1-\x*\x)^2+4*\g*\g*\x*\x)});}
+    \node[anchor=north, text=grispizarra, font=\footnotesize] at ({\xc+0.65*\escx},-1.02) {$\wz$};
+    \node[anchor=west, text=azulprof, font=\footnotesize] at ({\xc+0.73*\escx},0.95) {$\beta(\Omega)$};
+    \node[anchor=north, text=grispizarra, font=\scshape\scriptsize] at ({(\xc+\xd)/2},-1.32)
+      {\textls[160]{la forzada resuena}};
+  \end{scope}
+
+  % ----------------------------------------------------------------
+  % Bloque del título
+  % ----------------------------------------------------------------
+  \node[anchor=north west, inner sep=0, text width=16.6cm, align=left]
+    at ($(O)+(2.2cm,11.0cm)$)
+    {{\color{azulacero}\scshape\large\textls[120]{\Asignatura\ \textbar\ \NumPractica}}\\[12pt]
+     {\color{azulprof}\fontsize{36}{41}\selectfont\bfseries\spaceskip=0.28em\relax\TituloPractica}\\[10pt]
+     {\color{azulpetroleo}\itshape\Large\SubtituloPractica}\\[12pt]
+     {\color{turquesa}\rule{2.5cm}{1.4pt}}\\[9pt]
+     {\color{grispizarra}\large
+      $\ddot\varphi+2\gamma\dot\varphi+\wz^{2}\varphi=\alpha_0\sin\Omega t$
+      \quad\textperiodcentered\quad
+      $\WR=\sqrt{\wz^{2}-2\gamma^{2}}$}};
+
+  % ----------------------------------------------------------------
+  % Pie: tipo de trabajo, autores, tutores, lugar y fecha
+  % ----------------------------------------------------------------
+  \draw[grispizarra!60, line width=0.4pt]
+    ($(O)+(2.2cm,4.6cm)$) -- ($(O)+(18.8cm,4.6cm)$);
+
+  \node[anchor=north west, inner sep=0, text width=4.6cm, align=left]
+    at ($(O)+(2.2cm,4.25cm)$)
+    {{\scshape\small\color{azulacero}\textls[80]{Documento}}\\[3pt]
+     {\large\bfseries\color{azulprof}\tipotrabajo}};
+
+  \node[anchor=north west, inner sep=0, text width=5.6cm, align=left]
+    at ($(O)+(7.2cm,4.25cm)$)
+    {{\scshape\small\color{azulacero}\textls[80]{Autores}}\\[3pt]
+     {\large\color{black!85}\miNombre}};
+
+  \node[anchor=north west, inner sep=0, text width=5cm, align=left]
+    at ($(O)+(13.8cm,4.25cm)$)
+    {{\scshape\small\color{azulacero}\textls[80]{Tutores}}\\[3pt]
+     {\large\color{black!85}\miTutor}};
+
+  \node[anchor=south east, inner sep=0, text=grispizarra, font=\scshape\small]
+    at ($(O)+(18.8cm,1.2cm)$)
+    {\textls[100]{\miUbicacion, \number\year}};
+  % franja inferior: la gama completa, del marino al aguamarina
+  \fill[azulprof] ($(O)+(0,0)$) rectangle ($(O)+(21cm,0.45cm)$);
+  \fill[azulacero] ($(O)+(0,0)$) rectangle ($(O)+(11cm,0.45cm)$);
+  \fill[azulpetroleo] ($(O)+(0,0)$) rectangle ($(O)+(7cm,0.45cm)$);
+  \fill[turquesa] ($(O)+(0,0)$) rectangle ($(O)+(4.2cm,0.45cm)$);
+  \fill[aguamarina] ($(O)+(0,0)$) rectangle ($(O)+(2cm,0.45cm)$);
+\end{tikzpicture}
+
+\end{titlepage}

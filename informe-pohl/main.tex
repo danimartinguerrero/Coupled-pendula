@@ -1,0 +1,1194 @@
+\documentclass[a4paper,11pt]{amsart}
+
+% --- IDIOMA Y CODIFICACIÓN ------------------------------------------------
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish,es-tabla,es-nodecimaldot]{babel}
+
+% --- TIPOGRAFÍA (STIX Two: texto y matemáticas, la de muchas revistas) -------
+\usepackage{stix2}
+\linespread{1.07}
+\usepackage[final]{microtype}
+
+% --- MATEMÁTICAS Y UNIDADES ------------------------------------------------
+\usepackage{amsmath, mathtools}
+\usepackage{bm}
+\usepackage{siunitx}
+\sisetup{
+  output-decimal-marker = {.},
+  group-minimum-digits  = 4,
+  group-digits          = integer,
+  group-separator       = {\,},
+  per-mode              = symbol,
+  separate-uncertainty  = true,
+  range-phrase          = {\text{ a }},
+  list-final-separator  = {\text{ y }},
+  list-pair-separator   = {\text{ y }},
+  detect-all            = false
+}
+
+% --- PÁGINA, COLORES Y GRÁFICOS --------------------------------------------
+\usepackage[a4paper,margin=2.6cm,footskip=1.45cm]{geometry}
+\usepackage{graphicx}
+\usepackage{xcolor}
+% Gama de azules: del marino al aguamarina, con el turquesa como acento
+\definecolor{azulprof}{HTML}{0B1F3A}     % azul marino profundo
+\definecolor{azulacero}{HTML}{1F5A96}    % azul cobalto
+\definecolor{azulpetroleo}{HTML}{12667A} % azul petróleo
+\definecolor{turquesa}{HTML}{17A2A6}     % turquesa
+\definecolor{aguamarina}{HTML}{86D3CF}   % aguamarina
+\definecolor{azulclaro}{HTML}{B8DCEF}    % azul cielo pálido
+\definecolor{grispizarra}{HTML}{44556B}  % gris pizarra azulado
+\definecolor{grisclaro}{HTML}{E2EBF3}    % gris perla azulado
+\definecolor{azulfondo}{HTML}{EFF6FB}    % fondo tenue de referencias y resultados
+\colorlet{acento}{turquesa!85!azulprof}  % curvas teóricas y comparaciones
+\usepackage{tikz}
+\usetikzlibrary{babel, arrows.meta, calc, positioning, decorations.pathmorphing,
+                decorations.pathreplacing, decorations.markings, patterns, shadings}
+\usepackage{pgfplots}
+\usepgfplotslibrary{groupplots, fillbetween}
+\pgfplotsset{compat=1.17}
+\usepackage{booktabs}
+\usepackage[section]{placeins}
+\usepackage{multirow}
+\usepackage[most]{tcolorbox}
+\usepackage{array}
+\usepackage{enumitem}
+\setlist[itemize]{leftmargin=1.6em, itemsep=2pt, topsep=4pt}
+\setlist[enumerate]{leftmargin=1.8em, itemsep=2pt, topsep=4pt}
+
+% --- ENLACES Y REFERENCIAS CRUZADAS ----------------------------------------
+\usepackage[colorlinks=true, linkcolor=azulacero, citecolor=azulacero,
+            urlcolor=azulacero, plainpages=false, pdfusetitle=false,
+            pdftitle={Práctica 4: Péndulo de Pohl},
+            pdfauthor={David Gómez García; Daniel Martín Guerrero}]{hyperref}
+\usepackage[spanish,nameinlink]{cleveref}
+
+% --- BIBLIOGRAFÍA -----------------------------------------------------------
+\usepackage{csquotes}
+\usepackage[backend=biber, style=numeric, sorting=none, giveninits=true,
+            maxbibnames=6, minbibnames=3, doi=true, url=true,
+            isbn=false]{biblatex}
+\addbibresource{referencias.bib}
+\DeclareFieldFormat[article,techreport,unpublished,misc]{title}{#1\isdot}
+\DeclareFieldFormat{url}{\url{#1}}
+\renewcommand*{\bibfont}{\small}
+\setlength{\bibitemsep}{3pt}
+
+% --- PIEZAS DE DIBUJO DEL PÉNDULO DE POHL ------------------------------------
+\input{figuras/pohl}
+
+% =========================================================================
+%        CABECERAS, PIE DE PÁGINA, SECCIONES E ÍNDICE
+% =========================================================================
+% Ornamento entre secciones: una oscilación amortiguada entre dos filetes
+\newcommand{\ornamento}{%
+  \par\vspace{10pt}{\centering
+  \tikz{\draw[azulclaro, line width=0.4pt] (-1.6,0) -- (-0.4,0);
+        \draw[azulclaro, line width=0.4pt] (0.4,0) -- (1.6,0);
+        \node at (0,0) {\ondita[1.25]};}\par}\vspace{6pt}}
+
+\makeatletter
+\def\ps@headings{%
+  \let\@mkboth\markboth
+  \def\@evenhead{\normalfont\footnotesize\color{grispizarra}\scshape
+    \textls[60]{Laboratorio de Mecánica y Ondas}\hfil
+    \textls[60]{Péndulo de Pohl\,\textperiodcentered\,Oscilaciones forzadas}}%
+  \let\@oddhead\@evenhead
+  \def\@evenfoot{\hfil\normalfont\small\color{azulacero}%
+    \ondita\enspace\thepage\enspace\ondita\hfil}%
+  \let\@oddfoot\@evenfoot}
+\def\ps@firstpage{\ps@plain\def\@oddhead{}\let\@evenhead\@oddhead
+  \def\@oddfoot{\hfil\normalfont\small\color{azulacero}%
+    \ondita\enspace\thepage\enspace\ondita\hfil}%
+  \let\@evenfoot\@oddfoot}
+\pagestyle{headings}
+
+% Secciones: número en azul cobalto, título en versalitas espaciadas; debajo,
+% un subtítulo en cursiva y un filete rematado en un pequeño círculo turquesa.
+\def\section{\@startsection{section}{1}%
+  \z@{1.3\linespacing\@plus.8\linespacing}{.25\linespacing}%
+  {\normalfont\Large\color{azulprof}\scshape\lsstyle\raggedright}}
+\let\@seccntformatorig\@seccntformat
+\def\@seccntformat#1{%
+  \ifnum\pdfstrcmp{#1}{section}=\z@
+    {\color{azulacero}\upshape\csname the#1\endcsname}\hspace{0.55em}%
+  \else\@seccntformatorig{#1}\fi}
+% Subsecciones: en negrita azul marino, con el número en azul cobalto
+\def\subsection{\@startsection{subsection}{2}%
+  \z@{.9\linespacing\@plus.6\linespacing}{.3\linespacing}%
+  {\normalfont\bfseries\color{azulprof}}}
+\def\subsubsection{\@startsection{subsubsection}{3}%
+  \z@{.7\linespacing\@plus.5\linespacing}{.2\linespacing}%
+  {\normalfont\itshape\color{azulacero}}}
+\newcommand{\filete}{%
+  \tikz[baseline]{\draw[azulclaro, line width=0.45pt] (0,0) -- (\linewidth-5pt,0);
+    \draw[turquesa, line width=0.55pt, fill=white] (\linewidth-2.6pt,0) circle (2.3pt);}}
+\DeclareRobustCommand{\tocsub}[1]{%
+  \ \textperiodcentered\ {\itshape\color{grispizarra}#1}}
+\newcommand{\subtitulo}[1]{%
+  \par\nopagebreak\vspace{-2pt}%
+  \noindent{\itshape\color{grispizarra}#1}\par\nopagebreak\vspace{1pt}%
+  \noindent\filete\par\nopagebreak\vspace{0.55\baselineskip}}
+% \seccion{Título}{Subtítulo}: sección numerada con subtítulo (índice incluido).
+\let\@tocextra\@empty
+\def\@tocwriteb#1#2#3{%
+  \begingroup
+    \def\@tocline##1##2##3##4##5##6{%
+      \ifnum##1>\c@tocdepth
+      \else \sbox\z@{##5\let\indentlabel\@tochangmeasure##6}\fi}%
+    \csname l@#2\endcsname{#1{\csname#2name\endcsname}{\@secnumber}{}}%
+  \endgroup
+  \addcontentsline{toc}{#2}%
+    {\protect#1{\csname#2name\endcsname}{\@secnumber}{#3\@tocextra}}%
+  \global\let\@tocextra\@empty}
+\newcommand{\seccion}[2]{%
+  \gdef\@tocextra{\tocsub{#2}}%
+  \section{#1}\subtitulo{#2}}
+
+% Índice: número en azul cobalto, título en azul marino y subtítulo en cursiva
+\def\l@section{\@tocline{1}{7pt}{0pt}{}{}}
+\renewcommand{\tocsection}[3]{%
+  \indentlabel{\@ifnotempty{#2}{{\color{azulacero}#2}\quad}}{\color{azulprof}#3}}
+\def\l@subsection{\@tocline{2}{1pt}{1.55pc}{2.4pc}{\small}}
+\renewcommand{\contentsnamefont}{\scshape\color{azulprof}\lsstyle}
+\makeatother
+\numberwithin{equation}{section}
+% Párrafos: encabezado en cursiva, en línea con el texto
+\makeatletter
+\def\paragraph{\@startsection{paragraph}{4}{\z@}{6pt plus 2pt}{-0.6em}%
+  {\normalfont\itshape\color{azulprof}}}
+\makeatother
+\setcounter{tocdepth}{2}
+\makeatletter
+\def\@@and{y}
+\renewcommand{\abstractname}{\color{azulacero}\lsstyle Resumen}
+\makeatother
+
+% =========================================================================
+%               NOTACIÓN Y MACROS DE USO FRECUENTE
+% =========================================================================
+\newcommand{\dif}{\mathrm{d}}
+\newcommand{\ii}{\mathrm{i}}                  % unidad imaginaria
+\newcommand{\wz}{\omega_0}                    % frecuencia natural (sin amortiguamiento)
+\newcommand{\wa}{\omega}                      % frecuencia de la oscilación amortiguada
+\newcommand{\WR}{\Omega_{\mathrm{R}}}         % frecuencia de resonancia
+\newcommand{\bR}{\beta_{\mathrm{R}}}          % amplitud de resonancia
+\newcommand{\Tcoef}{t_{95,\nu}}               % factor de cobertura al 95 %
+\newcommand{\ext}[1]{U(#1)}                   % incertidumbre ampliada
+\newcommand{\mean}[1]{\overline{#1}}
+% Dato pendiente de incorporar (se resalta con discreción)
+\newcommand{\pend}[1]{\textcolor{grispizarra}{\colorbox{grisclaro}{\strut\,#1\,}}}
+\newcommand{\pendiente}[1]{\textcolor{grispizarra}{\textit{[#1]}}}
+% Hueco reservado para una gráfica o figura que aún no existe
+\newcommand{\huecofigura}[2][5.2cm]{%
+  \tikz{\draw[grispizarra!45, dashed, line width=0.5pt, rounded corners=2pt, fill=azulfondo]
+          (0,0) rectangle (0.92\linewidth,#1);
+        \node[text=grispizarra, font=\small\itshape, align=center, text width=0.8\linewidth]
+          at (0.46\linewidth,#1/2) {#2};}}
+
+% =========================================================================
+%        ENTORNOS FORMALES (enunciados numerados, estilo artículo)
+% =========================================================================
+\usepackage{amsthm}
+
+\newtheoremstyle{cienplano}{10pt}{10pt}{\itshape}{}%
+  {\bfseries\color{azulprof}}{.}{0.6em}%
+  {\thmname{#1}\thmnumber{ #2}\thmnote{\normalfont\upshape\ (#3)}}
+\newtheoremstyle{ciendef}{10pt}{10pt}{\normalfont}{}%
+  {\bfseries\color{azulprof}}{.}{0.6em}%
+  {\thmname{#1}\thmnumber{ #2}\thmnote{\normalfont\upshape\ (#3)}}
+\newtheoremstyle{cienobs}{8pt}{8pt}{\normalfont}{}%
+  {\itshape\color{azulprof}}{.}{0.6em}%
+  {\thmname{#1}\thmnumber{ #2}\thmnote{\normalfont\upshape\ (#3)}}
+
+\theoremstyle{cienplano}
+\newtheorem{proposicion}{Proposición}[section]
+\newtheorem{teorema}[proposicion]{Teorema}
+\newtheorem{resultado}[proposicion]{Resultado}
+\newtheorem{conclusion}[proposicion]{Conclusión}
+\theoremstyle{ciendef}
+\newtheorem{definicion}[proposicion]{Definición}
+\newtheorem{hipotesis}[proposicion]{Hipótesis}
+\newtheorem{calculo}[proposicion]{Cálculo}
+\theoremstyle{cienobs}
+\newtheorem{observacion}[proposicion]{Observación}
+\newtheorem*{demostracion}{Demostración}
+
+% --- Referencia formalizada --------------------------------------------------
+% Caja fina con fondo tenue y título sobre el borde. Cuerpo en cursiva y, al
+% pie, la fuente completa con autor, título y número de cita.
+% Uso: \begin{referencia}[título]{clave-bib} ... \end{referencia}
+\newcounter{referencia}
+\renewcommand{\thereferencia}{\theproposicion}
+\newtcolorbox{referenciabox}[2]{%
+  enhanced, sharp corners,
+  colback=azulfondo, colframe=azulclaro, boxrule=0.4pt,
+  left=10pt, right=10pt, top=7pt, bottom=6pt,
+  before skip=14pt, after skip=12pt,
+  attach boxed title to top left={yshift*=-\tcboxedtitleheight/2, xshift=8pt},
+  boxed title style={colback=white, colframe=white, sharp corners, boxrule=0pt,
+                     left=3pt, right=3pt, top=1pt, bottom=1pt},
+  fonttitle=\bfseries\color{azulprof}, coltitle=azulprof,
+  fontupper=\itshape,
+  title={Referencia~\thereferencia\ifx\relax#1\relax\else\ \normalfont(#1)\fi},
+  after upper={\par\vspace{5pt}{\color{azulclaro}\hrule height 0.4pt}\vspace{4pt}%
+    {\upshape\footnotesize\color{grispizarra}\raggedleft
+     \citeauthor{#2}, \citetitle{#2}~\cite{#2}.\par}}}
+\newenvironment{referencia}[2][]
+  {\par\stepcounter{proposicion}\refstepcounter{referencia}\begin{referenciabox}{#1}{#2}}
+  {\end{referenciabox}}
+\crefname{referencia}{referencia}{referencias}
+\Crefname{referencia}{Referencia}{Referencias}
+
+% --- Método (caja azulada para los fundamentos del tratamiento de datos) -----
+\newcounter{metodo}
+\renewcommand{\themetodo}{\theproposicion}
+\newtcolorbox{metodobox}[1]{%
+  enhanced, breakable, sharp corners,
+  colback=azulfondo, colframe=azulclaro, boxrule=0.4pt,
+  left=10pt, right=10pt, top=7pt, bottom=5pt,
+  before skip=14pt, after skip=12pt,
+  attach boxed title to top left={yshift*=-\tcboxedtitleheight/2, xshift=8pt},
+  boxed title style={colback=white, colframe=white, sharp corners, boxrule=0pt,
+                     left=3pt, right=3pt, top=1pt, bottom=1pt},
+  fonttitle=\bfseries\color{azulprof}, coltitle=azulprof,
+  title={Método~\themetodo\ifx\relax#1\relax\else\ \normalfont(#1)\fi}}
+\newenvironment{metodo}[1][]
+  {\par\stepcounter{proposicion}\refstepcounter{metodo}\begin{metodobox}{#1}}
+  {\end{metodobox}}
+\crefname{metodo}{método}{métodos}
+\Crefname{metodo}{Método}{Métodos}
+
+% --- Resultado destacado ----------------------------------------------------
+\newtcolorbox{destacado}[1][]{%
+  enhanced, sharp corners, frame hidden, colback=azulfondo,
+  borderline west={1.6pt}{0pt}{turquesa},
+  left=10pt, right=8pt, top=6pt, bottom=6pt,
+  before skip=10pt, after skip=12pt,
+  before upper={\ifx\relax#1\relax\else{\scshape\small\color{azulacero}#1}\par\vspace{5pt}\fi}}
+
+% --- Tarea pendiente ----------------------------------------------------------
+% Caja discontinua para las partes que aún hay que redactar o calcular.
+\newtcolorbox{pendientebox}[1][]{%
+  enhanced, breakable, sharp corners, colback=white, colframe=grispizarra!50,
+  boxrule=0.5pt, borderline={0.5pt}{0pt}{grispizarra!50, dashed}, frame hidden,
+  left=10pt, right=10pt, top=6pt, bottom=6pt, before skip=10pt, after skip=10pt,
+  fontupper=\small\color{grispizarra},
+  before upper={{\scshape\color{azulacero}Pendiente\ifx\relax#1\relax\else\ \textperiodcentered\ #1\fi}\par\vspace{2pt}}}
+
+\crefname{proposicion}{proposición}{proposiciones}
+\Crefname{proposicion}{Proposición}{Proposiciones}
+\crefname{teorema}{teorema}{teoremas}
+\Crefname{teorema}{Teorema}{Teoremas}
+\crefname{definicion}{definición}{definiciones}
+\Crefname{definicion}{Definición}{Definiciones}
+\crefname{resultado}{resultado}{resultados}
+\Crefname{resultado}{Resultado}{Resultados}
+\crefname{conclusion}{conclusión}{conclusiones}
+\crefname{hipotesis}{hipótesis}{hipótesis}
+\crefname{calculo}{cálculo}{cálculos}
+\crefname{observacion}{observación}{observaciones}
+\Crefname{observacion}{Observación}{Observaciones}
+\crefname{section}{sección}{secciones}
+\Crefname{section}{Sección}{Secciones}
+\crefname{subsection}{sección}{secciones}
+\Crefname{subsection}{Sección}{Secciones}
+\crefname{subsubsection}{sección}{secciones}
+\crefname{table}{tabla}{tablas}
+\Crefname{table}{Tabla}{Tablas}
+\crefname{figure}{figura}{figuras}
+\Crefname{figure}{Figura}{Figuras}
+\crefname{equation}{ecuación}{ecuaciones}
+\Crefname{equation}{Ecuación}{Ecuaciones}
+\crefformat{equation}{ecuación~(#2#1#3)}
+\Crefformat{equation}{Ecuación~(#2#1#3)}
+\crefrangeformat{equation}{ecuaciones~(#3#1#4)--(#5#2#6)}
+\crefmultiformat{equation}{ecuaciones~(#2#1#3)}{ y~(#2#1#3)}{, (#2#1#3)}{ y~(#2#1#3)}
+
+% --- Estilo de gráficas de datos ----------------------------------------------
+\pgfplotsset{
+  datos/.style={
+    tick label style={font=\scriptsize}, label style={font=\small},
+    axis lines=left, axis line style={grispizarra},
+    grid=major, grid style={grisclaro, line width=0.4pt},
+    every tick/.style={grispizarra},
+    legend style={font=\scriptsize, draw=none, fill=white, fill opacity=0.9,
+                  text opacity=1, cells={anchor=west}},
+    legend cell align=left,
+    /pgf/number format/use period, /pgf/number format/1000 sep={\,},
+    scaled ticks=false,
+  },
+  puntoA/.style={only marks, mark=*, mark size=2.1pt, azulprof,
+    mark options={fill=azulprof, draw=white, line width=0.3pt}},
+  puntoB/.style={only marks, mark=square*, mark size=1.9pt, azulacero,
+    mark options={fill=azulclaro, draw=azulacero, line width=0.5pt}},
+  puntoC/.style={only marks, mark=triangle*, mark size=2.3pt, turquesa!80!azulprof,
+    mark options={fill=aguamarina, draw=azulpetroleo, line width=0.5pt}},
+  teorica/.style={acento, line width=0.9pt, densely dashed},
+  % familia de curvas de resonancia: del amortiguamiento más débil (marino)
+  % al más fuerte (aguamarina)
+  curva1/.style={azulprof, line width=0.8pt},
+  curva2/.style={azulacero, line width=0.8pt},
+  curva3/.style={azulpetroleo, line width=0.8pt},
+  curva4/.style={turquesa, line width=0.8pt},
+  curva5/.style={aguamarina!90!azulpetroleo, line width=0.8pt},
+}
+
+% Referencia a un panel de figura: «figura 2\,(a)», enlazada en bloque
+\newcommand{\figpanel}[2]{\hyperref[#1]{figura~\ref*{#1}\,\textup{(#2)}}}
+
+% Pies de figura y tabla
+\usepackage[font=small, labelfont={sc,color=azulprof}, labelsep=period,
+            margin=0.6cm, justification=justified]{caption}
+\usepackage{subcaption}
+\captionsetup[sub]{font=small, labelfont={sc,color=azulprof}, labelformat=parens,
+                   margin=0pt, justification=centering}
+
+% Fotografías con un marco fino
+\newcommand{\foto}[2][\linewidth]{%
+  \tcbox[enhanced, sharp corners, colback=white, colframe=grisclaro, boxrule=0.5pt,
+         boxsep=0pt, left=0pt, right=0pt, top=0pt, bottom=0pt, nobeforeafter, valign=center]{%
+    \includegraphics[width=\dimexpr#1-1pt\relax]{#2}}}
+
+% =========================================================================
+%                     VARIABLES PARA LA PORTADA
+% =========================================================================
+\newcommand{\Universidad}{Universidad de Salamanca}
+\newcommand{\Facultad}{Facultad de Ciencias}
+\newcommand{\Titulacion}{Grado en Física}
+\newcommand{\Asignatura}{Laboratorio de Mecánica y Ondas}
+\newcommand{\NumPractica}{Práctica 4}
+\newcommand{\TituloPractica}{Péndulo de Pohl}
+\newcommand{\SubtituloPractica}{Oscilaciones libres, amortiguadas y forzadas: la resonancia}
+\newcommand{\tipotrabajo}{Informe de laboratorio}
+\newcommand{\miNombre}{David Gómez García \\ Daniel Martín Guerrero}
+\newcommand{\miTutor}{Mario Amado \\ Ivan de Martino \\ Manuel Pino}
+\newcommand{\miUbicacion}{Salamanca}
+
+% =========================================================================
+%                     DATOS DEL ARTÍCULO (cabecera)
+% =========================================================================
+\title{Péndulo de Pohl}
+\author{David Gómez García}
+\author{Daniel Martín Guerrero}
+\address{Grado en Física, Facultad de Ciencias, Universidad de Salamanca,
+         Salamanca, España}
+\date{}
+
+% =========================================================================
+%                                DOCUMENTO
+% =========================================================================
+\begin{document}
+% --- PORTADA ----------------------------------------------------------------
+\pagenumbering{alph}
+\input{portada}
+\clearpage
+\pagenumbering{arabic}
+\setcounter{page}{1}
+
+\begin{abstract}
+Estudiamos el péndulo de Pohl, un oscilador de torsión formado por un anillo
+de cobre y un muelle en espiral, frenado por un electroimán y forzado por un
+motor a través de una biela. En la oscilación libre, sin electroimán y con el
+puente de la fuente en las posiciones~4 y~6, el periodo nos da la frecuencia
+natural, $\wz=(\pend{$\cdots\pm\cdots$})\ \si{\radian\per\second}$, y el
+decrecimiento exponencial de los máximos, linealizado como
+$\ln\lvert\varphi_n\rvert$ frente a $t_n$, los coeficientes de
+amortiguamiento $\gamma_0$, $\gamma_4$ y $\gamma_6$ (\pend{valores}). En la
+oscilación forzada medimos la amplitud estacionaria $\beta$ para siete
+frecuencias $\Omega$ en torno a la resonancia y los tres amortiguamientos, y
+comparamos las curvas $\beta(\Omega)$ con la frecuencia de resonancia
+esperada, $\WR=\sqrt{\wz^{2}-2\gamma^{2}}$. Los máximos se extraen con el
+análisis de picos de PHYWE Measure y los resultados se dan con incertidumbre
+típica y ampliada al \SI{95}{\percent}. \pend{Conclusión principal.}
+\end{abstract}
+
+\maketitle
+\tableofcontents
+
+% =========================================================================
+\newpage
+\seccion{Introducción}{Un oscilador que se deja frenar y empujar}\label{sec:introduccion}
+% =========================================================================
+Casi todo lo que oscila en la naturaleza lo hace en presencia de dos
+influencias externas: algo que le roba energía y algo que, de vez en cuando,
+se la devuelve. Un columpio se detiene por el rozamiento y vuelve a subir
+cuando alguien lo empuja en el momento justo; la membrana de un altavoz, un
+circuito sintonizado o la estructura de un puente responden de forma muy
+distinta según la frecuencia con que se les excite. Entender ese equilibrio
+entre disipación y forzamiento, y en particular el fenómeno de la
+\emph{resonancia}, es uno de los resultados centrales de la física de las
+oscilaciones~\cite{FIV,FRENCH}.
+
+El péndulo que estudiamos lo ideó Robert Wichard Pohl en Gotinga, a comienzos
+del siglo~XX, precisamente para mostrar ese fenómeno en el aula, y su diseño
+apenas ha cambiado desde entonces. Es un oscilador de torsión: un anillo de
+cobre que gira alrededor de su eje, recuperado por un muelle en espiral. Su
+interés está en que las dos influencias externas se pueden controlar por
+separado y sin tocar el oscilador. Un electroimán induce en el anillo
+corrientes de Foucault que lo frenan con un momento proporcional a su
+velocidad angular, y cuya intensidad fijamos con la tensión de la bobina; un
+motor, unido al muelle por una biela, lo empuja periódicamente con la
+frecuencia que elijamos~\cite{GUION-P4}. Así podemos observar primero cómo se
+apaga una oscilación libre y, después, cómo responde el anillo cuando se le
+fuerza cerca de su frecuencia natural.
+
+\subsection{Objetivos}\label{sec:objetivos}
+\paragraph{Oscilación libre amortiguada.}
+\begin{itemize}
+  \item Medir el periodo de la oscilación libre y deducir de él la frecuencia
+        natural $\wz$ del péndulo, con su incertidumbre.
+  \item Comprobar que las amplitudes máximas decrecen exponencialmente y
+        determinar el coeficiente de amortiguamiento $\gamma$ sin electroimán
+        y con el puente de la fuente en las posiciones~4 y~6, mediante un
+        ajuste lineal de $\ln\lvert\varphi_n\rvert$ frente a $t_n$.
+\end{itemize}
+\paragraph{Oscilación forzada.}
+\begin{itemize}
+  \item Medir la amplitud estacionaria $\beta$ para varias frecuencias de
+        forzamiento $\Omega$ en torno a la resonancia y para los tres grados
+        de amortiguamiento, y representar las curvas de resonancia.
+  \item Calcular, a partir de $\wz$ y $\gamma$, la frecuencia de resonancia
+        esperada $\WR$ para cada amortiguamiento, con su incertidumbre, y
+        contrastarla con las curvas medidas.
+  \item Discutir cómo cambian la altura, la anchura y la posición del pico de
+        resonancia con el amortiguamiento.
+\end{itemize}
+Para ello nos apoyaremos en las \cref{eq:linealizacion,eq:beta,eq:resonancia}
+de la \cref{sec:fundamentos}.
+
+\subsection{Material empleado}\label{sec:material}
+Hemos utilizado el siguiente instrumental (\cref{fig:montaje,fig:auxiliar}):
+\begin{itemize}
+  \item Péndulo de Pohl: anillo de cobre que gira en torno a un eje horizontal,
+        unido a un \emph{muelle en espiral}; fiel solidario con el anillo y
+        escala graduada fija para leer la desviación angular.
+  \item Electroimán de frenado, cuyas bobinas abrazan la parte inferior del
+        anillo.
+  \item Motor de corriente continua con disco excéntrico y biela, y dos
+        potenciómetros para ajustar su velocidad: uno de ajuste grueso y otro
+        de ajuste fino.
+  \item Fuente de alimentación universal, con un puente enchufable que
+        selecciona la tensión de salida, y rectificador de corriente.
+  \item Unidad de medida Cobra-3 y ordenador con el programa PHYWE
+        Measure~\cite{PHYWE}.
+  \item Cables de conexión.
+\end{itemize}
+
+\subsection{Montaje experimental}\label{sec:montaje}
+La \cref{fig:montaje} muestra el aparato en el laboratorio. El anillo de cobre
+está unido al eje de giro por cuatro radios y, a través del eje, al extremo
+interior del muelle en espiral; el extremo exterior del muelle está sujeto a
+una palanca, el \emph{excitador}, que en la oscilación libre permanece
+inmóvil. Cuando el motor gira, el disco excéntrico arrastra la biela, la biela
+hace oscilar la palanca y esta, a su vez, retuerce periódicamente el muelle:
+así es como el motor le comunica al anillo un momento de fuerzas periódico.
+El fiel, solidario con el anillo, marca sobre la escala la desviación $\varphi$
+respecto de la posición de equilibrio, que debe coincidir con el cero; si no
+lo hace, se corrige girando a mano el disco del motor.
+
+El electroimán se alimenta desde la fuente a través del rectificador, que
+convierte en continua la tensión alterna seleccionada con el puente enchufable
+(\cref{fig:auxiliar}). Sin el puente no circula corriente por la bobina y solo
+queda el rozamiento propio del aparato; cuanto mayor es la tensión elegida,
+más intenso es el campo y más fuerte el frenado. Un sensor en el eje del
+péndulo convierte el ángulo de giro en una señal que la unidad Cobra-3
+digitaliza y que PHYWE Measure representa en tiempo real como $\varphi(t)$.
+La \cref{fig:esquema} resume el funcionamiento del aparato y los momentos que
+actúan sobre el anillo.
+
+% --- Fotografía rotulada del montaje ---------------------------------------------
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}[x=1cm, y=1cm, >={Stealth[length=4pt]},
+    rotulo/.style={font=\small, text=azulprof, align=left, inner sep=1.5pt},
+    rotuloD/.style={font=\small, text=azulprof, align=right, inner sep=1.5pt},
+    guia/.style={azulacero, line width=0.5pt},
+    blanco/.style={circle, fill=white, draw=azulprof, line width=0.6pt, inner sep=0pt, minimum size=4.6pt}]
+  % la foto ocupa 9 cm de ancho (2100 x 2268 px) y su esquina inferior izquierda está en (0,0)
+  \def\W{9}\def\H{9.72}
+  \node[anchor=south west, inner sep=0] (F) at (0,0) {\foto[9cm]{figuras/montaje-pohl.jpg}};
+  % coordenadas relativas (x/W, y/H) medidas sobre la foto, con y desde arriba
+  \newcommand{\punto}[3]{\coordinate (#1) at ({#2*\W},{(1-#3)*\H});}
+  \punto{pFiel}{0.228}{0.158}
+  \punto{pEscala}{0.072}{0.172}
+  \punto{pAnillo}{0.133}{0.212}
+  \punto{pMuelle}{0.205}{0.305}
+  \punto{pIman}{0.265}{0.440}
+  \punto{pBiela}{0.300}{0.621}
+  \punto{pFuente}{0.900}{0.370}
+  \punto{pExcen}{0.500}{0.690}
+  \punto{pRect}{0.950}{0.731}
+  \punto{pPot}{0.745}{0.727}
+  % columna izquierda de rótulos
+  \foreach \p/\y/\t in {pFiel/9.30/{Fiel},
+                        pEscala/8.30/{Escala graduada},
+                        pAnillo/7.30/{Anillo de cobre},
+                        pMuelle/6.30/{Muelle en espiral},
+                        pIman/5.05/{Electroimán\\[-1pt]{\footnotesize(corrientes de Foucault)}},
+                        pBiela/3.15/{Biela y palanca\\[-1pt]{\footnotesize del excitador}}}{
+    \node[rotuloD, anchor=east] (r\p) at (-0.45,\y) {\t};
+    \draw[white, line width=1.7pt, opacity=0.85] ($(r\p.east)+(0.25,0)$) -- (\p);
+    \draw[guia] (r\p.east) -- ++(0.25,0) -- (\p);
+    \node[blanco] at (\p) {};}
+  % columna derecha de rótulos
+  \foreach \p/\y/\t in {pFuente/7.30/{Fuente de\\[-1pt]alimentación},
+                        pExcen/5.10/{Motor con disco\\[-1pt]excéntrico},
+                        pRect/3.45/{Rectificador},
+                        pPot/1.75/{Potenciómetros\\[-1pt]{\footnotesize(grueso y fino)}}}{
+    \node[rotulo, anchor=west] (r\p) at (\W+0.45,\y) {\t};
+    \draw[white, line width=1.7pt, opacity=0.85] ($(r\p.west)+(-0.25,0)$) -- (\p);
+    \draw[guia] (r\p.west) -- ++(-0.25,0) -- (\p);
+    \node[blanco] at (\p) {};}
+\end{tikzpicture}
+\caption{El péndulo de Pohl en el laboratorio. El anillo de cobre gira frente a
+la escala graduada fija y su desviación se lee con el fiel. El muelle en espiral
+une el eje del anillo con la palanca del excitador, que la biela mueve cuando
+el motor gira. El electroimán, alimentado desde la fuente a través del
+rectificador, frena el anillo induciendo en él corrientes de Foucault.}
+\label{fig:montaje}
+\end{figure}
+
+% --- Material auxiliar -------------------------------------------------------------
+\begin{figure}[!p]
+\centering
+\begin{subfigure}[b]{0.32\textwidth}\centering
+  \foto{figuras/cobra3.jpg}
+  \caption{Unidad Cobra-3.}
+\end{subfigure}\hfill
+\begin{subfigure}[b]{0.32\textwidth}\centering
+  \foto{figuras/puente.jpg}
+  \caption{Puente enchufable.}
+\end{subfigure}\hfill
+\begin{subfigure}[b]{0.32\textwidth}\centering
+  \foto{figuras/fuente-rectificador.jpg}
+  \caption{Fuente y rectificador.}
+\end{subfigure}
+\caption{Material auxiliar. (a)~La unidad Cobra-3 digitaliza la señal del
+sensor de ángulo y la envía al ordenador. (b)~El puente enchufable de la fuente
+selecciona la tensión de salida y, con ella, el grado de amortiguamiento.
+(c)~El rectificador, un puente de diodos, convierte esa tensión en continua
+antes de llevarla a la bobina del electroimán.}
+\label{fig:auxiliar}
+
+\vspace{1.4\baselineskip}
+
+% --- Esquema del aparato y de los momentos que actúan sobre el anillo -----------
+\begin{tikzpicture}[x=0.86cm, y=0.86cm, >={Stealth[length=5pt]}, font=\small]
+  \pohl{24}{150}{1}
+  % ángulo de giro: desde la vertical (equilibrio) hasta el fiel
+  \draw[grispizarra!70, densely dashed, line width=0.4pt] (0,0) -- (90:3.95);
+  \draw[azulprof, line width=0.5pt, ->] (90:3.75) arc[start angle=90, end angle=114, radius=3.75];
+  \node[text=azulprof] at (102:4.15) {$\varphi$};
+  % momento recuperador del muelle (sentido contrario al giro)
+  \draw[acento, line width=0.9pt, ->] (62:1.3) arc[start angle=62, end angle=14, radius=1.3];
+  \node[text=acento, fill=white, inner sep=1pt] at (36:1.62) {$-k\varphi$};
+  % frenado magnético, junto al electroimán
+  \draw[acento, line width=0.9pt, ->] (-42:1.72) arc[start angle=-42, end angle=-72, radius=1.72];
+  \node[text=acento, fill=white, inner sep=1pt] at (-52:1.2) {$-\eta\dot\varphi$};
+  \draw[grispizarra!70, line width=0.35pt] (0.64,-2.3) -- (3.7,-2.3);
+  \fill[azulprof] (0.64,-2.3) circle (1.3pt);
+  \node[text=grispizarra, font=\footnotesize\itshape, anchor=west] at (3.75,-2.3) {campo $\vec B$ del electroimán};
+  % forzamiento
+  \draw[azulacero, line width=0.5pt, ->] ($(Motor)+(0.85,0.3)$) arc[start angle=20, end angle=120, radius=0.9];
+  \node[text=azulacero, anchor=south] at ($(Motor)+(0.35,0.95)$) {$\Omega$};
+  \node[text=azulprof, anchor=north east, align=right] at ($(Palanca)+(-0.1,-0.2)$)
+    {$M(t)\simeq M_0\sin\Omega t$};
+  % rótulos discretos
+  \draw[grispizarra!70, line width=0.35pt] (135:2.22) -- (135:4.25) -- ++(-0.5,0);
+  \node[text=grispizarra, font=\footnotesize\itshape, anchor=east] at ($(135:4.25)+(-0.55,0)$) {anillo de cobre, $I$};
+  \draw[grispizarra!70, line width=0.35pt] (160:0.62) -- (160:1.55) -- ++(-3.1,0);
+  \node[text=grispizarra, font=\footnotesize\itshape, anchor=east] at ($(160:1.55)+(-3.15,0)$) {muelle en espiral, $k$};
+  \draw[grispizarra!70, line width=0.35pt] (35:3.2) -- (35:4.1) -- ++(0.5,0);
+  \node[text=grispizarra, font=\footnotesize\itshape, anchor=west] at ($(35:4.1)+(0.55,0)$) {escala fija};
+\end{tikzpicture}
+\caption{Esquema del péndulo de Pohl, de frente y sin escala. El anillo, de
+momento de inercia $I$, se ha desviado un ángulo $\varphi$ desde la vertical
+(discontinua). Sobre él actúan el momento recuperador del muelle, $-k\varphi$,
+y el del frenado magnético, $-\eta\dot\varphi$, debido a las corrientes que el
+campo $\vec B$ del electroimán induce en el cobre (cruces: el campo entra en el
+papel). Con el motor en marcha, la biela mueve la palanca del excitador y el
+muelle transmite al anillo un momento aproximadamente armónico, $M(t)$.}
+\label{fig:esquema}
+\end{figure}
+
+\ornamento
+
+% =========================================================================
+\newpage
+\seccion{Fundamentos teóricos}{Disipación, forzamiento y resonancia}\label{sec:fundamentos}
+% =========================================================================
+\subsection{Ecuación del movimiento}\label{sec:ecuacion}
+El anillo es un sólido rígido que gira alrededor de un eje fijo, de modo que su
+dinámica se reduce a una sola ecuación: el momento de inercia $I$ por la
+aceleración angular $\ddot\varphi$ es igual a la suma de los momentos de las
+fuerzas respecto del eje. Sobre él actúan tres:
+\begin{itemize}
+  \item \emph{El muelle en espiral.} Para deformaciones moderadas cumple la
+        ley de Hooke en su versión de torsión: ejerce un momento
+        $-k\varphi$, proporcional al ángulo girado y de sentido contrario, con
+        $k$ la constante de torsión del muelle.
+  \item \emph{El frenado magnético.} Al moverse la parte inferior del anillo
+        dentro del campo $\vec B$ del electroimán, en el cobre se induce una
+        fuerza electromotriz y circulan corrientes de Foucault. Por la ley de
+        Lenz, la fuerza que el campo ejerce sobre esas corrientes se opone al
+        movimiento que las crea y, como la densidad de corriente es
+        proporcional a la velocidad, el momento resultante es
+        $-\eta\dot\varphi$~\cite{PURCELL}. El coeficiente $\eta$ crece con el
+        cuadrado del campo y, por tanto, con la corriente de la bobina: esa es
+        la palanca con la que regulamos el amortiguamiento. A él se suma un
+        pequeño rozamiento mecánico, que supondremos también proporcional a la
+        velocidad.
+  \item \emph{El forzamiento.} Con el motor en marcha, la biela hace oscilar el
+        extremo exterior del muelle, que transmite al anillo un momento
+        periódico de la misma frecuencia angular $\Omega$ que el motor. Como
+        la biela es mucho más larga que el radio de la excéntrica, ese momento
+        es prácticamente armónico, $M(t)=M_0\sin\Omega t$~\cite{GUION-P4}.
+\end{itemize}
+La segunda ley de Newton para la rotación da, por tanto,
+\begin{equation}\label{eq:newton}
+  I\ddot\varphi=-k\varphi-\eta\dot\varphi+M_0\sin\Omega t .
+\end{equation}
+
+\begin{definicion}[Parámetros del oscilador]\label{def:parametros}
+Dividiendo la \cref{eq:newton} por $I$ y definiendo
+\begin{equation}\label{eq:parametros}
+  \wz\equiv\sqrt{\frac{k}{I}},\qquad
+  \gamma\equiv\frac{\eta}{2I},\qquad
+  \alpha_0\equiv\frac{M_0}{I},
+\end{equation}
+la ecuación del movimiento adopta la forma canónica del oscilador armónico
+amortiguado y forzado:
+\begin{equation}\label{eq:movimiento}
+  \ddot\varphi+2\gamma\dot\varphi+\wz^{2}\varphi=\alpha_0\sin\Omega t .
+\end{equation}
+$\wz$ es la \emph{frecuencia natural}, con la que oscilaría el anillo sin
+rozamiento; $\gamma$, el \emph{coeficiente de amortiguamiento}, con
+dimensiones de inversa de tiempo; y $\alpha_0$ mide la intensidad del
+forzamiento\footnote{En los apuntes de Física~IV~\cite{FIV} el término
+disipativo se escribe $\gamma\dot x$, de modo que aquel coeficiente es el doble
+del nuestro. Aquí seguimos la convención del guion~\cite{GUION-P4}, con el
+factor~2 explícito, que simplifica las soluciones.}.
+\end{definicion}
+
+\subsection{Oscilación libre amortiguada}\label{sec:libre}
+Con el motor parado ($\alpha_0=0$), la \cref{eq:movimiento} es lineal y
+homogénea, con coeficientes constantes. Ensayando soluciones
+$\varphi\propto e^{\lambda t}$ se llega a la ecuación característica
+$\lambda^{2}+2\gamma\lambda+\wz^{2}=0$, cuyas raíces son
+\begin{equation}\label{eq:raices}
+  \lambda_{\pm}=-\gamma\pm\sqrt{\gamma^{2}-\wz^{2}} .
+\end{equation}
+El signo del discriminante distingue tres regímenes~\cite{FIV}: amortiguamiento
+débil o subcrítico ($\gamma<\wz$), crítico ($\gamma=\wz$) y supercrítico
+($\gamma>\wz$). Solo en el primero el anillo llega a oscilar, y es el único que
+exploramos en esta práctica.
+
+\begin{proposicion}[Oscilación subamortiguada]\label{prop:libre}
+Si $\gamma<\wz$, las raíces son complejas conjugadas y la solución real general
+es
+\begin{equation}\label{eq:libre}
+  \varphi(t)=A_0\,e^{-\gamma t}\sin(\wa t+\phi_0),\qquad
+  \wa=\sqrt{\wz^{2}-\gamma^{2}},
+\end{equation}
+donde $A_0$ y $\phi_0$ dependen de las condiciones iniciales. El anillo oscila
+con una frecuencia $\wa$ algo menor que la natural, y su amplitud se apaga
+exponencialmente con un tiempo característico $1/\gamma$.
+\end{proposicion}
+
+Las magnitudes que medimos directamente son los \emph{puntos de retorno}, en
+los que el anillo se detiene un instante antes de invertir su giro. Si lo
+soltamos desde el reposo con una desviación $\varphi_0$, imponer
+$\dot\varphi(0)=0$ fija $\tan\phi_0=\wa/\gamma$, y la velocidad se anula cada
+medio periodo, en los instantes $t_n=n\pi/\wa$. En ellos
+\begin{equation}\label{eq:retornos}
+  \varphi_n\equiv\varphi(t_n)=(-1)^{n}\varphi_0\,e^{-\gamma t_n},\qquad n=0,1,2,\dots
+\end{equation}
+Los máximos de un mismo lado, que son los que localiza el programa, están
+separados por el \emph{pseudoperiodo} $T=2\pi/\wa$.
+
+\begin{proposicion}[Linealización del decrecimiento]\label{prop:linealizacion}
+Tomando logaritmos en el valor absoluto de la \cref{eq:retornos},
+\begin{equation}\label{eq:linealizacion}
+  \ln\lvert\varphi_n\rvert=\ln\lvert\varphi_0\rvert-\gamma\,t_n
+  \qquad\Longleftrightarrow\qquad
+  \ln\left\lvert\frac{\varphi_0}{\varphi_n}\right\rvert=\gamma\,t_n .
+\end{equation}
+Los puntos $(t_n,\ln\lvert\varphi_n\rvert)$ caen, por tanto, sobre una recta
+de pendiente $-\gamma$: un ajuste lineal da directamente el coeficiente de
+amortiguamiento, y la propia linealidad de los datos pone a prueba la hipótesis
+de un frenado proporcional a la velocidad.
+\end{proposicion}
+
+\begin{observacion}[Lo que revela la forma del decrecimiento]\label{obs:coulomb}
+Si el frenado dominante fuera un rozamiento seco, de módulo constante, las
+amplitudes decrecerían en progresión \emph{aritmética} y no geométrica: una
+cantidad fija por ciclo~\cite{TAYLOR-CM}. En la representación
+semilogarítmica de la \cref{eq:linealizacion}, eso se manifestaría como una
+curvatura hacia abajo al final del registro, cuando las amplitudes son
+pequeñas. Vigilar esa curvatura, sobre todo sin electroimán, nos dirá hasta
+dónde es válido el modelo.
+\end{observacion}
+
+\begin{observacion}[Frecuencia natural y frecuencia medida]\label{obs:w0}
+El periodo que medimos es el de la oscilación amortiguada, de modo que nos da
+$\wa$ y no $\wz$. Ambas se relacionan por la \cref{eq:libre},
+$\wz=\sqrt{\wa^{2}+\gamma^{2}}$, y su diferencia relativa,
+$(\wz-\wa)/\wz\simeq\gamma^{2}/(2\wz^{2})$, es de segundo orden en
+$\gamma/\wz$. Bastará, pues, con medir el periodo sin electroimán y corregirlo
+con el $\gamma_0$ obtenido, comprobando que la corrección es despreciable
+frente a la incertidumbre.
+\end{observacion}
+
+Dos cantidades adimensionales resumen la intensidad del amortiguamiento. El
+\emph{decremento logarítmico}, $\Lambda=\gamma T$, es el logaritmo del cociente
+entre dos máximos consecutivos de un mismo lado. El \emph{factor de calidad},
+que con nuestra convención es $Q=\wz/(2\gamma)$, indica cuántos radianes de
+oscilación tarda la energía, que decae como $e^{-2\gamma t}$, en reducirse en
+un factor $e$; para amortiguamiento débil, la energía perdida en cada ciclo es
+una fracción $2\pi/Q$ de la almacenada~\cite{FIV}.
+
+\subsection{Oscilación forzada: transitorio y estado estacionario}\label{sec:forzada}
+Con el motor en marcha, la solución general de la \cref{eq:movimiento} es la
+suma de la solución general de la ecuación homogénea, ya conocida, y de una
+solución particular. Esta última se obtiene con comodidad pasando al plano
+complejo: si $z(t)$ resuelve
+$\ddot z+2\gamma\dot z+\wz^{2}z=\alpha_0e^{\ii\Omega t}$, su parte imaginaria
+resuelve la \cref{eq:movimiento}. Ensayando $z=B\,e^{\ii\Omega t}$ resulta
+$B=\alpha_0/(\wz^{2}-\Omega^{2}+2\ii\gamma\Omega)$, cuyo módulo y argumento dan
+la amplitud y el desfase de la respuesta.
+
+\begin{proposicion}[Respuesta a un forzamiento armónico]\label{prop:forzada}
+Si $\gamma>0$, la solución de la \cref{eq:movimiento} es
+\begin{equation}\label{eq:forzada}
+  \varphi(t)=
+  \underbrace{A_0\,e^{-\gamma t}\sin(\wa t+\phi_0)}_{\text{transitorio}}
+  +\underbrace{\beta\sin(\Omega t-\delta)}_{\text{estacionario}},
+\end{equation}
+con
+\begin{equation}\label{eq:beta}
+  \beta(\Omega)=\frac{\alpha_0}{\sqrt{\left(\wz^{2}-\Omega^{2}\right)^{2}+4\gamma^{2}\Omega^{2}}},
+  \qquad
+  \tan\delta=\frac{2\gamma\Omega}{\wz^{2}-\Omega^{2}},\quad \delta\in[0,\pi].
+\end{equation}
+\end{proposicion}
+
+El transitorio recuerda las condiciones iniciales y se apaga con el tiempo
+característico $1/\gamma$; el término estacionario, en cambio, no depende de
+ellas: el anillo acaba oscilando con la frecuencia del motor, con una amplitud
+$\beta$ y un retraso $\delta$ que solo dependen de $\Omega$, $\wz$ y $\gamma$.
+El retraso crece con la frecuencia: es casi nulo cuando el motor gira despacio,
+vale exactamente $\pi/2$ cuando $\Omega=\wz$ (el anillo pasa por el
+equilibrio cuando la biela está en un extremo) y tiende a $\pi$, oposición de
+fase, cuando $\Omega\gg\wz$ (\figpanel{fig:resonancia}{b}).
+
+\begin{observacion}[Cuánto hay que esperar]\label{obs:espera}
+Para que el transitorio haya caído por debajo del \SI{1}{\percent} de su valor
+inicial hace falta que $e^{-\gamma t}<10^{-2}$, es decir, $t>\ln 100/\gamma\approx
+4.6/\gamma$. El tiempo de espera es, por tanto, más largo cuanto \emph{menor}
+es el amortiguamiento: precisamente sin electroimán, donde la resonancia es más
+aguda, es donde más paciencia hay que tener antes de empezar a registrar, y
+donde una medida precipitada mezcla en la amplitud la contribución del
+transitorio.
+\end{observacion}
+
+\subsection{La resonancia}\label{sec:resonancia}
+Fijado el amortiguamiento, la amplitud estacionaria $\beta(\Omega)$ de la
+\cref{eq:beta} es máxima cuando el radicando del denominador es mínimo.
+Derivando respecto de $\Omega$ e igualando a cero,
+$-4\Omega(\wz^{2}-\Omega^{2})+8\gamma^{2}\Omega=0$, lo que conduce al
+resultado siguiente~\cite{GUION-P4,FIV}.
+
+\begin{proposicion}[Frecuencia y amplitud de resonancia]\label{prop:resonancia}
+Si $0<\gamma<\wz/\sqrt2$, la amplitud estacionaria crece con $\Omega$ desde
+$\beta(0)=\alpha_0/\wz^{2}$ hasta un máximo, y luego decrece. El máximo se
+alcanza en la \emph{frecuencia de resonancia}
+\begin{equation}\label{eq:resonancia}
+  \WR=\sqrt{\wz^{2}-2\gamma^{2}},
+\end{equation}
+y vale
+\begin{equation}\label{eq:amplitudR}
+  \bR=\frac{\alpha_0}{2\gamma\sqrt{\wz^{2}-\gamma^{2}}} .
+\end{equation}
+Si $\gamma\geq\wz/\sqrt2$, no hay pico: la amplitud decrece monótonamente desde
+$\beta(0)$.
+\end{proposicion}
+
+La \cref{fig:resonancia} muestra la familia de curvas $\beta(\Omega)$ para
+varios amortiguamientos. Tres rasgos suyos guiarán la discusión de nuestras
+medidas:
+\begin{itemize}
+  \item \emph{La altura.} Para amortiguamiento débil,
+        $\bR/\beta(0)\simeq\wz/(2\gamma)=Q$: el pico crece como $1/\gamma$ y,
+        sin rozamiento, la amplitud de resonancia divergería.
+  \item \emph{La anchura.} La curva de energía media, proporcional a
+        $\beta^{2}$, tiene una anchura a media altura
+        $\Delta\Omega\simeq2\gamma=\wz/Q$~\cite{FIV}: el pico se ensancha en
+        proporción directa al amortiguamiento.
+  \item \emph{La posición.} El desplazamiento del máximo respecto de la
+        frecuencia natural, $\wz-\WR\simeq\gamma^{2}/\wz$, es de segundo orden
+        en $\gamma/\wz$. Con amortiguamientos débiles, la resonancia delata el
+        rozamiento por su altura y su anchura, mucho antes que por su
+        posición.
+\end{itemize}
+
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}
+\begin{groupplot}[
+  group style={group size=2 by 1, horizontal sep=1.55cm},
+  datos, width=0.5\textwidth, height=0.39\textwidth,
+  xmin=0, xmax=2, domain=0.001:2, samples=260,
+  xlabel={$\Omega/\wz$},
+  xtick={0,0.5,1,1.5,2},
+]
+\nextgroupplot[ymin=0, ymax=7.2, ylabel={$\beta\,\wz^{2}/\alpha_0$},
+  legend style={at={(0.02,0.98)}, anchor=north west},
+  title={\small(a)\ Amplitud}, title style={text=azulprof, yshift=-4pt}]
+  \foreach \g/\c in {0.08/curva1, 0.12/curva2, 0.2/curva3, 0.35/curva4, 0.707/curva5}{
+    \edef\tmp{\noexpand\addplot[\c] {1/sqrt((1-x^2)^2+4*\g^2*x^2)};}\tmp}
+  \addplot[grispizarra, densely dotted, line width=0.6pt, domain=0.001:0.9935]
+    {1/sqrt(2*(1-x^4))};
+  \legend{$\gamma/\wz=0.08$, $0.12$, $0.20$, $0.35$, $1/\sqrt2$, lugar de los máximos}
+\nextgroupplot[ymin=0, ymax=180, ytick={0,45,90,135,180},
+  ylabel={$\delta$ (\si{\degree})},
+  title={\small(b)\ Desfase}, title style={text=azulprof, yshift=-4pt}]
+  \foreach \g/\c in {0.08/curva1, 0.12/curva2, 0.2/curva3, 0.35/curva4, 0.707/curva5}{
+    \edef\tmp{\noexpand\addplot[\c] {atan2(2*\g*x, 1-x^2)};}\tmp}
+  \addplot[grispizarra!60, densely dashed, line width=0.4pt] coordinates {(0,90) (2,90)};
+\end{groupplot}
+\end{tikzpicture}
+\caption{Respuesta estacionaria del oscilador forzado, según la
+\cref{eq:beta}, para cinco amortiguamientos. (a)~Amplitud normalizada por su
+valor estático $\alpha_0/\wz^{2}$: al crecer $\gamma$, el pico baja, se ensancha
+y se desplaza, muy poco, hacia frecuencias menores. La línea punteada es el
+lugar geométrico de los máximos, $\bR\wz^{2}/\alpha_0=[2(1-x^{4})]^{-1/2}$ con
+$x=\WR/\wz$, que se obtiene eliminando $\gamma$ entre las
+\cref{eq:resonancia,eq:amplitudR}; para $\gamma=\wz/\sqrt2$ el máximo se ha
+desplazado hasta $\Omega=0$. (b)~Desfase entre el forzamiento y la respuesta:
+todas las curvas pasan por $\delta=\pi/2$ en $\Omega=\wz$, y la transición es
+tanto más brusca cuanto menor es el amortiguamiento.}
+\label{fig:resonancia}
+\end{figure}
+
+\ornamento
+
+% =========================================================================
+\newpage
+\seccion{Procedimiento experimental}{Cómo medimos}\label{sec:procedimiento}
+% =========================================================================
+Seguimos la metodología del guion~\cite{GUION-P4}, con las herramientas de
+adquisición y análisis de PHYWE Measure~\cite{PHYWE} que describimos a
+continuación.
+
+\subsection{Preparación y registro}\label{sec:registro}
+Con la fuente, la unidad Cobra-3 y el ordenador encendidos, abrimos PHYWE
+Measure y elegimos el módulo de medida \emph{Traslación/Rotación}, que
+registra el ángulo de giro del sensor frente al tiempo, comprobando que las
+opciones de medida son las que indica el guion. Al pulsar \emph{Continuar}
+aparece una ventana con la lectura instantánea del ángulo, que debe marcar
+\SI{0}{\degree} con el anillo en reposo; si el fiel no apunta al cero de la
+escala, se corrige girando el disco del motor. Cada registro se inicia con
+\emph{Iniciar medida} y se detiene con \emph{Finalizar medida}, tras lo cual el
+programa dibuja la curva $\varphi(t)$ (\cref{fig:registro}), que guardamos para
+analizarla después.
+
+\begin{figure}[!htbp]
+\centering
+\foto[0.82\textwidth]{figuras/registro-libre.jpg}
+\caption{Registro de una oscilación libre amortiguada en PHYWE Measure: ángulo
+de giro, en grados, frente al tiempo, en segundos. El anillo se suelta desde
+el reposo con una desviación próxima a \SI{90}{\degree} y la amplitud se va
+apagando ciclo a ciclo, mientras el periodo se mantiene constante, como
+predice la \cref{eq:libre}.}
+\label{fig:registro}
+\end{figure}
+
+\subsection{Oscilación libre amortiguada}\label{sec:proc-libre}
+\begin{enumerate}
+  \item \emph{Frecuencia natural.} Sin el puente enchufable, de modo que solo
+        actúa el rozamiento propio del aparato, desplazamos el anillo a mano
+        hasta una desviación grande, lo soltamos desde el reposo, sin darle
+        impulso, e iniciamos el registro. Sin electroimán las oscilaciones
+        duran mucho, lo que permite medir el periodo sobre un número elevado de
+        ciclos.
+  \item \emph{Amortiguamiento.} Repetimos el registro con el puente en las
+        posiciones~4 y~6, sin cambiar nada más. En cada caso dejamos que el
+        anillo oscile hasta que la amplitud sea pequeña.
+\end{enumerate}
+Los tres registros nos dan, para cada amortiguamiento, los instantes $t_n$ y
+las amplitudes $\varphi_n$ de los máximos sucesivos, que son los datos de la
+\cref{eq:linealizacion}.
+
+\subsection{Oscilación forzada}\label{sec:proc-forzada}
+\begin{enumerate}
+  \item Retiramos el puente, encendemos el motor y situamos el potenciómetro
+        de ajuste grueso entre~20 y~30, donde se encuentra la resonancia. Con
+        los dos potenciómetros buscamos la frecuencia a la que la amplitud es
+        máxima. Cerca de ella, sin electroimán, la amplitud llega a rebasar el
+        recorrido de la escala, por lo que conviene acercarse con cuidado.
+  \item Alcanzada la resonancia, esperamos a que se establezca el régimen
+        estacionario (\cref{obs:espera}) y registramos más de veinte
+        oscilaciones, de las que obtendremos la amplitud $\beta$ y la
+        frecuencia $\Omega$. Sin tocar los potenciómetros, colocamos el puente
+        en las posiciones~4 y~6 y, en cada caso, esperamos de nuevo al
+        estacionario y registramos.
+  \item Retiramos el puente y variamos ligeramente $\Omega$ con el
+        potenciómetro fino. Repetimos el registro sin puente y con el puente
+        en~4 y en~6.
+  \item Repetimos el paso anterior hasta completar tres frecuencias por
+        encima de la de resonancia y tres por debajo, modificando $\Omega$
+        únicamente con el potenciómetro fino. En total son siete frecuencias
+        y tres amortiguamientos, veintiún registros.
+\end{enumerate}
+
+\begin{pendientebox}[Procedimiento]
+Completar con los detalles propios de nuestra sesión: desviación inicial
+aproximada en la oscilación libre, número de máximos registrados en cada
+caso, tiempo de espera hasta el estacionario y posiciones del potenciómetro
+fino utilizadas.
+\end{pendientebox}
+
+\subsection{Análisis de picos}\label{sec:picos}
+Para extraer los máximos de cada registro usamos la función \emph{Análisis de
+pico} del menú \emph{Análisis} (\cref{fig:picos}). Su ventana tiene cuatro
+elementos:
+\begin{itemize}
+  \item \emph{Analizar}: elige la curva sobre la que se buscan los picos; con
+        un único sensor, la del \emph{eje izquierdo}.
+  \item \emph{Tolerancia}: una barra deslizante que decide qué se considera un
+        pico. Hacia \emph{menor} detecta también oscilaciones pequeñas; hacia
+        \emph{mayor}, solo las más pronunciadas. La ajustamos hasta que el
+        programa marca un único pico por oscilación, incluidas las más débiles
+        del final del registro.
+  \item \emph{Calcular}: genera una tabla con una fila por pico y cinco
+        columnas: los instantes de \emph{entrada}, \emph{máximo} y
+        \emph{salida} del pico, su \emph{altura} en grados y su \emph{área}.
+        De ella tomamos las columnas \emph{máximo}, que da $t_n$, y
+        \emph{altura}, que da $\varphi_n$.
+  \item \emph{Mostrar resultados}: rotula cada pico sobre la gráfica con su
+        instante y su altura, lo que permite comprobar a simple vista que
+        ningún máximo se ha perdido ni se ha contado dos veces. Con
+        \emph{Copiar} trasladamos la tabla a la hoja de cálculo.
+\end{itemize}
+Los instantes de la tabla aparecen en múltiplos de \SI{0,1}{\second}, que es la
+separación entre dos lecturas consecutivas del sensor; este intervalo de
+muestreo fijará la incertidumbre de los tiempos (\cref{sec:incertidumbres}).
+Si al final de un registro aparecen picos ajenos a la oscilación, por ejemplo
+al detener el anillo con la mano, los descartamos antes del ajuste.
+
+\begin{figure}[!htbp]
+\centering
+\begin{subfigure}[b]{\textwidth}\centering
+  \foto[0.8\textwidth]{figuras/picos-debil.jpg}
+  \caption{Amortiguamiento débil.}
+\end{subfigure}\\[8pt]
+\begin{subfigure}[b]{0.49\textwidth}\centering
+  \foto{figuras/picos-medio.jpg}
+  \caption{Amortiguamiento intermedio.}
+\end{subfigure}\hfill
+\begin{subfigure}[b]{0.49\textwidth}\centering
+  \foto{figuras/picos-fuerte.jpg}
+  \caption{Amortiguamiento fuerte.}
+\end{subfigure}
+\caption{Análisis de picos sobre tres oscilaciones libres, ordenadas de menor a
+mayor amortiguamiento. Las flechas señalan los máximos detectados, rotulados
+con su instante y su altura (\emph{Mostrar resultados}), y la ventana
+\emph{Análisis de picos} recoge para cada uno los instantes de entrada, máximo
+y salida, la altura y el área. Al aumentar el amortiguamiento, la amplitud cae
+en menos ciclos: en~(c), en apenas siete máximos pasa de
+\SI{77}{\degree} a \SI{12}{\degree}, mientras que en~(a) hacen falta casi
+veinte para una caída semejante.}
+\label{fig:picos}
+\end{figure}
+
+\begin{metodo}[Periodo a partir de los máximos]\label{met:periodo}
+Con $N$ máximos consecutivos en los instantes $t_1<t_2<\dots<t_N$ hay $N-1$
+periodos completos, de modo que
+\begin{equation}\label{eq:periodo}
+  T=\frac{t_N-t_1}{N-1} .
+\end{equation}
+Es la media de los $N-1$ intervalos entre máximos, pero solo intervienen los
+dos instantes extremos, y su error se reparte entre todos los periodos: cuantos
+más ciclos abarque el registro, más fino es el periodo. Lo aplicamos a la
+oscilación libre sin electroimán, para obtener $\wa=2\pi/T$ y de ahí $\wz$
+(\cref{obs:w0}), y a cada registro de la oscilación forzada, para obtener
+$\Omega=2\pi/T$.
+\end{metodo}
+
+\begin{metodo}[Coeficiente de amortiguamiento]\label{met:gamma}
+Ajustamos por mínimos cuadrados la recta $\ln\lvert\varphi_n\rvert=a+b\,t_n$ a
+los máximos de cada registro y tomamos $\gamma=-b$. Preferimos esta forma a la
+de la derecha de la \cref{eq:linealizacion}, con la recta forzada a pasar por
+el origen, porque en aquella el primer máximo entra en todos los puntos a
+través del cociente $\varphi_0/\varphi_n$: su error se arrastra a toda la serie
+y los puntos dejan de ser independientes. Con la ordenada libre, todos los
+máximos pesan por igual, y la compatibilidad de $e^{a}$ con $\lvert\varphi_0\rvert$
+sirve de comprobación adicional.
+\end{metodo}
+
+\begin{metodo}[Amplitud estacionaria]\label{met:beta}
+En cada registro de la oscilación forzada, una vez alcanzado el estacionario,
+tomamos como amplitud la media de las alturas de los $N$ máximos,
+$\beta=\mean{\varphi}_{\text{máx}}$, y como incertidumbre de tipo~A su
+desviación típica de la media, $s/\sqrt N$. Si la serie de alturas muestra una
+tendencia, creciente o decreciente, es señal de que el transitorio no se había
+extinguido y el registro debe descartarse o recortarse.
+\end{metodo}
+
+\subsection{Tratamiento de incertidumbres}\label{sec:incertidumbres}
+Seguimos la \emph{Guide to the expression of uncertainty in
+measurement}~\cite{GUM}, tal como se recoge en las notas del
+laboratorio~\cite{NUM-ARG}. Para una magnitud $y=f(x_1,\dots,x_N)$ con
+entradas no correlacionadas, la incertidumbre típica se propaga como
+\begin{equation}\label{eq:propagacion}
+  u^{2}(y)=\sum_{k=1}^{N}\left(\frac{\partial f}{\partial x_k}\right)^{\!2}u^{2}(x_k),
+\end{equation}
+y la incertidumbre ampliada al \SI{95}{\percent} es $U(y)=t_{95,\nu}\,u(y)$, con
+$t_{95,\nu}$ el factor de cobertura de Student para $\nu$ grados de
+libertad~\cite{NUM-ARG}; el resultado se expresa como $y\pm U(y)$. Las
+incertidumbres se dan con una sola cifra significativa, salvo cuando la
+primera es un 1, en cuyo caso se conservan dos, y el valor se redondea a la
+misma posición decimal~\cite{ERR-MP}. Dos valores $a$ y $b$ son compatibles
+al \SI{95}{\percent} si $\lvert a-b\rvert\leq\sqrt{U^{2}(a)+U^{2}(b)}$.
+
+\subsubsection{Instantes de los máximos}
+El sensor se lee cada $\Delta=\SI{0,1}{\second}$, y el máximo verdadero puede
+caer en cualquier punto del intervalo de $\pm\Delta/2$ que rodea a la lectura
+más alta. Tratándolo como una distribución rectangular de semianchura
+$\Delta/2$~\cite{GUM},
+\begin{equation}\label{eq:ut}
+  u(t_n)=\frac{\Delta/2}{\sqrt3}=\frac{\Delta}{2\sqrt3}\approx\SI{0,03}{\second}.
+\end{equation}
+
+\subsubsection{Amplitudes de los máximos}
+Por el mismo motivo, la lectura más alta puede no coincidir con la cima de la
+oscilación. Si la cima queda a un tiempo $\tau$ de la lectura, con
+$\lvert\tau\rvert\leq\Delta/2$, cerca del máximo
+$\varphi\simeq\varphi_n\cos(\wa\tau)$, y la altura registrada se queda corta, a
+lo sumo, en
+\begin{equation}\label{eq:sesgo}
+  \frac{\varphi_n-\varphi_{\text{reg}}}{\varphi_n}\leq1-\cos\frac{\wa\Delta}{2}
+  \simeq\frac{\wa^{2}\Delta^{2}}{8} .
+\end{equation}
+Es un error \emph{relativo} y siempre del mismo signo. A ello se suma la
+resolución del sensor de ángulo.
+\pend{Fijar $u(\varphi_n)$ con el valor de $\wa$ medido y la resolución del
+sensor.}
+
+\subsubsection{Periodo y frecuencias}
+De la \cref{eq:periodo}, por la \cref{eq:propagacion},
+\begin{equation}\label{eq:uT}
+  u(T)=\frac{\sqrt2}{N-1}\,u(t_n),\qquad
+  u(\wa)=\frac{2\pi}{T^{2}}\,u(T),\qquad
+  u(\Omega)=\frac{2\pi}{T^{2}}\,u(T),
+\end{equation}
+y, para la frecuencia natural corregida, $\wz=\sqrt{\wa^{2}+\gamma^{2}}$,
+\begin{equation}\label{eq:uw0}
+  u(\wz)=\frac{1}{\wz}\sqrt{\wa^{2}u^{2}(\wa)+\gamma^{2}u^{2}(\gamma)} .
+\end{equation}
+
+\subsubsection{Coeficiente de amortiguamiento}
+La incertidumbre de $\gamma$ es la de la pendiente del ajuste lineal,
+$u(\gamma)=u(b)$, con $\nu=N-2$ grados de libertad. Cada punto lleva una
+incertidumbre $u(\ln\lvert\varphi_n\rvert)=u(\varphi_n)/\lvert\varphi_n\rvert$,
+que, si $u(\varphi_n)$ es proporcional a $\varphi_n$, es la misma para todos;
+en ese caso el ajuste ordinario y el ponderado coinciden.
+\pend{Indicar si el ajuste es ponderado y con qué pesos.}
+
+\subsubsection{Frecuencia de resonancia esperada}
+De la \cref{eq:resonancia},
+\begin{equation}\label{eq:uWR}
+  u(\WR)=\frac{1}{\WR}\sqrt{\wz^{2}u^{2}(\wz)+4\gamma^{2}u^{2}(\gamma)} .
+\end{equation}
+
+\ornamento
+
+% =========================================================================
+\newpage
+\seccion{Análisis de datos y resultados}{Lo que dicen las medidas}\label{sec:analisis}
+% =========================================================================
+\subsection{Frecuencia natural}\label{sec:res-w0}
+\begin{pendientebox}[Cuestión 1]
+Tabla con los instantes de los máximos de la oscilación libre sin
+electroimán. Periodo $T$ por la \cref{eq:periodo}, frecuencia $\wa$ y
+frecuencia natural $\wz$ corregida con $\gamma_0$ (\cref{obs:w0}), con sus
+incertidumbres típica y ampliada. Comprobación opcional: ajuste lineal de
+$t_n$ frente a $n$, cuya pendiente es $T$.
+\end{pendientebox}
+
+\subsection{Coeficientes de amortiguamiento}\label{sec:res-gamma}
+\begin{pendientebox}[Cuestión 2]
+Tabla con $t_n$, $\varphi_n$ y $\ln\lvert\varphi_n\rvert$ para los tres
+amortiguamientos (sin puente, puente en~4 y en~6), señalando los puntos
+excluidos del ajuste y el motivo. Gráfica semilogarítmica con las tres rectas
+de ajuste (\cref{met:gamma}). Parámetros del ajuste con sus incertidumbres y
+coeficiente de determinación. Comprobar la curvatura de la
+\cref{obs:coulomb} y comparar $\gamma_0$, $\gamma_4$ y $\gamma_6$ entre sí.
+\end{pendientebox}
+
+\begin{figure}[!htbp]
+\centering
+\huecofigura{Gráfica: $\ln\lvert\varphi_n\rvert$ frente a $t_n$ para los tres
+amortiguamientos, con sus rectas de ajuste.}
+\caption{\pendiente{Pie de figura.}}
+\label{fig:ajuste-gamma}
+\end{figure}
+
+\subsection{Curvas de resonancia}\label{sec:res-curvas}
+\begin{pendientebox}[Cuestión 3]
+Tablas con $T$, $\Omega$ y $\beta$ para las siete frecuencias de forzamiento y
+los tres amortiguamientos (\cref{met:periodo,met:beta}). Gráfica de $\beta$
+frente a $\Omega$ con las tres series y sus barras de incertidumbre.
+\end{pendientebox}
+
+\begin{figure}[!htbp]
+\centering
+\huecofigura[6.2cm]{Gráfica: amplitud estacionaria $\beta$ frente a la
+frecuencia de forzamiento $\Omega$ para los tres amortiguamientos, con las
+frecuencias de resonancia esperadas $\WR$ señaladas.}
+\caption{\pendiente{Pie de figura.}}
+\label{fig:curvas}
+\end{figure}
+
+\subsection{Frecuencias de resonancia}\label{sec:res-WR}
+\begin{pendientebox}[Cuestión 4]
+Valores esperados de $\WR$ para cada amortiguamiento a partir de $\wz$ y
+$\gamma$ (\cref{eq:resonancia,eq:uWR}), indicados en la gráfica anterior.
+Comparación con la frecuencia a la que se observa el máximo de cada curva,
+con el criterio de compatibilidad de la \cref{sec:incertidumbres}.
+\end{pendientebox}
+
+\subsection{Discusión}\label{sec:discusion-res}
+\begin{pendientebox}[Cuestión 5]
+Cómo cambian la altura y la anchura del pico con el amortiguamiento
+(\cref{sec:resonancia}) y si las razones entre alturas son coherentes con las
+razones entre los $\gamma$ medidos. Por qué las tres $\WR$ apenas se
+distinguen entre sí. Posibles fuentes de discrepancia: transitorio no
+extinguido, amplitudes fuera del régimen lineal del muelle, rozamiento añadido
+por la biela al conectar el motor, número de frecuencias medidas cerca del
+pico.
+\end{pendientebox}
+
+\ornamento
+
+% =========================================================================
+\newpage
+\seccion{Discusión y conclusiones}{Lo que aprendemos}\label{sec:conclusiones}
+% =========================================================================
+\begin{pendientebox}[Conclusiones]
+Una conclusión por objetivo (frecuencia natural, amortiguamiento, curvas de
+resonancia y frecuencias de resonancia), con los valores finales y su
+incertidumbre ampliada, seguida de las principales fuentes de error y de las
+mejoras que proponemos.
+\end{pendientebox}
+
+% =========================================================================
+\newpage
+%                              BIBLIOGRAFÍA
+% =========================================================================
+\nocite{CRAWFORD,TIPLER,TAYLOR}
+\printbibliography[title={Referencias}]
+
+\end{document}
