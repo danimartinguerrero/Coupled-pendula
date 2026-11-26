@@ -138,8 +138,7 @@ for src_name, name, paso in ORDEN:
     ws['B1'].alignment = Alignment(horizontal='left', vertical='center')
     ws.row_dimensions[1].height = 26
     ws.merge_cells('B2:N2')
-    ws['B2'] = ('Análisis de picos (PHYWE Measure) · misma Ω del motor en los tres registros · '
-                'Δ = 0,1 s')
+    ws['B2'] = 'Análisis de picos · Δ = 0,1 s · misma Ω en los tres registros'
     ws['B2'].font = f(9.5, italic=True, color=PIZARRA)
     for c in range(2, 15):
         ws.cell(3, c).border = Border(top=Side(style='thin', color=TURQUESA))
@@ -170,8 +169,8 @@ for src_name, name, paso in ORDEN:
             c.alignment = CEN
             c.fill = fill(PERLA)
             c.border = Border(bottom=Side(style='thin', color=MARINO))
-        ws.cell(rh, 8).comment = Comment('✕ = 1 excluye el pico (anómalo). Editable.', 'Informe')
-        ws.cell(rh, 9).comment = Comment('w = 1 si n ≥ n₀ y no excluido: entra en β, T y Ω.', 'Informe')
+        ws.cell(rh, 8).comment = Comment('1 = excluir pico', '')
+        ws.cell(rh, 9).comment = Comment('1 si n ≥ n₀ y no excluido', '')
         # ficha (columnas L:N)
         ws.merge_cells(start_row=r0, start_column=12, end_row=r0, end_column=14)
         c = ws.cell(r0, 12, rich('Estado estacionario', size=10.5, bold=True, color='FFFFFF'))
@@ -242,10 +241,7 @@ for src_name, name, paso in ORDEN:
         c = ws.cell(F['n0'], 13)
         c.fill = fill(EDITABLE)
         c.font = f(10, bold=True, color=COBALTO)
-        c.comment = Comment(('Propuesta automática: ' +
-                             ('cola más larga (≥ 5 máximos) con |δ| ≤ 10 %.' if meseta else
-                              'ninguna cola cumple |δ| ≤ 10 %: últimos 5 máximos.')) +
-                            ' Editable.', 'Informe')
+        c.comment = Comment('|δ| ≤ 10 % desde n₀' if meseta else 'sin meseta: últimos 5', '')
         ws.cell(F['est'], 13).font = f(10, bold=True, color=PETROLEO)
         # datos
         for i in range(NMAX):
@@ -295,8 +291,7 @@ for src_name, name, paso in ORDEN:
     # leyenda corta al pie
     rl = FILA0 + 3 * BLOQUE
     ws.merge_cells(start_row=rl, start_column=2, end_row=rl, end_column=14)
-    ws.cell(rl, 2, '◂ primer pico, posiblemente truncado · ✱ pico anómalo excluido · '
-                   'w = 1: pico usado · celdas amarillas: editables').font = f(8.5, italic=True, color=PIZARRA)
+    ws.cell(rl, 2, '◂ primer pico truncado · ✱ excluido · w = 1: usado').font = f(8.5, italic=True, color=PIZARRA)
 
     # gráfica φn(tn) de los tres registros
     ch = ScatterChart()
@@ -330,8 +325,7 @@ ws.merge_cells('B1:V1')
 ws['B1'] = rich('Péndulo de Pohl · curvas de resonancia ', ('β', None), '(', 'Ω', ')', size=16, bold=True)
 ws.row_dimensions[1].height = 28
 ws.merge_cells('B2:V2')
-ws['B2'] = ('Práctica 4 · Laboratorio de Mecánica y Ondas · siete frecuencias del motor × tres '
-            'amortiguamientos · β y Ω solo con los máximos estacionarios (w = 1)')
+ws['B2'] = 'Práctica 4 · 7 frecuencias × 3 amortiguamientos · β y Ω con los máximos estacionarios'
 ws['B2'].font = f(9.5, italic=True, color=PIZARRA)
 for c in range(2, 23):
     ws.cell(3, c).border = Border(top=Side(style='thin', color=TURQUESA))
@@ -343,9 +337,9 @@ for c in range(2, 6):
     ws.cell(5, c).fill = fill(PETROLEO)
 par = [
     (6, rich('Δ'), 'intervalo de muestreo', 0.1, 's', '0.0'),
-    (7, rich('u(t', ('n', 'sub'), ')'), 'Δ/(2√3), rectangular', '=D6/(2*SQRT(3))', 's', '0.000'),
-    (8, rich('|δ|', ('máx', 'sub')), 'umbral de estacionario', 0.10, '', '0%'),
-    (9, rich('ε', ('β', 'sub')), 'sesgo máx. de φₙ: (ΩΔ)²/8', '=(3.37*D6)^2/8', '', '0.0%'),
+    (7, rich('u(t', ('n', 'sub'), ')'), 'Δ/(2√3)', '=D6/(2*SQRT(3))', 's', '0.000'),
+    (8, rich('|δ|', ('máx', 'sub')), 'umbral estacionario', 0.10, '', '0%'),
+    (9, rich('ε', ('β', 'sub')), 'sesgo de φₙ ≤ (ΩΔ)²/8', '=(3.37*D6)^2/8', '', '0.0%'),
 ]
 for r, s, d, v, u, fm in par:
     ws.cell(r, 2, s).alignment = IZQ
@@ -359,8 +353,7 @@ for r, s, d, v, u, fm in par:
     ws.cell(r, 5, u).font = f(9, italic=True, color=PIZARRA)
     for cc in range(2, 6):
         ws.cell(r, cc).border = Border(bottom=fino)
-ws['D9'].comment = Comment('Ω ≈ 3,37 rad/s (valor típico de estos registros). '
-                           'La lectura más alta puede quedar hasta Δ/2 de la cima.', 'Informe')
+ws['D9'].comment = Comment('con Ω ≈ 3,37 rad/s', '')
 
 # oscilación libre: entradas para Ω_R
 ws.merge_cells('B11:C11')
@@ -390,11 +383,10 @@ for r, s, u, d in libre:
     for cc in range(2, 7):
         ws.cell(r, cc).border = Border(bottom=fino)
 ws.column_dimensions['F'].width = 7
-ws['D12'].comment = Comment('Completar con los resultados de la oscilación libre '
-                            '(cuestiones 1 y 2). Valor en D, incertidumbre típica en E.', 'Informe')
+ws['D12'].comment = Comment('de la oscilación libre (cuestiones 1 y 2)', '')
 for i, (r, g) in enumerate([(17, 13), (18, 14), (19, 15)]):
     ws.cell(r, 2, rich('Ω', ('R', 'sub'), ',', ('γ', None), ("046"[i], 'sub'))).alignment = IZQ
-    ws.cell(r, 3, 'u: ec. (3.7) del informe').font = f(8.5, italic=True, color=PIZARRA)
+    ws.cell(r, 3, 'u: ec. (3.7)').font = f(8.5, italic=True, color=PIZARRA)
     c = ws.cell(r, 4, f'=IF(OR($D$12="",D{g}=""),"",SQRT($D$12^2-2*D{g}^2))')
     c.number_format = '0.0000'
     c.font = f(10, bold=True)
@@ -467,13 +459,12 @@ ws.cell(rn, 8, rich('Anotaciones', bold=True, color='FFFFFF')).alignment = IZQ
 for cc in range(8, 24):
     ws.cell(rn, cc).fill = fill(PETROLEO)
 notas = [
-    '⚠  Ω +2: registro γ₆ ≡ γ₄ fila a fila (¿copia duplicada?) → repetir o descartar γ₆.',
-    '↘  γ₄, γ₆: φₙ decrece al poner el puente (transitorio, τ ~ 1/γ) → β solo de la meseta final, n ≥ n₀.',
-    '↘  γ₆ en −2, −1 y R: ninguna cola con |δ| ≤ 10 % → β por exceso (registro corto frente a 1/γ₆).',
-    '↗  γ₀: φₙ ≈ 100–170°, creciente al arrancar → n₀ tras el arranque; picos ✱ excluidos (Ω +1: 171°, Ω +2: 146°).',
-    'Ω(γ₄, γ₆) − Ω(γ₀) ≈ +0,03 … +0,05 rad/s ≫ u(Ω) con el motor sin tocar → ¿la carga del electroimán altera el motor?',
-    '⇒  representar β frente a la Ω medida, no frente al paso · barrido de γ₀: ΔΩ ≈ 0,02 rad/s, estrecho frente a ~2γ.',
-    'T por ajuste tₙ = t̄ + T(n − n̄) · u(T) = máx(s_res, u(tₙ))/√Σw(n − n̄)² · u(β) = s/√N (tipo A) · sesgo φₙ ≤ ε_β.',
+    '⚠  Ω +2: γ₆ ≡ γ₄ (registro duplicado) → repetir.',
+    '↘  γ₄, γ₆: transitorio al poner el puente → β solo de la meseta (n ≥ n₀).',
+    '↘  γ₆ en −2, −1 y R: sin meseta → β por exceso.',
+    '↗  γ₀: φₙ crece al arrancar · ✱ excluidos (171°, 146°).',
+    'Ω(γ₄, γ₆) − Ω(γ₀) ≈ +0,04 rad/s a motor fijo → β frente a Ω medida, no frente al paso.',
+    'Barrido γ₀: ΔΩ ≈ 0,02 rad/s ≪ 2γ.',
 ]
 for i, t in enumerate(notas):
     r = rn + 1 + i
@@ -487,8 +478,7 @@ for i, t in enumerate(notas):
 # leyenda
 rl = rn + len(notas) + 2
 ws.merge_cells(start_row=rl, start_column=8, end_row=rl, end_column=23)
-ws.cell(rl, 8, '✓ estacionario (|δ| ≤ umbral) · ↗ / ↘ deriva de φₙ en los máximos usados · ⚠ revisar · '
-               'amarillo: editable · δ = (dφ/dt)·(N − 1)T / β').font = f(8.5, italic=True, color=PIZARRA)
+ws.cell(rl, 8, '✓ |δ| ≤ 10 % · ↗ ↘ deriva de φₙ · ⚠ revisar · ✱ excluido · δ = (dφ/dt)(N − 1)T/β').font = f(8.5, italic=True, color=PIZARRA)
 
 # datos para Ω_R (líneas verticales en la gráfica), apartados en Y:Z
 for i, r in enumerate((17, 18, 19)):
@@ -498,7 +488,7 @@ for i, r in enumerate((17, 18, 19)):
         ws.cell(base + j, 26, 0 if j == 0 else 140)
         ws.cell(base + j, 25).font = f(8, color='B0B8C4')
         ws.cell(base + j, 26).font = f(8, color='B0B8C4')
-ws.cell(5, 25, 'aux. gráfica: Ω_R, β').font = f(8, italic=True, color='B0B8C4')
+ws.cell(5, 25, 'gráfica Ω_R').font = f(8, italic=True, color='B0B8C4')
 ws.column_dimensions['X'].width = 4
 # gráfica de resonancia β(Ω)
 ch = ScatterChart()
@@ -571,6 +561,9 @@ for sh in wb.worksheets:
                 for b in c.value:
                     if isinstance(b, TextBlock):
                         b.text = vs(b.text)
+# metadatos del archivo original
+for k in ('creator', 'lastModifiedBy', 'created'):
+    setattr(wb.properties, k, getattr(src.properties, k))
 wb.active = 0
 wb.save(OUT)
 print('ok')
